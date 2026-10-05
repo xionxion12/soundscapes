@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Sleep to looping nature soundscapes recorded by xeno-canto contributors." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Soundscapes" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="%BASE_URL%icons/icon-192.png" />
+    <title>Soundscapes</title>
+  </head>
+  <body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <main id="app">
+      <header class="top">
+        <div class="titles" id="titles">
+          <h1 id="title"></h1>
+          <p id="subtitle"></p>
+        </div>
+        <div class="dots" id="dots" role="tablist" aria-label="Soundscapes"></div>
+      </header>
+
+      <section class="center" aria-label="Sleep timer">
+        <div class="dial-wrap" id="dial-wrap">
+          <svg id="dial" viewBox="0 0 300 300" role="slider" aria-label="Sleep timer" aria-valuemin="0" aria-valuemax="180" tabindex="0">
+            <circle class="track" cx="150" cy="150" r="132" />
+            <g id="ticks"></g>
+            <circle class="arc" id="arc" cx="150" cy="150" r="132" pathLength="1" transform="rotate(-90 150 150)" />
+            <g id="thumb">
+              <circle class="thumb-halo" r="19" />
+              <circle class="thumb-dot" r="9" />
+            </g>
+          </svg>
+          <button class="orb" id="orb" type="button" aria-label="Play">
+            <svg class="glyph" id="glyph" viewBox="0 0 24 24" aria-hidden="true"><path id="glyph-path" /></svg>
+            <span class="readout-main" id="readout-main">30 min</span>
+            <span class="readout-end" id="readout-end">ends at --:--</span>
+          </button>
+        </div>
+        <div class="presets" id="presets" role="group" aria-label="Timer presets"></div>
+      </section>
+
+      <footer class="bottom">
+        <button class="icon-btn" id="info" type="button" aria-label="About this recording">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" /><path d="M12 11v5.5M12 7.6v.1" /></svg>
+        </button>
+        <span class="badge" id="badge" hidden>Playing on AirPlay</span>
+        <button class="icon-btn" id="airplay" type="button" aria-label="AirPlay" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1" /><path d="m12 15 5 6H7z" /></svg>
+        </button>
+      </footer>
+    </main>
+
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-backdrop" id="sheet-backdrop"></div>
+      <section class="sheet-panel" id="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <div class="sheet-grab" id="sheet-grab"></div>
+        <div class="sheet-body" id="sheet-body"></div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
