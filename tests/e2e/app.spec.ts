@@ -1,19 +1,21 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { audioState, errors, items, open, ringPoint, swipe, touchPath } from './helpers';
+import { audioState, errors, items, open, swipe } from './helpers';
 
 const SHOTS = 'test-results/screens';
 mkdirSync(SHOTS, { recursive: true });
 const NIGHT = new Date(2026, 5, 1, 22, 56, 0); // 22:56, so 45 min ends at 23:41
 
 test.describe('soundscapes', () => {
-  test('starts on the first soundscape with a 30 min timer', async ({ page }) => {
+  test('starts on the first soundscape with a 45 min timer', async ({ page }) => {
     await open(page, { time: NIGHT });
     await expect(page.locator('#subtitle')).toHaveText(items[0]!.subtitle);
     await expect(page.locator('.dot')).toHaveCount(items.length);
-    await expect(page.locator('#readout-main')).toHaveText('30 min');
-    await expect(page.locator('#readout-end')).toHaveText('ends at 23:26');
-    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveText('30');
+    await expect(page.locator('#readout-main')).toHaveText('45 min');
+    await expect(page.locator('#readout-end')).toHaveText('ends at 23:41');
+    await expect(page.locator('.chip')).toHaveText(['∞', '45 min', '9 h']);
+    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveText('45 min');
+    await expect(page.locator('#dial')).toHaveCount(0); // no ring
     await expect(page.locator('#airplay')).toBeHidden(); // no AirPlay target in Chromium
     await page.screenshot({ path: `${SHOTS}/01-idle.png` });
     expect(errors).toEqual([]);
@@ -29,10 +31,10 @@ test.describe('soundscapes', () => {
     await expect(page.locator('#title')).toHaveText(items[0]!.name);
     await swipe(page, 'right'); // wraps to the last one
     await expect(page.locator('#title')).toHaveText(items.at(-1)!.name);
-    await page.locator('.chip[data-minutes="60"]').click();
+    await page.locator('.chip[data-minutes="540"]').click();
     await page.reload();
     await expect(page.locator('#title')).toHaveText(items.at(-1)!.name);
-    await expect(page.locator('#readout-main')).toHaveText('1 h');
+    await expect(page.locator('#readout-main')).toHaveText('9 h');
   });
 
   test('tapping the orb plays and pauses', async ({ page }) => {
@@ -59,65 +61,53 @@ test.describe('soundscapes', () => {
     await expect.poll(() => page.evaluate(() => navigator.mediaSession.metadata?.title)).toBe(items[1]!.name);
   });
 
-  test('dragging the dial sets the timer and shows the "ends at" time live', async ({ page }) => {
+  test('the chips set ∞ / 45 min / 9 h and show the "ends at" time', async ({ page }) => {
     await open(page, { time: NIGHT });
-    const dial = page.locator('#dial');
-    const path: [number, number][] = [];
-    for (let m = 30; m <= 45; m += 5) path.push(await ringPoint(dial, m));
-    await touchPath(page, path, 30);
-    await expect(page.locator('#readout-main')).toHaveText('45 min');
-    await expect(page.locator('#readout-end')).toHaveText('ends at 23:41');
-    await expect(page.locator('#dial')).toHaveAttribute('aria-valuenow', '45');
-    await page.screenshot({ path: `${SHOTS}/03-dial-45.png` });
-
-    // beyond one hour the scale is coarser: 3 h
-    const toMax: [number, number][] = [];
-    for (const m of [45, 60, 75, 90, 120, 150, 165, 180]) toMax.push(await ringPoint(dial, m));
-    await touchPath(page, toMax, 30); // ends exactly at 12 o'clock: must stay at the maximum, not wrap to ∞
-    await expect(page.locator('#readout-main')).toHaveText('3 h');
-    await expect(page.locator('#readout-end')).toHaveText('ends at 01:56');
-
-    // dragging back through 12 o'clock to the start gives ∞
-    const box = (await dial.boundingBox())!;
-    await touchPath(page, [await ringPoint(dial, 180), [box.x + box.width / 2 + 5, box.y + 5], [box.x + box.width / 2 - 20, box.y + 4]], 30);
-    await expect(page.locator('#readout-main')).toHaveText('3 h'); // stuck at the max, it did not wrap
+    await page.locator('.chip[data-minutes="540"]').click();
+    await expect(page.locator('#readout-main')).toHaveText('9 h');
+    await expect(page.locator('#readout-end')).toHaveText('ends at 07:56');
+    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveText('9 h');
+    await page.screenshot({ path: `${SHOTS}/03-timer-9h.png` });
     await page.locator('.chip[data-minutes="0"]').click();
     await expect(page.locator('#readout-main')).toHaveText('∞');
     await expect(page.locator('#readout-end')).toHaveText('until you stop it');
+    await page.locator('.chip[data-minutes="45"]').click();
+    await expect(page.locator('#readout-main')).toHaveText('45 min');
+    await expect(page.locator('#readout-end')).toHaveText('ends at 23:41');
   });
 
   test('timer runs out: ends at the set time, fades, then stops', async ({ page }) => {
     await open(page, { time: NIGHT });
-    await page.locator('.chip[data-minutes="15"]').click();
-    await expect(page.locator('#readout-end')).toHaveText('ends at 23:11');
+    await page.locator('.chip[data-minutes="45"]').click();
+    await expect(page.locator('#readout-end')).toHaveText('ends at 23:41');
     await page.locator('#orb').click();
     await expect.poll(async () => (await audioState(page)).paused).toBe(false);
     await page.screenshot({ path: `${SHOTS}/04-timer-running.png` });
 
-    await page.clock.fastForward(10 * 60_000); // 23:06
+    await page.clock.fastForward(40 * 60_000); // 23:36
     await expect(page.locator('#readout-main')).toHaveText('5 min');
     expect((await audioState(page)).volume).toBe(1);
 
-    await page.clock.fastForward(4 * 60_000 + 30_000); // 23:10:30, halfway through the fade
+    await page.clock.fastForward(4 * 60_000 + 30_000); // 23:40:30, halfway through the fade
     const mid = (await audioState(page)).volume;
     expect(mid).toBeGreaterThan(0.05);
     expect(mid).toBeLessThan(0.3); // cubic ramp: 0.5³ = 0.125
 
-    await page.clock.fastForward(31_000); // past 23:11
+    await page.clock.fastForward(31_000); // past 23:41
     await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Play');
     const end = await audioState(page);
     expect(end.paused).toBe(true);
     expect(end.volume).toBe(1); // restored for the next play
-    await expect(page.locator('#readout-main')).toHaveText('15 min');
+    await expect(page.locator('#readout-main')).toHaveText('45 min');
   });
 
   test('iOS: swaps to the pre-faded outro 60 s before the end', async ({ page }) => {
     await open(page, { time: NIGHT, ios: true });
-    await page.locator('.chip[data-minutes="15"]').click();
+    await page.locator('.chip[data-minutes="45"]').click();
     await page.locator('#orb').click();
     await expect.poll(async () => (await audioState(page)).paused).toBe(false);
 
-    await page.clock.fastForward(14 * 60_000 - 5_000); // 5 s before the fade
+    await page.clock.fastForward(44 * 60_000 - 5_000); // 5 s before the fade
     let s = await audioState(page);
     expect(s.src).toContain(items[0]!.file.replace('audio/', ''));
     expect(s.loop).toBe(true);
@@ -147,11 +137,11 @@ test.describe('soundscapes', () => {
           };
         });
       }
-      await page.locator('.chip[data-minutes="15"]').click();
+      await page.locator('.chip[data-minutes="45"]').click();
       await page.locator('#orb').click();
       await expect.poll(async () => (await audioState(page)).paused).toBe(false);
 
-      await page.clock.fastForward(14 * 60_000 + 5_000); // fade started, outro fails
+      await page.clock.fastForward(44 * 60_000 + 5_000); // fade started, outro fails
       await expect.poll(async () => (await audioState(page)).paused).toBe(false);
       let s = await audioState(page);
       expect(s.src).not.toContain('-outro');
@@ -168,16 +158,16 @@ test.describe('soundscapes', () => {
 
   test('changing the timer while playing restarts it', async ({ page }) => {
     await open(page, { time: NIGHT });
-    await page.locator('.chip[data-minutes="15"]').click();
+    await page.locator('.chip[data-minutes="45"]').click();
     await page.locator('#orb').click();
     await expect.poll(async () => (await audioState(page)).paused).toBe(false);
     await page.clock.fastForward(5 * 60_000);
     await expect(page.locator('body')).toHaveClass(/dim/); // five minutes in, the screen has dimmed
     await page.mouse.click(196, 600); // first tap only wakes it
     await expect(page.locator('body')).not.toHaveClass(/dim/);
-    await page.locator('.chip[data-minutes="60"]').click();
-    await expect(page.locator('#readout-end')).toHaveText('ends at 00:01'); // 23:01 + 60 min
-    await expect(page.locator('#readout-main')).toHaveText('1 h');
+    await page.locator('.chip[data-minutes="540"]').click();
+    await expect(page.locator('#readout-end')).toHaveText('ends at 08:01'); // 23:01 + 9 h
+    await expect(page.locator('#readout-main')).toHaveText('9 h');
   });
 
   test('dims after 15 s of play and wakes on tap without pausing', async ({ page }) => {

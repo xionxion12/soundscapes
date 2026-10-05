@@ -3,6 +3,9 @@
 
 export const FADE_MS = 60_000;
 
+/** The choices offered in the UI, in minutes: ∞, 45 min, 9 h. */
+export const TIMER_OPTIONS = [0, 45, 540] as const;
+
 export interface TimerState {
   /** Epoch ms when the sound must be silent. */
   endsAt: number;

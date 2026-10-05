@@ -1,4 +1,4 @@
-# Curation: how the five soundscapes were chosen
+# Curation: how the soundscapes were chosen
 
 **Read this first:** the picks were made from xeno-canto metadata, numeric analysis and *spectrograms*
 (viewed as images), not by listening. Please listen to each recording on its xeno-canto page and tell me
@@ -20,24 +20,48 @@ followed by `npm run audio:build -- --only <id>`.
 |---|---|---|---|---|
 | `scops-night` | [XC1008555](https://xeno-canto.org/1008555), Eurasian scops owl, JACOB Hervé | Marans, Charente-Maritime, France · 9 Jun 2025, 01:00 | A · CC BY-SA | 2:00 → 9:09 of 30:43 |
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
-| `amazon-night` | [XC1177487](https://xeno-canto.org/1177487), soundscape (map treefrog), Fernanda Fernandex | Mâncio Lima, Acre, Brazil · 16 Aug 2026, 01:35 | A · CC BY-NC-SA | 20:20 → 27:29 of 46:40 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
-| `wetland-night` | [XC832830](https://xeno-canto.org/832830), soundscape, Cedric Mroczko | Svalovychi, Volyn, Ukraine · 16 May 2023, 21:35 | B · CC BY-NC-SA | 2:30 → 9:39 of 15:36 |
 
 Why these:
 
 - **Scops Owl at Midnight**: one owl calling every ~2 s through a quiet June night, steady for 19 minutes;
   clean low end. It is a lone owl rather than owl + insects (I found no A-quality ≥ 8 min recording with
-  both, see below), and it is Atlantic France, not strictly "Mediterranean".
+  both, see below), and it is an Atlantic marsh in France, so it gets the moonlit *night* scene rather than the
+  Mediterranean one.
 - **Italian Tree Crickets**: the classic warm southern-European night: a steady chorus of *Oecanthus
   pellucens*, 34 minutes, no events apart from two low bumps (around 15 and 23 min) that the chosen window
   avoids. Quality B.
-- **Amazon Night**: a very dense, extremely steady (std 0.5 dB) wall of frogs and insects beside a stream.
-  The most stationary recording I found.
+  *Why Portugal?* Not a mistake: *Oecanthus pellucens* is called the **Italian tree cricket** in English
+  (Scopoli described it from Italy in 1763), but it lives all over southern Europe, Portugal included. XC854102
+  really is from the Rio Tua valley near Bragança. The app now shows "Italian tree cricket" with the scientific
+  name in italics (the build had stored the Latin name as the common name).
 - **Rainforest Canopy**: tagged "dawn chorus", but acoustically a diffuse insect wall with no prominent
   calls. The window is taken after the loud 9–11 kHz cicada burst earlier in the recording.
-- **Wetland Night**: fire-bellied toads and tree frogs, a field cricket, and a bittern booming now and then
-  in the distance (the stand-in for the "distant owl"). Dusk rather than deep night; quality B.
+
+## Removed at review
+
+| id | Recording | Why removed |
+|---|---|---|
+| `amazon-night` | [XC1177487](https://xeno-canto.org/1177487), Acre frog and insect chorus, Fernanda Fernandex, CC BY-NC-SA | Dropped from the line-up; the app is meant to have three soundscapes. Replaced by a Victorian bush night (below). |
+| `wetland-night` | [XC832830](https://xeno-canto.org/832830), wetland soundscape, Volyn, Ukraine, Cedric Mroczko, CC BY-NC-SA | Dropped from the line-up. |
+
+Their config entries are in git history if you want them back (the audio is rebuilt from xeno-canto by `npm run audio:build`).
+
+## Victorian (Australia) bush night: search result
+
+I scanned all ~3,000 xeno-canto recordings in a box around Victoria. Nothing is good enough for sleep:
+the best is [XC641430](https://xeno-canto.org/641430) (southern boobook, 24 kHz mono MP3, −44 LUFS, so the
+noise floor would be lifted a lot), and the south-east Australian alternative is only 8 kHz. The app's
+minimum is 44.1 kHz.
+
+Better sources exist outside xeno-canto: the [Australian Acoustic Observatory](https://acousticobservatory.org)
+(CC BY 4.0, continuous recordings from Victorian sites) and Freesound. Those hosts are **blocked by the build
+environment's network policy**, so the soundscape is not built yet. To finish it: allow `acousticobservatory.org`,
+`data.acousticobservatory.org` and `api.acousticobservatory.org` (and optionally `freesound.org`,
+`cdn.freesound.org`), or provide a recording. The build script then needs a generic `source` entry
+(archive, id, page URL, download URL, recordist, license, place, date) next to `xcId`, and the data field
+`xc` becomes `source`. The `bush` scene (southern sky, Southern Cross, eucalypts) and its artwork are already
+in the app, waiting for it. If no other source turns up, XC641430 stays the xeno-canto fallback.
 
 ## Runners-up (all listed with the reason they lost)
 
@@ -56,8 +80,8 @@ Why these:
 - A recording can pass every "calm" metric yet be wrong for sleep: after normalising to −24 LUFS a quiet source
   has its noise floor lifted by 20 dB or more. So each built loop is profiled by band
   (`< 150 Hz`, `150–800`, `0.8–3 k`, `3–8 k`, `> 8 k`); a loop with a loud sub-150 Hz band (rumble) or most
-  of its energy above 8 kHz (hiss) is rejected. The scops owl, tree-cricket, Amazon and wetland loops are within
-  limits; the picks with the quietest sources (scops: +13 dB, tree crickets: +12 dB, wetland: +10 dB gain) are the
+  of its energy above 8 kHz (hiss) is rejected. The scops owl and tree-cricket loops are within
+  limits; the picks with the quietest sources (scops: +13 dB, tree crickets: +12 dB gain) are the
   ones to check by ear for hiss.
 - Several xeno-canto "night" soundscapes are dawn choruses, or carry no time at all; the time filter lets
   unknown times through, so the spectrogram and remarks decide.

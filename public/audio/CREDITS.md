@@ -8,8 +8,6 @@ Because the licenses include ShareAlike (or NonCommercial), the processed audio 
 |---|---|---|---|---|---|
 | Scops Owl at Midnight | [XC1008555](https://xeno-canto.org/1008555) | JACOB Hervé | Marans, Charente-Maritime, Nouvelle-Aquitaine, France | 2025-06-09 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | Italian Tree Crickets | [XC854102](https://xeno-canto.org/854102) | Baudewijn Odé | ca. 1.5 km E of Abreiro, along the Rio Tua, Bragança, Portugal | 2015-07-11 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
-| Amazon Night | [XC1177487](https://xeno-canto.org/1177487) | Fernanda Fernandex | Mâncio Lima, Acre, Brazil | 2026-08-16 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | Rainforest Canopy | [XC574855](https://xeno-canto.org/574855) | Okamoto Keita Sin | Kumbang Hide, Taman Negara, Pahang, Malaysia | 2019-04-22 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
-| Wetland Night | [XC832830](https://xeno-canto.org/832830) | Cedric Mroczko | Svalovychi, Lyubeshivs'kyi district, Volyn Oblast, Ukraine | 2023-05-16 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 
 Please do not use these files commercially.

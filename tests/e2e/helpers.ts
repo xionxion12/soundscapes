@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { expect, type Locator, type Page } from '@playwright/test';
-import { minutesToFraction } from '../../src/ui/dialMath';
+import { expect, type Page } from '@playwright/test';
 
 type Item = {
   id: string; name: string; subtitle: string; theme: string; file: string; outro: string;
@@ -57,14 +56,6 @@ export async function swipe(page: Page, dir: 'left' | 'right') {
   const [a, b] = dir === 'left' ? [330, 60] : [60, 330];
   const pts: [number, number][] = Array.from({ length: 12 }, (_, i) => [a + ((b - a) * i) / 11, y]);
   await touchPath(page, pts);
-}
-
-/** Point on the dial ring for a number of minutes (page coordinates). */
-export async function ringPoint(dial: Locator, minutes: number, radius = 132): Promise<[number, number]> {
-  const box = (await dial.boundingBox())!;
-  const s = box.width / 300;
-  const a = minutesToFraction(minutes) * 2 * Math.PI;
-  return [box.x + box.width / 2 + radius * s * Math.sin(a), box.y + box.height / 2 - radius * s * Math.cos(a)];
 }
 
 export async function audioState(page: Page) {
