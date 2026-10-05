@@ -1,6 +1,7 @@
 // Sleep timer: pure logic. The timer stores an absolute `endsAt` so it survives the
 // page being hidden or throttled; everything else is derived from "now".
 
+/** The fade before a timer ends. */
 export const FADE_MS = 60_000;
 
 /** The choices offered in the UI, in minutes: ∞, 45 min, 9 h. */

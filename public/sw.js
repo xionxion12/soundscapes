@@ -52,16 +52,20 @@ async function ensureCached(url) {
   if (!(await (await caches.open(AUDIO_CACHE)).match(url))) await warm(url);
 }
 
-/** `<id>.m4a` → `<id>-outro.m4a` (the naming scripts/build-audio.mjs uses), or null for an outro. */
-function outroOf(url) {
-  return url.endsWith('-outro.m4a') ? null : url.replace(/\.m4a$/, '-outro.m4a');
+/**
+ * The other files of the same soundscape (`<id>.m4a`, `-outro`, `-fadein`, `-fadeout`; the naming
+ * scripts/build-audio.mjs uses), so whichever one is played first brings the rest into the cache.
+ */
+function siblingsOf(url) {
+  const base = url.replace(/(-outro|-fadein|-fadeout)?\.m4a$/, '');
+  return ['', '-outro', '-fadein', '-fadeout'].map((s) => `${base}${s}.m4a`).filter((u) => u !== url);
 }
 
 async function handleAudio(event) {
   const request = event.request;
-  // iOS fades by switching to the outro, so it has to be there offline before the timer ends
-  const outro = outroOf(request.url);
-  if (outro) event.waitUntil(ensureCached(outro));
+  // iOS fades by switching to the outro / fade clips (and the loop follows the fade-in), so all of
+  // them have to be there offline
+  for (const sibling of siblingsOf(request.url)) event.waitUntil(ensureCached(sibling));
   const cache = await caches.open(AUDIO_CACHE);
   const hit = await cache.match(request.url);
   if (hit) return self.swRange.sliceResponse(hit, request.headers.get('range'));

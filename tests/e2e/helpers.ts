@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, type Page } from '@playwright/test';
 
 type Item = {
-  id: string; name: string; subtitle: string; theme: string; file: string; outro: string;
+  id: string; name: string; subtitle: string; theme: string; file: string; outro: string; fadeIn: string; fadeOut: string;
   xc: { id: number; url: string; recordist: string; licenseName: string; licenseUrl: string };
 };
 export const items: Item[] = JSON.parse(readFileSync(fileURLToPath(new URL('../../src/data/soundscapes.json', import.meta.url)), 'utf8')).items;
@@ -56,6 +56,11 @@ export async function swipe(page: Page, dir: 'left' | 'right') {
   const [a, b] = dir === 'left' ? [330, 60] : [60, 330];
   const pts: [number, number][] = Array.from({ length: 12 }, (_, i) => [a + ((b - a) * i) / 11, y]);
   await touchPath(page, pts);
+}
+
+/** Wait until sound is really playing (a fade-in ramp only starts then). */
+export async function waitPlaying(page: Page) {
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __soundscapes: { engine: { state: string } } }).__soundscapes.engine.state)).toBe('playing');
 }
 
 export async function audioState(page: Page) {

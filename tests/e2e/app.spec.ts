@@ -1,6 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
-import { audioState, errors, items, open, swipe } from './helpers';
+import { audioState, errors, items, open, swipe, waitPlaying } from './helpers';
 
 const SHOTS = 'test-results/screens';
 mkdirSync(SHOTS, { recursive: true });
@@ -46,8 +46,8 @@ test.describe('soundscapes', () => {
     await expect.poll(async () => (await audioState(page)).paused).toBe(false);
     await page.screenshot({ path: `${SHOTS}/02-playing.png` });
     await orb.click();
-    await expect(orb).toHaveAttribute('aria-label', 'Play');
-    expect((await audioState(page)).paused).toBe(true);
+    await expect(orb).toHaveAttribute('aria-label', 'Play'); // the UI says paused at once …
+    await expect.poll(async () => (await audioState(page)).paused, { timeout: 10_000 }).toBe(true); // … the sound is gone after the fade
   });
 
   test('switching while playing keeps playing', async ({ page }) => {
@@ -81,7 +81,7 @@ test.describe('soundscapes', () => {
     await page.locator('.chip[data-minutes="45"]').click();
     await expect(page.locator('#readout-end')).toHaveText('ends at 23:41');
     await page.locator('#orb').click();
-    await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+    await waitPlaying(page);
     await page.screenshot({ path: `${SHOTS}/04-timer-running.png` });
 
     await page.clock.fastForward(40 * 60_000); // 23:36
@@ -156,11 +156,88 @@ test.describe('soundscapes', () => {
     });
   }
 
+  test('every start fades in over 2 s', async ({ page }) => {
+    await open(page, { time: NIGHT });
+    await page.locator('#orb').click();
+    await waitPlaying(page);
+    expect((await audioState(page)).volume).toBeLessThan(0.1);
+    await page.clock.fastForward(1_000); // halfway: 0.5² = 0.25
+    const mid = (await audioState(page)).volume;
+    expect(mid).toBeGreaterThan(0.15);
+    expect(mid).toBeLessThan(0.35);
+    await page.clock.fastForward(1_500);
+    expect((await audioState(page)).volume).toBe(1);
+  });
+
+  test('every pause fades out over 5 s but shows "paused" at once', async ({ page }) => {
+    await open(page, { time: NIGHT });
+    await page.locator('#orb').click();
+    await waitPlaying(page);
+    await page.clock.fastForward(3_000);
+    expect((await audioState(page)).volume).toBe(1);
+
+    await page.locator('#orb').click();
+    await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Play');
+    await page.clock.fastForward(2_500); // halfway: 0.5² = 0.25
+    let s = await audioState(page);
+    expect(s.paused).toBe(false);
+    expect(s.volume).toBeGreaterThan(0.15);
+    expect(s.volume).toBeLessThan(0.35);
+    await page.clock.fastForward(3_000);
+    s = await audioState(page);
+    expect(s.paused).toBe(true);
+
+    // and playing again starts from silence
+    await page.locator('#orb').click();
+    await waitPlaying(page);
+    expect((await audioState(page)).volume).toBeLessThan(0.1);
+  });
+
+  test('playing again during a fade-out turns it round', async ({ page }) => {
+    await open(page, { time: NIGHT });
+    await page.locator('#orb').click();
+    await waitPlaying(page);
+    await page.clock.fastForward(3_000);
+    await page.locator('#orb').click(); // pause
+    await page.clock.fastForward(2_500);
+    await page.locator('#orb').click(); // play again, at about 0.25
+    await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Pause');
+    await page.clock.fastForward(3_000);
+    const s = await audioState(page);
+    expect(s.paused).toBe(false);
+    expect(s.volume).toBe(1);
+  });
+
+  test('iOS: the fade clips stand in for the volume ramps', async ({ page }) => {
+    await open(page, { time: NIGHT, ios: true });
+    await page.locator('#orb').click();
+    await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+    let s = await audioState(page);
+    expect(s.src).toContain('-fadein'); // the first 2 s come from the fade-in clip
+    expect(s.loop).toBe(false);
+
+    await page.clock.fastForward(5_000);
+    s = await audioState(page);
+    expect(s.src).toContain(items[0]!.file.replace('audio/', '')); // then the loop carries on
+    expect(s.src).not.toContain('-fade');
+    expect(s.loop).toBe(true);
+
+    await page.locator('#orb').click(); // pause: straight to "paused", the fade-out clip sounds
+    await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Play');
+    s = await audioState(page);
+    expect(s.src).toContain('-fadeout');
+    expect(s.paused).toBe(false);
+    await page.clock.fastForward(8_000);
+    s = await audioState(page);
+    expect(s.paused).toBe(true);
+    expect(s.src).not.toContain('-fade'); // back on the loop for next time
+  });
+
   test('changing the timer while playing restarts it', async ({ page }) => {
     await open(page, { time: NIGHT });
     await page.locator('.chip[data-minutes="45"]').click();
     await page.locator('#orb').click();
-    await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+    await waitPlaying(page);
     await page.clock.fastForward(5 * 60_000);
     await expect(page.locator('body')).toHaveClass(/dim/); // five minutes in, the screen has dimmed
     await page.mouse.click(196, 600); // first tap only wakes it

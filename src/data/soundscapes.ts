@@ -11,6 +11,9 @@ export interface Soundscape {
   /** Paths relative to the site base. */
   file: string;
   outro: string;
+  /** 5 s clips for the start/pause fades where `audio.volume` does not work (iOS). */
+  fadeIn: string;
+  fadeOut: string;
   sonogram: string;
   art: string;
   /** Loop length in seconds. */
