@@ -191,7 +191,7 @@ async function buildItem(cfg, item) {
 
   const licenseName = LICENSE_NAMES[rec.license] ?? rec.license;
   const processing = `Trimmed to ${fmtTime(D + X)} of the original recording (from ${fmtTime(item.start)}), joined end-to-start with a ${X} s equal-power crossfade into a seamless ${fmtTime(D)} loop, high-passed at 40 Hz, loudness-normalised to ${cfg.loudness.target} LUFS and re-encoded as AAC. Shared under the same license (${licenseName}).`;
-  const species = rec.en === 'Soundscape' ? (item.species ?? 'Soundscape') : rec.en;
+  const species = item.species ?? (rec.en === 'Soundscape' ? 'Soundscape' : rec.en);
   return {
     ok,
     entry: {
@@ -211,7 +211,7 @@ async function buildItem(cfg, item) {
         url: rec.url,
         recordist: rec.recordist,
         species,
-        scientific: rec.sci,
+        scientific: item.scientific ?? rec.sci,
         also: rec.also.map((a) => a.en),
         country: rec.country,
         location: item.place ?? rec.location,

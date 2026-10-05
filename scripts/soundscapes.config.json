@@ -10,7 +10,7 @@
       "xcId": 1008555,
       "name": "Scops Owl at Midnight",
       "subtitle": "Eurasian scops owl calling in the June dark · Charente-Maritime, France",
-      "theme": "mediterranean",
+      "theme": "night",
       "start": 120,
       "loop": 420,
       "crossfade": 9
@@ -19,23 +19,14 @@
       "id": "tree-crickets",
       "xcId": 854102,
       "name": "Italian Tree Crickets",
-      "subtitle": "A warm July night full of tree crickets · Bragança, Portugal",
+      "subtitle": "A warm July night full of Italian tree crickets · Tua valley, Portugal",
       "theme": "mediterranean",
       "start": 150,
       "loop": 420,
       "crossfade": 9,
-      "place": "ca. 1.5 km E of Abreiro, along the Rio Tua, Bragança"
-    },
-    {
-      "id": "amazon-night",
-      "xcId": 1177487,
-      "name": "Amazon Night",
-      "subtitle": "Frogs and insects beside a forest stream · Acre, Brazil",
-      "theme": "rainforest",
-      "species": "Amazonian frog and insect chorus",
-      "start": 1220,
-      "loop": 420,
-      "crossfade": 9
+      "place": "ca. 1.5 km E of Abreiro, along the Rio Tua, Bragança",
+      "species": "Italian tree cricket",
+      "scientific": "Oecanthus pellucens"
     },
     {
       "id": "taman-negara",
@@ -45,17 +36,6 @@
       "theme": "rainforest",
       "species": "Rainforest insect chorus",
       "start": 1650,
-      "loop": 420,
-      "crossfade": 9
-    },
-    {
-      "id": "wetland-night",
-      "xcId": 832830,
-      "name": "Wetland Night",
-      "subtitle": "Frogs, field crickets and a distant bittern · Volyn, Ukraine",
-      "theme": "night",
-      "species": "Wetland night chorus",
-      "start": 150,
       "loop": 420,
       "crossfade": 9
     }

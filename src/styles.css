@@ -1,5 +1,5 @@
-@import '@fontsource/fraunces/latin-300.css';
-@import '@fontsource/fraunces/latin-400.css';
+@import '@fontsource/eb-garamond/latin-400.css';
+@import '@fontsource/eb-garamond/latin-500.css';
 @import '@fontsource/inter/latin-400.css';
 @import '@fontsource/inter/latin-500.css';
 
@@ -11,15 +11,16 @@
   --accent-rgb: 255, 180, 84;
   --accent2-rgb: 123, 92, 255;
   --pulse: 0;
-  --serif: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --serif: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
   --sar: env(safe-area-inset-right, 0px);
-  --dial: min(82vw, 44dvh, 340px);
+  --dial: min(66vw, 36dvh, 260px);
 }
 [data-theme='rainforest'] { --accent: #35f0b0; --accent-rgb: 53, 240, 176; --accent2-rgb: 42, 212, 255; }
+[data-theme='bush'] { --accent: #f0a17e; --accent-rgb: 240, 161, 126; --accent2-rgb: 150, 120, 255; }
 [data-theme='night'] { --accent: #a9c2ff; --accent-rgb: 169, 194, 255; --accent2-rgb: 232, 238, 255; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -67,8 +68,8 @@ button:focus-visible, svg:focus-visible { outline: 2px solid rgba(var(--accent-r
 h1 {
   margin: 0;
   font-family: var(--serif);
-  font-weight: 300;
-  font-size: clamp(30px, 8.6vw, 38px);
+  font-weight: 400;
+  font-size: clamp(34px, 9.4vw, 42px);
   line-height: 1.08;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -92,25 +93,11 @@ h1 {
 .dot[aria-selected='true'] { width: 22px; background: var(--accent); }
 
 /* ---- centre ------------------------------------------------------------- */
-.center { display: flex; flex-direction: column; align-items: center; gap: 22px; }
-.dial-wrap { position: relative; width: var(--dial); height: var(--dial); }
-#dial { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; overflow: visible; }
-#dial .track { fill: none; stroke: rgba(255, 255, 255, 0.09); stroke-width: 8; }
-#dial .arc {
-  fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round;
-  stroke-dasharray: 0 1;
-  filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.55));
-}
-#ticks line { stroke: rgba(255, 255, 255, 0.22); stroke-width: 1.5; stroke-linecap: round; }
-#ticks line.on { stroke: rgba(255, 255, 255, 0.0); }
-#ticks line.major { stroke-width: 2.2; }
-.thumb-halo { fill: rgba(var(--accent-rgb), 0.18); }
-.thumb-dot { fill: #fff; filter: drop-shadow(0 0 5px rgba(var(--accent-rgb), 0.9)); }
-.dragging .thumb-halo { fill: rgba(var(--accent-rgb), 0.32); }
-
+.center { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+.orb-wrap { position: relative; width: var(--dial); height: var(--dial); }
 .orb {
   position: absolute;
-  inset: 13%;
+  inset: 0;
   border-radius: 50%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 2px;
@@ -130,18 +117,19 @@ h1 {
 }
 .orb:active { filter: brightness(1.15); }
 .glyph { width: 26px; height: 26px; fill: var(--ink); opacity: 0.9; margin-bottom: 4px; }
-.readout-main { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 9vw, 40px); line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.readout-main { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 11vw, 52px); line-height: 1; letter-spacing: 0; font-variant-numeric: lining-nums tabular-nums; }
 .readout-end { font-size: 12.5px; color: var(--muted); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
 
-.presets { display: flex; gap: 8px; }
+.presets { display: flex; gap: 10px; }
 .chip {
-  min-width: 44px; height: 36px; padding: 0 12px; border-radius: 18px;
+  min-width: 64px; height: 38px; padding: 0 18px; border-radius: 19px;
   font-size: 14px; font-weight: 500;
   color: var(--muted);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
+.chip[data-minutes="0"] { font-size: 20px; }
 .chip[aria-pressed='true'] { color: #000; background: var(--accent); border-color: var(--accent); }
 
 /* ---- bottom ------------------------------------------------------------- */
@@ -156,16 +144,13 @@ h1 {
 }
 
 /* ---- sleep dim ---------------------------------------------------------- */
-.top, .presets, .bottom, .glyph, .orb, .readout-main, .readout-end, #ticks {
+.top, .presets, .bottom, .glyph, .orb, .readout-main, .readout-end {
   transition: opacity 3s ease, background 3s ease, box-shadow 3s ease, border-color 3s ease;
 }
 body.dim #scene { opacity: 0.1; }
-body.dim .top, body.dim .presets, body.dim .bottom, body.dim .glyph, body.dim #ticks { opacity: 0; pointer-events: none; }
+body.dim .top, body.dim .presets, body.dim .bottom, body.dim .glyph { opacity: 0; pointer-events: none; }
 body.dim .orb { background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; transform: none; }
 body.dim .readout-main, body.dim .readout-end { opacity: 0.16; }
-body.dim #dial .arc { opacity: 0.22; filter: none; }
-body.dim #dial .track { opacity: 0.4; }
-body.dim .thumb-halo, body.dim .thumb-dot { opacity: 0.2; filter: none; }
 
 /* ---- sheet -------------------------------------------------------------- */
 .sheet { position: fixed; inset: 0; z-index: 10; touch-action: none; }
@@ -185,7 +170,7 @@ body.dim .thumb-halo, body.dim .thumb-dot { opacity: 0.2; filter: none; }
 .sheet.open .sheet-backdrop { opacity: 1; }
 .sheet.open .sheet-panel { transform: none; }
 .sheet-grab { width: 38px; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.22); margin: 0 auto 16px; touch-action: none; }
-.sheet h2 { margin: 0; font-family: var(--serif); font-weight: 300; font-size: 26px; line-height: 1.15; }
+.sheet h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.15; }
 .sheet .sci { margin: 6px 0 14px; font-size: 13.5px; color: var(--muted); line-height: 1.45; }
 .sheet .sono { display: block; width: 100%; height: 92px; object-fit: cover; border-radius: 12px; background: #000; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 4px; }
 .sheet .sono-cap { font-size: 11px; color: var(--muted); margin: 0 0 14px; }
@@ -198,6 +183,7 @@ body.dim .thumb-halo, body.dim .thumb-dot { opacity: 0.2; filter: none; }
   background: rgba(var(--accent-rgb), 0.14); color: var(--accent); font-weight: 500; margin-bottom: 14px;
 }
 .sheet .fine { font-size: 12px; line-height: 1.5; color: var(--muted); margin: 0; }
+.sheet .fine + .fine { margin-top: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: 0.01s !important; animation-duration: 0.01s !important; }

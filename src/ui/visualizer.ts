@@ -201,6 +201,8 @@ class Night implements Scene {
   private mx = 0;
   private my = 0;
   private mr = 0;
+  /** Moon-halo swells, one per call (age in s). */
+  private swells: number[] = [];
 
   resize(w: number, h: number) {
     this.bg.width = w;
@@ -236,14 +238,23 @@ class Night implements Scene {
     }));
   }
 
-  draw({ ctx, w, h, t, lv, motion }: Frame, alpha: number) {
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
     ctx.globalAlpha = alpha;
     ctx.drawImage(this.bg, 0, 0);
     ctx.globalCompositeOperation = 'lighter';
     const unit = h / 852;
+    if (onset && motion && this.swells.length < 3) this.swells.push(0);
     const moonGlow = this.mr * 9;
     ctx.globalAlpha = alpha * (0.5 + lv[0] * 0.2);
     ctx.drawImage(this.moon, this.mx - moonGlow / 2, this.my - moonGlow / 2, moonGlow, moonGlow);
+    // each call swells a soft halo around the moon, then lets it fade
+    this.swells = this.swells.map((a) => a + dt).filter((a) => a < SWELL_LIFE);
+    for (const age of this.swells) {
+      const k = age / SWELL_LIFE;
+      const sz = moonGlow * (0.7 + k * 1.1);
+      ctx.globalAlpha = alpha * Math.sin(Math.PI * Math.min(1, k * 1.6)) * (1 - k) * 0.6;
+      ctx.drawImage(this.moon, this.mx - sz / 2, this.my - sz / 2, sz, sz);
+    }
     ctx.globalAlpha = alpha * 0.95;
     ctx.fillStyle = '#dfe8ff';
     ctx.beginPath();
@@ -263,10 +274,203 @@ class Night implements Scene {
   }
 }
 
+const SWELL_LIFE = 3.6;
+
+// ---- Australian bush night: southern sky over eucalypts ---------------------------------
+// Stars are placed for a view to the south: the Southern Cross with the Pointers beside it.
+const CROSS: { x: number; y: number; m: number }[] = [
+  { x: 0, y: -1, m: 1.0 }, // Gacrux
+  { x: 0.05, y: 1, m: 1.3 }, // Acrux
+  { x: -0.62, y: 0.15, m: 1.1 }, // Mimosa
+  { x: 0.62, y: -0.3, m: 0.85 }, // Delta Crucis
+  { x: 0.3, y: 0.32, m: 0.45 }, // Epsilon Crucis
+];
+const POINTERS: { x: number; y: number; m: number }[] = [
+  { x: -2.5, y: 1.55, m: 1.35 }, // Alpha Centauri
+  { x: -2.25, y: 0.3, m: 1.1 }, // Beta Centauri
+];
+
+class Bush implements Scene {
+  private sky = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private star = sprite([205, 215, 255], 32);
+  private warm = sprite([255, 150, 90], 256);
+  private halo = sprite([170, 180, 255], 256);
+  private stars: { x: number; y: number; ph: number; sp: number; sz: number }[] = [];
+  private cx = 0;
+  private cy = 0;
+  private cu = 0;
+  private swells: number[] = [];
+  private shimmer = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.sky, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    const g = this.sky.getContext('2d')!;
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#04041a');
+    grad.addColorStop(0.55, '#10124a');
+    grad.addColorStop(0.86, '#27204a');
+    grad.addColorStop(1, '#2a1a1c');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+    // faint Milky Way: a soft diagonal band with a stipple of dust stars
+    g.save();
+    g.translate(w * 0.42, h * 0.38);
+    g.rotate(-0.72);
+    const band = g.createLinearGradient(0, -h * 0.12, 0, h * 0.12);
+    band.addColorStop(0, 'rgba(170,160,235,0)');
+    band.addColorStop(0.5, 'rgba(170,160,235,0.13)');
+    band.addColorStop(1, 'rgba(170,160,235,0)');
+    g.fillStyle = band;
+    g.fillRect(-h, -h * 0.12, h * 2, h * 0.24);
+    g.fillStyle = 'rgba(225,225,255,0.5)';
+    for (let i = 0; i < 260; i++) {
+      const u = rand(-h * 0.7, h * 0.7), v = (rand(-1, 1) + rand(-1, 1)) * h * 0.05;
+      g.globalAlpha = rand(0.08, 0.4);
+      g.fillRect(u, v, 1.2, 1.2);
+    }
+    g.restore();
+    // ochre glow low on the horizon (the breathing part is drawn per frame)
+    const glow = g.createRadialGradient(w * 0.5, h * 0.95, 0, w * 0.5, h * 0.95, h * 0.42);
+    glow.addColorStop(0, 'rgba(235,140,70,0.26)');
+    glow.addColorStop(1, 'rgba(235,140,70,0)');
+    g.fillStyle = glow;
+    g.fillRect(0, 0, w, h);
+
+    this.cx = w * 0.76;
+    this.cy = h * 0.27;
+    this.cu = h * 0.055;
+    const n = Math.round((w * h) / 3000);
+    this.stars = Array.from({ length: Math.min(200, n) }, () => ({
+      x: Math.random() * w, y: Math.random() * h * 0.78, ph: rand(0, 6.28), sp: rand(0.7, 2.6), sz: rand(0.5, 1.3),
+    }));
+
+    // foreground: ground and tall, sparse-crowned eucalypts (pale trunks hinted at their edge)
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    const ground = h * 0.945;
+    f.fillStyle = '#020207';
+    f.beginPath();
+    f.moveTo(0, h);
+    for (let x = 0; x <= w; x += w / 20) f.lineTo(x, ground + Math.sin((x / w) * 6.1) * h * 0.012);
+    f.lineTo(w, h);
+    f.fill();
+    for (const [px, tall, lean] of [[0.035, 0.5, 0.02], [0.13, 0.3, -0.015], [0.965, 0.56, -0.025], [0.88, 0.32, 0.02]] as const) {
+      this.eucalypt(f, w * px, ground, h * tall, h * lean, h);
+    }
+  }
+
+  private eucalypt(f: CanvasRenderingContext2D, x: number, base: number, height: number, lean: number, h: number) {
+    const pts: [number, number][] = [];
+    const wBase = h * 0.0055;
+    for (let i = 0; i <= 14; i++) {
+      const k = i / 14;
+      pts.push([x + lean * k * k + Math.sin(k * 5 + x) * h * 0.004, base - height * k]);
+    }
+    const at = (k: number) => pts[Math.min(14, Math.round(k * 14))]!;
+    const trunk = () => {
+      f.beginPath();
+      pts.forEach(([px, py], i) => (i ? f.lineTo(px - wBase * (1 - (i / 14) * 0.7), py) : f.moveTo(px - wBase, py)));
+      for (let i = 14; i >= 0; i--) f.lineTo(pts[i]![0] + wBase * (1 - (i / 14) * 0.7), pts[i]![1]);
+      f.closePath();
+    };
+    f.fillStyle = '#020207';
+    trunk();
+    f.fill();
+    // a pale edge on the trunk, as if lit by starlight
+    f.strokeStyle = 'rgba(200,205,235,0.13)';
+    f.lineWidth = Math.max(1, h * 0.0016);
+    f.beginPath();
+    pts.forEach(([px, py], i) => {
+      const xx = px + wBase * (1 - (i / 14) * 0.7) * 0.8;
+      if (i) f.lineTo(xx, py);
+      else f.moveTo(xx, py);
+    });
+    f.stroke();
+    // limbs and drooping crowns
+    f.strokeStyle = '#020207';
+    f.lineCap = 'round';
+    const tips: [number, number][] = [at(1)];
+    for (const [k, dir, len] of [[0.55, -1, 0.1], [0.68, 1, 0.13], [0.8, -1, 0.09], [0.9, 1, 0.07]] as const) {
+      const [bx, by] = at(k);
+      const tx = bx + dir * h * len * rand(0.7, 1), ty = by - height * rand(0.06, 0.12);
+      f.lineWidth = wBase * 0.6;
+      f.beginPath();
+      f.moveTo(bx, by);
+      f.quadraticCurveTo(bx + dir * h * len * 0.2, by - height * 0.1, tx, ty);
+      f.stroke();
+      tips.push([tx, ty]);
+    }
+    f.lineWidth = Math.max(1.2, h * 0.0016);
+    for (const [tx, ty] of tips) {
+      for (let i = 0; i < 9; i++) {
+        const a = rand(-0.2, Math.PI + 0.2), r = h * rand(0.018, 0.04);
+        const ex = tx + Math.cos(a) * r * 1.4, ey = ty - Math.sin(a) * r * 0.25 + r * rand(0.5, 1.1);
+        f.beginPath();
+        f.moveTo(tx + Math.cos(a) * r * 0.2, ty);
+        f.quadraticCurveTo(tx + Math.cos(a) * r, ty - r * 0.25, ex, ey);
+        f.stroke();
+      }
+    }
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.shimmer += (lv[2] - this.shimmer) * Math.min(1, dt * 6);
+    if (onset && motion && this.swells.length < 3) this.swells.push(0);
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.sky, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    const unit = h / 852;
+
+    // low band: the horizon glow breathes
+    const gs = w * 1.5;
+    ctx.globalAlpha = alpha * (0.14 + lv[0] * 0.4);
+    ctx.drawImage(this.warm, w * 0.5 - gs / 2, h * 0.97 - gs * 0.28, gs, gs * 0.56);
+
+    // twinkling stars; the high band makes them shimmer
+    for (const s of this.stars) {
+      const tw = motion ? 0.5 + 0.5 * Math.sin(t * s.sp + s.ph) : 0.7;
+      const a = (0.15 + tw * 0.3) * (0.7 + this.shimmer * 1.5 * (0.5 + 0.5 * Math.sin(t * 8 + s.ph * 3)));
+      const sz = (4 + s.sz * 5) * unit * 1.4;
+      ctx.globalAlpha = Math.min(1, a) * alpha;
+      ctx.drawImage(this.star, s.x - sz / 2, s.y - sz / 2, sz, sz);
+    }
+
+    // the Southern Cross and the Pointers: steady, slightly brighter than the field
+    const bright = (list: { x: number; y: number; m: number }[]) => {
+      for (const p of list) {
+        const sz = (10 + p.m * 6) * unit * 1.6;
+        const x = this.cx + p.x * this.cu, y = this.cy + p.y * this.cu;
+        ctx.globalAlpha = Math.min(1, 0.7 + this.shimmer * 0.4) * alpha;
+        ctx.drawImage(this.star, x - sz / 2, y - sz / 2, sz, sz);
+      }
+    };
+    bright(CROSS);
+    bright(POINTERS);
+
+    // calls: a soft swell of starlight around the Cross
+    this.swells = this.swells.map((a) => a + dt).filter((a) => a < SWELL_LIFE);
+    for (const age of this.swells) {
+      const k = age / SWELL_LIFE;
+      const sz = this.cu * (3 + k * 3.5);
+      ctx.globalAlpha = alpha * Math.sin(Math.PI * Math.min(1, k * 1.5)) * (1 - k) * 0.35;
+      ctx.drawImage(this.halo, this.cx - sz / 2, this.cy - sz / 2, sz, sz);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
+
 const SCENES: Record<ThemeId, () => Scene> = {
   mediterranean: () => new Mediterranean(),
   rainforest: () => new Rainforest(),
   night: () => new Night(),
+  bush: () => new Bush(),
 };
 
 export interface VisualizerOptions {

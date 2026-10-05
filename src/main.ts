@@ -6,10 +6,8 @@ import { setupAirPlay } from './audio/airplay';
 import { clearPosition, setPlaybackState, setTimerPosition, setupMediaSession, updateMetadata } from './audio/mediaSession';
 import { loadSaved, save } from './state';
 import {
-  countdownLabel, durationLabel, endClockLabel, fadeGain, remainingFraction, remainingMs, startTimer, timerPhase, type TimerState,
+  TIMER_OPTIONS, countdownLabel, durationLabel, endClockLabel, fadeGain, remainingMs, startTimer, timerPhase, type TimerState,
 } from './timer';
-import { Dial } from './ui/dial';
-import { PRESETS } from './ui/dialMath';
 import { setupCarousel } from './ui/carousel';
 import { setupSheet } from './ui/sheet';
 import { Visualizer } from './ui/visualizer';
@@ -51,18 +49,13 @@ const viz = new Visualizer({
     const p = Math.round(lv[0] * 100) / 100;
     if (p !== lastPulse) {
       lastPulse = p;
-      $('dial-wrap').style.setProperty('--pulse', String(p));
+      $('orb-wrap').style.setProperty('--pulse', String(p));
     }
   },
 });
 let lastPulse = -1;
 
-// ---- timer dial -----------------------------------------------------------------------
-const dial = new Dial({
-  svg: $<SVGSVGElement>('dial'),
-  onChange: (m) => setMinutes(m),
-});
-
+// ---- timer ----------------------------------------------------------------------------
 function setMinutes(m: number) {
   minutes = m;
   save({ soundscapeId: currentScape().id, minutes });
@@ -83,15 +76,15 @@ function clearTimer() {
   clearPosition();
 }
 
-// ---- presets / dots -------------------------------------------------------------------
+// ---- timer chips / dots ---------------------------------------------------------------
 const presets = $('presets');
-for (const m of PRESETS) {
+for (const m of TIMER_OPTIONS) {
   const b = document.createElement('button');
   b.className = 'chip';
   b.type = 'button';
   b.dataset.minutes = String(m);
-  b.textContent = m === 0 ? '∞' : String(m);
-  b.setAttribute('aria-label', m === 0 ? 'No timer' : `${m} minutes`);
+  b.textContent = durationLabel(m);
+  b.setAttribute('aria-label', m === 0 ? 'No timer' : m < 60 ? `${m} minutes` : `${m / 60} hours`);
   b.addEventListener('click', () => {
     haptic();
     setMinutes(m);
@@ -128,11 +121,9 @@ function render() {
     const left = remainingMs(timer, now);
     main = left < 60_000 ? countdownLabel(left) : durationLabel(Math.ceil(left / 60_000));
     end = `ends at ${endClockLabel(timer.endsAt, 0)}`;
-    dial.render(timer.minutes, remainingFraction(timer, now));
   } else {
     main = durationLabel(minutes);
     end = minutes > 0 ? `ends at ${endClockLabel(now, minutes)}` : 'until you stop it';
-    dial.render(minutes, 1);
   }
   $('readout-main').textContent = main;
   $('readout-end').textContent = end;
@@ -202,7 +193,7 @@ orb.addEventListener('click', () => {
   void engine.toggle();
 });
 window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && !(e.target instanceof SVGElement) && !(e.target instanceof HTMLButtonElement)) {
+  if (e.code === 'Space' && !(e.target instanceof HTMLButtonElement)) {
     e.preventDefault();
     void engine.toggle();
   }

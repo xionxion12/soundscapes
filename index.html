@@ -29,23 +29,14 @@
       </header>
 
       <section class="center" aria-label="Sleep timer">
-        <div class="dial-wrap" id="dial-wrap">
-          <svg id="dial" viewBox="0 0 300 300" role="slider" aria-label="Sleep timer" aria-valuemin="0" aria-valuemax="180" tabindex="0">
-            <circle class="track" cx="150" cy="150" r="132" />
-            <g id="ticks"></g>
-            <circle class="arc" id="arc" cx="150" cy="150" r="132" pathLength="1" transform="rotate(-90 150 150)" />
-            <g id="thumb">
-              <circle class="thumb-halo" r="19" />
-              <circle class="thumb-dot" r="9" />
-            </g>
-          </svg>
+        <div class="orb-wrap" id="orb-wrap">
           <button class="orb" id="orb" type="button" aria-label="Play">
             <svg class="glyph" id="glyph" viewBox="0 0 24 24" aria-hidden="true"><path id="glyph-path" /></svg>
-            <span class="readout-main" id="readout-main">30 min</span>
+            <span class="readout-main" id="readout-main">45 min</span>
             <span class="readout-end" id="readout-end">ends at --:--</span>
           </button>
         </div>
-        <div class="presets" id="presets" role="group" aria-label="Timer presets"></div>
+        <div class="presets" id="presets" role="group" aria-label="Sleep timer"></div>
       </section>
 
       <footer class="bottom">

@@ -1,5 +1,4 @@
-// Horizontal swipe between soundscapes. Listens on the whole app; the dial stops
-// propagation of its own pointer events so dragging the ring never switches track.
+// Horizontal swipe between soundscapes. Listens on the whole app.
 
 export interface CarouselOptions {
   root: HTMLElement;
@@ -48,7 +47,6 @@ export function setupCarousel({ root, ignore, onSwipe }: CarouselOptions): void 
   );
 
   window.addEventListener('keydown', (e) => {
-    if (e.target instanceof SVGElement) return;
     if (e.key === 'ArrowLeft') onSwipe(-1);
     else if (e.key === 'ArrowRight') onSwipe(1);
   });

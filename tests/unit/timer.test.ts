@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  FADE_MS, countdownLabel, durationLabel, endClockLabel, fadeGain, fadeStartsAt, remainingFraction, remainingMs, startTimer, timerPhase,
+  FADE_MS, TIMER_OPTIONS, countdownLabel, durationLabel, endClockLabel, fadeGain, fadeStartsAt, remainingFraction, remainingMs, startTimer, timerPhase,
 } from '../../src/timer';
 
 const T0 = new Date(2026, 5, 1, 22, 56, 0).getTime();
@@ -75,5 +75,10 @@ describe('timer', () => {
     expect(durationLabel(90)).toBe('1 h 30');
     expect(countdownLabel(42 * MIN + 10_000)).toBe('42:10');
     expect(countdownLabel(65 * MIN)).toBe('1:05:00');
+  });
+
+  it('offers only ∞, 45 min and 9 h', () => {
+    expect(TIMER_OPTIONS.map(durationLabel)).toEqual(['∞', '45 min', '9 h']);
+    expect(endClockLabel(T0, 540)).toBe('07:56');
   });
 });

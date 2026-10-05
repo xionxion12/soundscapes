@@ -34,7 +34,8 @@ export function sheetHtml(sc: Soundscape): string {
       <dt>License</dt><dd><a href="${esc(xc.licenseUrl)}" target="_blank" rel="noopener">${esc(xc.licenseName)}</a></dd>
     </dl>
     <a class="cta" href="${esc(xc.url)}" target="_blank" rel="noopener">Open on xeno-canto ↗</a>
-    <p class="fine">${esc(sc.processing)}</p>`;
+    <p class="fine">${esc(sc.processing)}</p>
+    <p class="fine fonts">Fonts: Inter, EB Garamond (SIL OFL)</p>`;
 }
 
 export function setupSheet(onClose?: () => void) {

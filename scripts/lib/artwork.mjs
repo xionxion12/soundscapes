@@ -30,6 +30,31 @@ export function artSvg(theme, seed = theme) {
       const x = (i / 7) * S, len = 60 + r() * 120;
       body += `<path d="M${x - 26} 0Q${x} ${len * 0.8} ${x + (r() - 0.5) * 36} ${len}Q${x + 6} ${len * 0.5} ${x + 26} 0Z" fill="#000" opacity=".85"/>`;
     }
+  } else if (theme === 'bush') {
+    defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04041a"/><stop offset=".55" stop-color="#10124a"/><stop offset=".86" stop-color="#27204a"/><stop offset="1" stop-color="#2a1a1c"/></linearGradient>${glow('st', '205,215,255')}<radialGradient id="h"><stop offset="0" stop-color="#eb8c46" stop-opacity=".4"/><stop offset="1" stop-color="#eb8c46" stop-opacity="0"/></radialGradient><linearGradient id="mw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#aaa0eb" stop-opacity="0"/><stop offset=".5" stop-color="#aaa0eb" stop-opacity=".16"/><stop offset="1" stop-color="#aaa0eb" stop-opacity="0"/></linearGradient>`;
+    body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><rect x="-200" y="150" width="900" height="120" fill="url(#mw)" transform="rotate(-41 256 210)"/><circle cx="256" cy="500" r="260" fill="url(#h)"/>`;
+    for (let i = 0; i < 90; i++) body += `<circle cx="${r() * S}" cy="${r() * S * 0.78}" r="${0.8 + r() * 3.2}" fill="url(#st)" opacity="${0.25 + r() * 0.6}"/>`;
+    // the Southern Cross (Gacrux, Acrux, Mimosa, Delta, Epsilon) and the Pointers, placed as in the app
+    const cx = 392, cy = 140, u = 34;
+    const cross = [[0, -1, 9], [0.05, 1, 11], [-0.62, 0.15, 9.5], [0.62, -0.3, 8], [0.3, 0.32, 5], [-2.5, 1.55, 11], [-2.25, 0.3, 9.5]];
+    for (const [x, y, m] of cross) body += `<circle cx="${cx + x * u}" cy="${cy + y * u}" r="${m * 1.25}" fill="url(#st)"/>`;
+    const fill = '#020207';
+    const tree = (x, base, height, lean) => {
+      const tipX = x + lean, tipY = base - height;
+      let t = `<path d="M${x - 7} ${base}Q${x - 2 + lean * 0.2} ${base - height * 0.5} ${tipX - 2} ${tipY}L${tipX + 2} ${tipY}Q${x + 2 + lean * 0.2} ${base - height * 0.5} ${x + 7} ${base}Z" fill="${fill}"/>`;
+      t += `<path d="M${x + 6} ${base}Q${x + 1 + lean * 0.2} ${base - height * 0.5} ${tipX + 2} ${tipY}" fill="none" stroke="#c8cdeb" stroke-opacity=".14" stroke-width="1.4"/>`;
+      for (const [k, dir, len] of [[0.6, -1, 70], [0.74, 1, 80], [0.86, -1, 50]]) {
+        const bx = x + lean * k * k, by = base - height * k, ex = bx + dir * len * (0.8 + r() * 0.3), ey = by - 45 - r() * 30;
+        t += `<path d="M${bx} ${by}Q${bx + dir * len * 0.2} ${by - 28} ${ex} ${ey}" fill="none" stroke="${fill}" stroke-width="3.2" stroke-linecap="round"/>`;
+        for (let i = 0; i < 11; i++) {
+          const dx = (r() - 0.5) * 56, len = 14 + r() * 34;
+          t += `<path d="M${ex + (r() - 0.5) * 10} ${ey}Q${ex + dx * 0.7} ${ey - 5} ${ex + dx} ${ey + len}" fill="none" stroke="${fill}" stroke-width="2" stroke-linecap="round"/>`;
+        }
+      }
+      return t;
+    };
+    body += `<path d="M0 512V484Q64 476 128 482T256 478T384 484T512 476V512Z" fill="${fill}"/>`;
+    body += tree(48, 486, 330, 14) + tree(132, 486, 190, -10) + tree(468, 486, 360, -20) + tree(392, 486, 170, 12);
   } else {
     defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#01030a"/><stop offset=".6" stop-color="#0a1332"/><stop offset=".92" stop-color="#101a3a"/><stop offset="1" stop-color="#02040a"/></linearGradient>${glow('mo', '170,195,255')}${glow('st', '200,215,255')}`;
     body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><circle cx="378" cy="118" r="130" fill="url(#mo)" opacity=".55"/><circle cx="378" cy="118" r="30" fill="#dfe8ff"/>`;
