@@ -16,6 +16,7 @@ import { getRecording, download, DERIVATIVES_OK, LICENSE_NAMES } from './lib/xc.
 import { decodeMono, filtered, frameRms, db, percentile } from './lib/dsp.mjs';
 import { seamMetrics } from './lib/seam.mjs';
 import { artSvg } from './lib/artwork.mjs';
+import { buildFades, FADE_IN_SECONDS, FADE_OUT_SECONDS, OUTRO_SECONDS } from './lib/fades.mjs';
 
 const run = promisify(execFile);
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -145,10 +146,9 @@ async function buildItem(cfg, item) {
   const nres = await normalise(raw, norm, cfg.loudness.target, cfg.loudness.truePeak);
   console.log(`  loudness: ${nres.inputI.toFixed(1)} LUFS → ${cfg.loudness.target} (${nres.mode})`);
 
-  // 3. encode loop and outro
+  // 3. encode the loop
   await mkdir(PUB, { recursive: true });
   const loopOut = path.join(PUB, `${id}.m4a`);
-  const outroOut = path.join(PUB, `${id}-outro.m4a`);
   const enc = ['-c:a', 'aac', '-b:a', `${cfg.bitrate ?? 160}k`, '-aac_coder', 'twoloop', '-ar', '48000', '-movflags', '+faststart'];
   let ceiling = LIMITER_CEILINGS[0];
   let loud;
@@ -159,7 +159,10 @@ async function buildItem(cfg, item) {
     if (loud.truePeak <= SAFE_TRUE_PEAK) break;
     console.log(`  true peak ${loud.truePeak} dBTP after encoding, tightening the limiter`);
   }
-  await ff(['-i', norm, '-t', '60', '-af', `${limiter(ceiling)},afade=t=out:st=0:d=60:curve=cub`, ...enc, outroOut]);
+
+  // the clips iOS uses for its fades: start (2 s), pause (5 s) and the end of a timer (60 s outro)
+  const fades = await buildFades(loopOut, PUB, id, cfg.bitrate);
+  const clipInfo = await Promise.all([fades.fadeIn, fades.fadeOut, fades.outro].map((f) => probe(path.join(PUB, f))));
 
   // 4. visuals: envelope, sonogram, artwork
   const env = await envelope(loopOut);
@@ -171,7 +174,6 @@ async function buildItem(cfg, item) {
   // 5. checks
   const outInfo = await probe(loopOut);
   const seam = await seamCheck(loopOut, D);
-  const outroInfo = await probe(outroOut);
   const bytes = (await stat(loopOut)).size;
   const checks = [
     ['loop length', Math.abs(outInfo.duration - D) < 0.15, `${outInfo.duration.toFixed(3)} s vs ${D} s`],
@@ -179,7 +181,7 @@ async function buildItem(cfg, item) {
     ['seam: spectral flux', seam.fluxRatio < 1.5, `${seam.fluxSeam.toFixed(3)} vs p99 ${seam.fluxRef.toFixed(3)} (×${seam.fluxRatio.toFixed(2)})`],
     ['loudness ±1 LU', Math.abs(loud.lufs - cfg.loudness.target) <= 1, `${loud.lufs} LUFS`],
     ['true peak ≤ −1 dBTP', loud.truePeak <= -1, `${loud.truePeak} dBTP`],
-    ['outro length', Math.abs(outroInfo.duration - 60) < 0.3, `${outroInfo.duration.toFixed(2)} s`],
+    ['fade clips 2 s / 5 s / 60 s', [FADE_IN_SECONDS, FADE_OUT_SECONDS, OUTRO_SECONDS].every((n, i) => Math.abs(clipInfo[i].duration - n) < 0.3), clipInfo.map((f) => `${f.duration.toFixed(2)} s`).join(', ')],
     ['file size ≤ 12 MB', bytes <= 12 * 1024 * 1024, `${(bytes / 1048576).toFixed(1)} MB`],
     ['envelope length', Math.abs(env.length - D * 10) <= 3, `${env.length} samples`],
   ];
@@ -200,7 +202,9 @@ async function buildItem(cfg, item) {
       subtitle: item.subtitle,
       theme: item.theme,
       file: `audio/${id}.m4a`,
-      outro: `audio/${id}-outro.m4a`,
+      outro: `audio/${fades.outro}`,
+      fadeIn: `audio/${fades.fadeIn}`,
+      fadeOut: `audio/${fades.fadeOut}`,
       sonogram: `audio/${id}-sonogram.webp`,
       art: `audio/${id}-art-512.png`,
       duration: Number(outInfo.duration.toFixed(2)),

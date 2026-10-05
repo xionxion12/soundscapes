@@ -11,6 +11,8 @@ test('service worker caches audio and serves Range requests offline', async ({ p
 
   const url = `/soundscapes/${items[0]!.file}`;
   const outro = `/soundscapes/${items[0]!.outro}`;
+  const fadeIn = `/soundscapes/${items[0]!.fadeIn}`;
+  const fadeOut = `/soundscapes/${items[0]!.fadeOut}`;
   const range = (u: string, r: string) =>
     page.evaluate(
       async ([u, r]) => {
@@ -34,6 +36,9 @@ test('service worker caches audio and serves Range requests offline', async ({ p
   await expect.poll(() => cached(url), { timeout: 60_000 }).toBe(true);
   // its outro is fetched with it, so the iOS fade also works offline
   await expect.poll(() => cached(outro), { timeout: 60_000 }).toBe(true);
+  // … and so are the clips for the start and pause fades
+  await expect.poll(() => cached(fadeIn), { timeout: 60_000 }).toBe(true);
+  await expect.poll(() => cached(fadeOut), { timeout: 60_000 }).toBe(true);
 
   await context.setOffline(true);
   const slice = await range(url, 'bytes=10-19');

@@ -17,7 +17,7 @@ Live site: **https://xionxion12.github.io/soundscapes/**
 | **Seamless loops** | ~7 min each, joined with an equal-power crossfade so they end exactly where they begin, loudness-matched to −24 LUFS so switching never jumps in volume. |
 | **A scene driven by the recording** | The background reacts to the *actual* audio (a pre-computed 3-band envelope read at `audio.currentTime`): fireflies and ripples, bioluminescence, a moonlit star field (the owl's calls swell a halo round the moon), and a southern sky over eucalypts that is ready for the Victorian bush night. The orb breathes with the low band. |
 | **Sleep timer** | Three choices: **∞**, **45 min** or **9 h**. The centre always says when it will end ("ends at 23:41"). |
-| **Gentle ending** | The last minute fades to silence, on iOS too (see below). |
+| **Soft starts and stops** | Every start fades in over 2 s and every pause fades out over 5 s (the screen says "paused" at once; tapping play mid-fade turns it round). A timer's last minute fades to silence. All of it works on iOS too (see below). |
 | **Sleep dim** | 15 s after your last touch the UI fades to ~5 % brightness and leaves only the clock. Any tap brings it back. |
 | **System integration** | AirPlay button + "Playing on AirPlay" badge, lock-screen / Control Center controls with artwork, next/previous between soundscapes. |
 | **Offline** | A hand-written service worker caches the app and each recording on first play, and answers Safari's `Range` requests from the cache. |
@@ -29,7 +29,11 @@ Live site: **https://xionxion12.github.io/soundscapes/**
   when the screen locks, and only offers the AirPlay picker on a media element. A single `<audio loop>`
   gives AirPlay, lock-screen playback and controls, and ignores the silent switch. Web Audio is never used.
   (All audio analysis for the visuals is done ahead of time, at build.)
-- **Fading on iOS.** Because `volume` can't be set, 60 s before the timer ends the same element switches
+- **Start and pause fades on iOS.** The same trick, in miniature: a start plays `<id>-fadein.m4a` (the loop's first 2 s,
+  faded in) and then continues the loop at 2 s; a pause plays `<id>-fadeout.m4a` (the first 5 s, faded out) in place of
+  the loop. On iOS a play therefore always begins at the loop's start. Elsewhere it is a volume ramp and resumes where it
+  stopped. If a clip can't play, the loop starts or stops without a fade. Pausing from the lock screen can't fade.
+- **Timer fade on iOS.** Because `volume` can't be set, 60 s before the timer ends the same element switches
   to `<id>-outro.m4a`: the first minute of the loop with a baked-in fade to silence. That costs one barely
   noticeable hiccup, then a perfectly smooth fade. Elsewhere `audio.volume` is ramped down. If the swap ever
   fails the sound is simply paused at the end time.
@@ -62,6 +66,7 @@ npm run audio:candidates -- med --top 12   # search xeno-canto, score recordings
 npm run audio:build                        # download, loop, normalise, encode, check, write the data file
 npm run audio:build -- --only tree-crickets # one soundscape
 npm run art                                # re-render lock-screen artwork only
+npm run audio:fades                        # re-render the fade clips from the committed loops (no download)
 ```
 
 Needs `ffmpeg` and `ffprobe`. With `XC_API_KEY` set the scripts use the xeno-canto API v3; without it they
