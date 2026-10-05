@@ -21,6 +21,7 @@ followed by `npm run audio:build -- --only <id>`.
 | `scops-night` | [XC1008555](https://xeno-canto.org/1008555), Eurasian scops owl, JACOB Hervé | Marans, Charente-Maritime, France · 9 Jun 2025, 01:00 | A · CC BY-SA | 2:00 → 9:09 of 30:43 |
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
+| `australian-rain` | [XC442992](https://xeno-canto.org/442992), rain soundscape, James Ray | Faulconbridge, Blue Mountains, New South Wales · 15 Nov 2018, 13:34 | **C** · CC BY-NC-SA | 4:40 → 11:49 of 67:54 |
 
 Why these:
 
@@ -35,6 +36,12 @@ Why these:
   (Scopoli described it from Italy in 1763), but it lives all over southern Europe, Portugal included. XC854102
   really is from the Rio Tua valley near Bragança. The app now shows "Italian tree cricket" with the scientific
   name in italics (the build had stored the Latin name as the common name).
+- **Blue Mountains Rain**: the only long, rain-led Australian recording on xeno-canto (see "Rain from Australia"
+  below), so it is the pick by default and the weakest on quality. **Quality C**, a 37 kbps mono MP3 recorded through a
+  bedroom window, with faint birds (cockatoo, wattlebird) and, per the recordist, some mouse clicks. The source is
+  quiet (−40 LUFS), so the loop gets +16 dB; loud transients are limited first (`prelimit: -20`), otherwise the
+  gain is capped at +4 dB and the loop ends up 10 LU too quiet. The rain is steady apart from a swell about 2½ minutes
+  into the loop. **Please listen to this one first**; if it is not good enough, say so and I will keep looking.
 - **Rainforest Canopy**: tagged "dawn chorus", but acoustically a diffuse insect wall with no prominent
   calls. The window is taken after the loud 9–11 kHz cicada burst earlier in the recording.
 
@@ -46,6 +53,15 @@ Why these:
 | `wetland-night` | [XC832830](https://xeno-canto.org/832830), wetland soundscape, Volyn, Ukraine, Cedric Mroczko, CC BY-NC-SA | Dropped from the line-up. |
 
 Their config entries are in git history if you want them back (the audio is rebuilt from xeno-canto by `npm run audio:build`).
+
+## Rain from Australia: search result
+
+I paged through all 818 Australian xeno-canto soundscapes plus every Australian recording that mentions rain, and
+filtered on the whole words rain / raining / rainfall / downpour / drizzle / shower / thunder / storm in the remarks. Of
+the ~1,000 recordings that came up, one is long enough (≥ 8 min), mostly rain, and licensed for a loop:
+XC442992 (the pick). The others are single bird recordings "in the rain" of under a minute (e.g. Peter Boesman's,
+which are also ND), or soundscapes where rain starts partway through (XC443114 at 16:10, XC442755 at 33:50).
+A better rain recording is likely to exist on the Australian Acoustic Observatory or Freesound (blocked here, see below).
 
 ## Victorian (Australia) bush night: search result
 
