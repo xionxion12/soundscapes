@@ -4,7 +4,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 import { minutesToFraction } from '../../src/ui/dialMath';
 
 type Item = {
-  id: string; name: string; subtitle: string; theme: string; file: string;
+  id: string; name: string; subtitle: string; theme: string; file: string; outro: string;
   xc: { id: number; url: string; recordist: string; licenseName: string; licenseUrl: string };
 };
 export const items: Item[] = JSON.parse(readFileSync(fileURLToPath(new URL('../../src/data/soundscapes.json', import.meta.url)), 'utf8')).items;

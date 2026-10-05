@@ -23,6 +23,10 @@ export class Engine extends EventTarget {
   mode: Mode = 'loop';
   /** `pause` events we caused ourselves (switching sources) and must not report as user pauses. */
   private selfPauses = 0;
+  /** Loop position when the outro took over, to resume from if the outro fails. */
+  private loopTime = 0;
+  /** `loadedmetadata` seeks meant for the source just set, dropped when it is swapped out. */
+  private seeks: AbortController | null = null;
 
   constructor() {
     super();
@@ -62,6 +66,7 @@ export class Engine extends EventTarget {
     });
     el.addEventListener('ended', () => this.onEnded());
     el.addEventListener('error', () => {
+      if (this.mode === 'outro') return void this.outroFailed();
       this.set('paused');
       this.dispatchEvent(new Event('error'));
     });
@@ -106,6 +111,7 @@ export class Engine extends EventTarget {
     this.current = sc;
     this.quietPause();
     this.mode = 'loop';
+    this.newSeek();
     this.el.loop = true;
     this.el.src = this.loopSrc(sc);
     this.el.volume = 1;
@@ -151,31 +157,54 @@ export class Engine extends EventTarget {
   /**
    * iOS ignores `volume`, so 60 s before the end we swap the same element over to the
    * pre-rendered outro (first minute of the loop, faded to silence): one hiccup, then a
-   * perfectly smooth fade. Returns false if the swap failed so the caller can fall back
-   * to a plain pause at the end time.
+   * perfectly smooth fade. Returns false if the swap failed: the loop then carries on
+   * from where it was and the caller's pause at the end time takes over.
    */
   async startOutro(remainingMs: number): Promise<boolean> {
     if (this.mode === 'outro') return true;
     const sc = this.current;
     if (!sc) return false;
     try {
+      this.loopTime = this.el.currentTime;
       this.quietPause();
       this.mode = 'outro';
       this.el.loop = false;
       this.el.src = new URL(asset(sc.outro), location.href).href;
       // already inside the fade (e.g. the page was hidden): skip ahead so it still ends on time
       const skip = Math.max(0, Math.min(60, sc.duration) - remainingMs / 1000);
-      if (skip > 0.5) this.el.addEventListener('loadedmetadata', () => (this.el.currentTime = skip), { once: true });
+      if (skip > 0.5) this.el.addEventListener('loadedmetadata', () => (this.el.currentTime = skip), { once: true, signal: this.newSeek() });
       await this.el.play();
       return true;
     } catch {
-      this.mode = 'loop';
+      // a media error has usually got here first (it fires before play() rejects)
+      if (this.mode === 'outro') await this.outroFailed();
       return false;
     }
   }
 
+  /** The outro could not play (refused, or not loadable offline): go back to the loop. */
+  private async outroFailed(): Promise<void> {
+    const at = this.loopTime;
+    this.quietPause();
+    this.restoreLoop();
+    this.el.addEventListener('loadedmetadata', () => (this.el.currentTime = at), { once: true, signal: this.newSeek() });
+    try {
+      await this.el.play();
+    } catch (e) {
+      if ((e as DOMException)?.name !== 'AbortError') this.set('paused');
+    }
+  }
+
+  /** Drop any pending seek; returns the signal for a new one. */
+  private newSeek(): AbortSignal {
+    this.seeks?.abort();
+    this.seeks = new AbortController();
+    return this.seeks.signal;
+  }
+
   private restoreLoop() {
     this.el.volume = 1;
+    this.newSeek();
     if (this.mode === 'outro' && this.current) {
       this.mode = 'loop';
       this.el.loop = true;

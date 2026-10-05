@@ -10,6 +10,7 @@ test('service worker caches audio and serves Range requests offline', async ({ p
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
 
   const url = `/soundscapes/${items[0]!.file}`;
+  const outro = `/soundscapes/${items[0]!.outro}`;
   const range = (u: string, r: string) =>
     page.evaluate(
       async ([u, r]) => {
@@ -25,22 +26,23 @@ test('service worker caches audio and serves Range requests offline', async ({ p
   expect(first.len).toBe(100);
   const size = Number(first.cr!.split('/')[1]);
 
-  await expect
-    .poll(
-      () =>
-        page.evaluate(async (u) => {
-          for (const k of await caches.keys()) if (k.startsWith('audio-') && (await (await caches.open(k)).match(u))) return true;
-          return false;
-        }, url),
-      { timeout: 60_000 },
-    )
-    .toBe(true);
+  const cached = (u: string) =>
+    page.evaluate(async (u) => {
+      for (const k of await caches.keys()) if (k.startsWith('audio-') && (await (await caches.open(k)).match(u))) return true;
+      return false;
+    }, u);
+  await expect.poll(() => cached(url), { timeout: 60_000 }).toBe(true);
+  // its outro is fetched with it, so the iOS fade also works offline
+  await expect.poll(() => cached(outro), { timeout: 60_000 }).toBe(true);
 
   await context.setOffline(true);
   const slice = await range(url, 'bytes=10-19');
   expect(slice).toEqual({ status: 206, cr: `bytes 10-19/${size}`, len: 10 });
   const tail = await range(url, `bytes=${size - 5}-`);
   expect(tail).toEqual({ status: 206, cr: `bytes ${size - 5}-${size - 1}/${size}`, len: 5 });
+
+  const outroRes = await range(outro, 'bytes=0-9');
+  expect(outroRes.status).toBe(206);
 
   // the app shell also loads offline
   await page.reload();

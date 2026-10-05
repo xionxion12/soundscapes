@@ -135,6 +135,37 @@ test.describe('soundscapes', () => {
     expect((await audioState(page)).src).not.toContain('-outro'); // back on the loop for next time
   });
 
+  for (const failure of ['refused', 'missing'] as const) {
+    test(`iOS: if the outro is ${failure}, the loop carries on and stops at the end time`, async ({ page }) => {
+      await open(page, { time: NIGHT, ios: true });
+      if (failure === 'missing') await page.route('**/*-outro.m4a', (route) => route.fulfill({ status: 404 }));
+      else {
+        await page.evaluate(() => {
+          const play = HTMLMediaElement.prototype.play;
+          HTMLMediaElement.prototype.play = function () {
+            return this.src.includes('-outro') ? Promise.reject(new DOMException('locked', 'NotAllowedError')) : play.call(this);
+          };
+        });
+      }
+      await page.locator('.chip[data-minutes="15"]').click();
+      await page.locator('#orb').click();
+      await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+
+      await page.clock.fastForward(14 * 60_000 + 5_000); // fade started, outro fails
+      await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+      let s = await audioState(page);
+      expect(s.src).not.toContain('-outro');
+      expect(s.loop).toBe(true);
+      await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Pause');
+
+      await page.clock.fastForward(60_000); // past the end time
+      await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Play');
+      s = await audioState(page);
+      expect(s.paused).toBe(true);
+      expect(s.src).not.toContain('-outro'); // the next play starts the loop, not the outro
+    });
+  }
+
   test('changing the timer while playing restarts it', async ({ page }) => {
     await open(page, { time: NIGHT });
     await page.locator('.chip[data-minutes="15"]').click();

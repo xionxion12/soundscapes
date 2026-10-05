@@ -47,8 +47,21 @@ function warm(url) {
   return warming.get(url);
 }
 
+/** Cache a file unless it already is. */
+async function ensureCached(url) {
+  if (!(await (await caches.open(AUDIO_CACHE)).match(url))) await warm(url);
+}
+
+/** `<id>.m4a` → `<id>-outro.m4a` (the naming scripts/build-audio.mjs uses), or null for an outro. */
+function outroOf(url) {
+  return url.endsWith('-outro.m4a') ? null : url.replace(/\.m4a$/, '-outro.m4a');
+}
+
 async function handleAudio(event) {
   const request = event.request;
+  // iOS fades by switching to the outro, so it has to be there offline before the timer ends
+  const outro = outroOf(request.url);
+  if (outro) event.waitUntil(ensureCached(outro));
   const cache = await caches.open(AUDIO_CACHE);
   const hit = await cache.match(request.url);
   if (hit) return self.swRange.sliceResponse(hit, request.headers.get('range'));
