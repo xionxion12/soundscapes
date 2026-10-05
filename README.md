@@ -1,6 +1,6 @@
 # Soundscapes
 
-A small mobile web app for **falling asleep to nature recordings**. Three hand-picked, high-quality
+A small mobile web app for **falling asleep to nature recordings**. Four hand-picked
 [xeno-canto](https://xeno-canto.org) soundscapes, each prepared as a seamless loop that plays until you
 stop it or an optional sleep timer runs out and fades the sound away.
 
@@ -13,9 +13,9 @@ Live site: **https://xionxion12.github.io/soundscapes/**
 
 | | |
 |---|---|
-| **Three soundscapes** | Scops owl at midnight (France), Italian tree crickets (Portugal), rainforest canopy (Malaysia). A Victorian (Australia) bush night is next, see [`docs/curation.md`](docs/curation.md), which also explains the choices. |
+| **Four soundscapes** | Scops owl at midnight (France), Italian tree crickets (Portugal), rainforest canopy (Malaysia), rain in the Blue Mountains (Australia). A Victorian bush night is next, see [`docs/curation.md`](docs/curation.md), which also explains the choices. |
 | **Seamless loops** | ~7 min each, joined with an equal-power crossfade so they end exactly where they begin, loudness-matched to −24 LUFS so switching never jumps in volume. |
-| **A scene driven by the recording** | The background reacts to the *actual* audio (a pre-computed 3-band envelope read at `audio.currentTime`): fireflies and ripples, bioluminescence, a moonlit star field (the owl's calls swell a halo round the moon), and a southern sky over eucalypts that is ready for the Victorian bush night. The orb breathes with the low band. |
+| **A scene driven by the recording** | The background reacts to the *actual* audio (a pre-computed 3-band envelope read at `audio.currentTime`): fireflies and ripples, bioluminescence, a moonlit star field (the owl's calls swell a halo round the moon), falling rain and ripples under eucalypts (heavier with the sound of the rain), and a southern sky over eucalypts that is ready for the Victorian bush night. The orb breathes with the low band. |
 | **Sleep timer** | Three choices: **∞**, **45 min** or **9 h**. The centre always says when it will end ("ends at 23:41"). |
 | **Soft starts and stops** | Every start fades in over 2 s and every pause fades out over 5 s (the screen says "paused" at once; tapping play mid-fade turns it round). A timer's last minute fades to silence. All of it works on iOS too (see below). |
 | **Sleep dim** | 15 s after your last touch the UI fades to ~5 % brightness and leaves only the clock. Any tap brings it back. |
@@ -73,7 +73,8 @@ Needs `ffmpeg` and `ffprobe`. With `XC_API_KEY` set the scripts use the xeno-can
 read the site's public search pages. `audio:build` refuses ND-licensed recordings (a loop is a derivative
 work) and exits non-zero unless the loop length, the seam (no click), loudness (±1 LU of −24 LUFS) and true
 peak checks all pass. Each soundscape in the config is `{ xcId, start, loop, crossfade, theme, name, subtitle }`, plus optional `species`,
-`scientific` and `place` overrides.
+`scientific` and `place` overrides, and `prelimit` (a dBFS peak limiter run before loudness normalisation, for a quiet source with loud
+transients).
 
 ## Deploy (GitHub Pages)
 
@@ -120,4 +121,5 @@ Share → Add to Home Screen):
 | Scops Owl at Midnight | [XC1008555](https://xeno-canto.org/1008555) | JACOB Hervé | Marans, Charente-Maritime, Nouvelle-Aquitaine, France | 2025-06-09 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | Italian Tree Crickets | [XC854102](https://xeno-canto.org/854102) | Baudewijn Odé | ca. 1.5 km E of Abreiro, along the Rio Tua, Bragança, Portugal | 2015-07-11 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | Rainforest Canopy | [XC574855](https://xeno-canto.org/574855) | Okamoto Keita Sin | Kumbang Hide, Taman Negara, Pahang, Malaysia | 2019-04-22 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+| Blue Mountains Rain | [XC442992](https://xeno-canto.org/442992) | James Ray | Faulconbridge, Blue Mountains, New South Wales, Australia | 2018-11-15 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 <!-- credits:end -->

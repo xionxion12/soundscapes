@@ -21,6 +21,7 @@
 }
 [data-theme='rainforest'] { --accent: #35f0b0; --accent-rgb: 53, 240, 176; --accent2-rgb: 42, 212, 255; }
 [data-theme='bush'] { --accent: #f0a17e; --accent-rgb: 240, 161, 126; --accent2-rgb: 150, 120, 255; }
+[data-theme='rain'] { --accent: #8ec5d6; --accent-rgb: 142, 197, 214; --accent2-rgb: 120, 160, 200; }
 [data-theme='night'] { --accent: #a9c2ff; --accent-rgb: 169, 194, 255; --accent2-rgb: 232, 238, 255; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }

@@ -55,6 +55,30 @@ export function artSvg(theme, seed = theme) {
     };
     body += `<path d="M0 512V484Q64 476 128 482T256 478T384 484T512 476V512Z" fill="${fill}"/>`;
     body += tree(48, 486, 330, 14) + tree(132, 486, 190, -10) + tree(468, 486, 360, -20) + tree(392, 486, 170, 12);
+  } else if (theme === 'rain') {
+    defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#04080e"/><stop offset=".5" stop-color="#0d1a26"/><stop offset=".9" stop-color="#1a2c33"/><stop offset="1" stop-color="#070d10"/></linearGradient><radialGradient id="gl"><stop offset="0" stop-color="#78a5b4" stop-opacity=".22"/><stop offset="1" stop-color="#78a5b4" stop-opacity="0"/></radialGradient>`;
+    body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><circle cx="256" cy="300" r="280" fill="url(#gl)"/>`;
+    for (let i = 0; i < 150; i++) {
+      const x = r() * S, y = r() * 470, z = 0.3 + r() * 0.7, len = 14 + z * 40;
+      body += `<line x1="${x}" y1="${y}" x2="${x - len * 0.16}" y2="${y - len}" stroke="#b9d7e6" stroke-opacity="${0.1 + z * 0.3}" stroke-width="${0.8 + z * 1.4}" stroke-linecap="round"/>`;
+    }
+    const fill = '#04080b';
+    for (let i = 0; i < 6; i++) body += `<ellipse cx="${60 + r() * 390}" cy="${486 + r() * 20}" rx="${14 + r() * 26}" ry="${4 + r() * 5}" fill="none" stroke="#afd2e1" stroke-opacity="${0.15 + r() * 0.25}" stroke-width="1.3"/>`;
+    const tree = (x, base, height, lean) => {
+      const tipX = x + lean, tipY = base - height;
+      let t = `<path d="M${x - 7} ${base}Q${x - 2 + lean * 0.2} ${base - height * 0.5} ${tipX - 2} ${tipY}L${tipX + 2} ${tipY}Q${x + 2 + lean * 0.2} ${base - height * 0.5} ${x + 7} ${base}Z" fill="${fill}"/>`;
+      for (const [k, dir, len] of [[0.6, -1, 60], [0.74, 1, 70], [0.86, -1, 44]]) {
+        const bx = x + lean * k * k, by = base - height * k, ex = bx + dir * len * (0.8 + r() * 0.3), ey = by - 40 - r() * 26;
+        t += `<path d="M${bx} ${by}Q${bx + dir * len * 0.2} ${by - 26} ${ex} ${ey}" fill="none" stroke="${fill}" stroke-width="3" stroke-linecap="round"/>`;
+        for (let i = 0; i < 10; i++) {
+          const dx = (r() - 0.5) * 50, ln = 14 + r() * 32;
+          t += `<path d="M${ex + (r() - 0.5) * 10} ${ey}Q${ex + dx * 0.7} ${ey - 5} ${ex + dx} ${ey + ln}" fill="none" stroke="${fill}" stroke-width="2" stroke-linecap="round"/>`;
+        }
+      }
+      return t;
+    };
+    body += `<path d="M0 512V484Q64 476 128 482T256 478T384 484T512 476V512Z" fill="${fill}"/>`;
+    body += tree(40, 486, 300, 12) + tree(120, 486, 170, -9) + tree(472, 486, 330, -18) + tree(398, 486, 180, 10);
   } else {
     defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#01030a"/><stop offset=".6" stop-color="#0a1332"/><stop offset=".92" stop-color="#101a3a"/><stop offset="1" stop-color="#02040a"/></linearGradient>${glow('mo', '170,195,255')}${glow('st', '200,215,255')}`;
     body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><circle cx="378" cy="118" r="130" fill="url(#mo)" opacity=".55"/><circle cx="378" cy="118" r="30" fill="#dfe8ff"/>`;

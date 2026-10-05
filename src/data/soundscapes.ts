@@ -1,7 +1,7 @@
 import raw from './soundscapes.json';
 import type { EnvelopeData } from './envelope';
 
-export type ThemeId = 'mediterranean' | 'rainforest' | 'night' | 'bush';
+export type ThemeId = 'mediterranean' | 'rainforest' | 'night' | 'bush' | 'rain';
 
 export interface Soundscape {
   id: string;

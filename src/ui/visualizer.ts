@@ -290,6 +290,61 @@ const POINTERS: { x: number; y: number; m: number }[] = [
   { x: -2.25, y: 0.3, m: 1.1 }, // Beta Centauri
 ];
 
+/** A tall, sparse-crowned eucalypt: pale-edged trunk, a few limbs and drooping leaf tassels. */
+function eucalypt(f: CanvasRenderingContext2D, x: number, base: number, height: number, lean: number, h: number, ink = '#020207') {
+  const pts: [number, number][] = [];
+  const wBase = h * 0.0055;
+  for (let i = 0; i <= 14; i++) {
+    const k = i / 14;
+    pts.push([x + lean * k * k + Math.sin(k * 5 + x) * h * 0.004, base - height * k]);
+  }
+  const at = (k: number) => pts[Math.min(14, Math.round(k * 14))]!;
+  const trunk = () => {
+    f.beginPath();
+    pts.forEach(([px, py], i) => (i ? f.lineTo(px - wBase * (1 - (i / 14) * 0.7), py) : f.moveTo(px - wBase, py)));
+    for (let i = 14; i >= 0; i--) f.lineTo(pts[i]![0] + wBase * (1 - (i / 14) * 0.7), pts[i]![1]);
+    f.closePath();
+  };
+  f.fillStyle = ink;
+  trunk();
+  f.fill();
+  // a pale edge on the trunk, as if lit by starlight
+  f.strokeStyle = 'rgba(200,205,235,0.13)';
+  f.lineWidth = Math.max(1, h * 0.0016);
+  f.beginPath();
+  pts.forEach(([px, py], i) => {
+    const xx = px + wBase * (1 - (i / 14) * 0.7) * 0.8;
+    if (i) f.lineTo(xx, py);
+    else f.moveTo(xx, py);
+  });
+  f.stroke();
+  // limbs and drooping crowns
+  f.strokeStyle = ink;
+  f.lineCap = 'round';
+  const tips: [number, number][] = [at(1)];
+  for (const [k, dir, len] of [[0.55, -1, 0.1], [0.68, 1, 0.13], [0.8, -1, 0.09], [0.9, 1, 0.07]] as const) {
+    const [bx, by] = at(k);
+    const tx = bx + dir * h * len * rand(0.7, 1), ty = by - height * rand(0.06, 0.12);
+    f.lineWidth = wBase * 0.6;
+    f.beginPath();
+    f.moveTo(bx, by);
+    f.quadraticCurveTo(bx + dir * h * len * 0.2, by - height * 0.1, tx, ty);
+    f.stroke();
+    tips.push([tx, ty]);
+  }
+  f.lineWidth = Math.max(1.2, h * 0.0016);
+  for (const [tx, ty] of tips) {
+    for (let i = 0; i < 9; i++) {
+      const a = rand(-0.2, Math.PI + 0.2), r = h * rand(0.018, 0.04);
+      const ex = tx + Math.cos(a) * r * 1.4, ey = ty - Math.sin(a) * r * 0.25 + r * rand(0.5, 1.1);
+      f.beginPath();
+      f.moveTo(tx + Math.cos(a) * r * 0.2, ty);
+      f.quadraticCurveTo(tx + Math.cos(a) * r, ty - r * 0.25, ex, ey);
+      f.stroke();
+    }
+  }
+}
+
 class Bush implements Scene {
   private sky = document.createElement('canvas');
   private fg = document.createElement('canvas');
@@ -359,61 +414,7 @@ class Bush implements Scene {
     f.lineTo(w, h);
     f.fill();
     for (const [px, tall, lean] of [[0.035, 0.5, 0.02], [0.13, 0.3, -0.015], [0.965, 0.56, -0.025], [0.88, 0.32, 0.02]] as const) {
-      this.eucalypt(f, w * px, ground, h * tall, h * lean, h);
-    }
-  }
-
-  private eucalypt(f: CanvasRenderingContext2D, x: number, base: number, height: number, lean: number, h: number) {
-    const pts: [number, number][] = [];
-    const wBase = h * 0.0055;
-    for (let i = 0; i <= 14; i++) {
-      const k = i / 14;
-      pts.push([x + lean * k * k + Math.sin(k * 5 + x) * h * 0.004, base - height * k]);
-    }
-    const at = (k: number) => pts[Math.min(14, Math.round(k * 14))]!;
-    const trunk = () => {
-      f.beginPath();
-      pts.forEach(([px, py], i) => (i ? f.lineTo(px - wBase * (1 - (i / 14) * 0.7), py) : f.moveTo(px - wBase, py)));
-      for (let i = 14; i >= 0; i--) f.lineTo(pts[i]![0] + wBase * (1 - (i / 14) * 0.7), pts[i]![1]);
-      f.closePath();
-    };
-    f.fillStyle = '#020207';
-    trunk();
-    f.fill();
-    // a pale edge on the trunk, as if lit by starlight
-    f.strokeStyle = 'rgba(200,205,235,0.13)';
-    f.lineWidth = Math.max(1, h * 0.0016);
-    f.beginPath();
-    pts.forEach(([px, py], i) => {
-      const xx = px + wBase * (1 - (i / 14) * 0.7) * 0.8;
-      if (i) f.lineTo(xx, py);
-      else f.moveTo(xx, py);
-    });
-    f.stroke();
-    // limbs and drooping crowns
-    f.strokeStyle = '#020207';
-    f.lineCap = 'round';
-    const tips: [number, number][] = [at(1)];
-    for (const [k, dir, len] of [[0.55, -1, 0.1], [0.68, 1, 0.13], [0.8, -1, 0.09], [0.9, 1, 0.07]] as const) {
-      const [bx, by] = at(k);
-      const tx = bx + dir * h * len * rand(0.7, 1), ty = by - height * rand(0.06, 0.12);
-      f.lineWidth = wBase * 0.6;
-      f.beginPath();
-      f.moveTo(bx, by);
-      f.quadraticCurveTo(bx + dir * h * len * 0.2, by - height * 0.1, tx, ty);
-      f.stroke();
-      tips.push([tx, ty]);
-    }
-    f.lineWidth = Math.max(1.2, h * 0.0016);
-    for (const [tx, ty] of tips) {
-      for (let i = 0; i < 9; i++) {
-        const a = rand(-0.2, Math.PI + 0.2), r = h * rand(0.018, 0.04);
-        const ex = tx + Math.cos(a) * r * 1.4, ey = ty - Math.sin(a) * r * 0.25 + r * rand(0.5, 1.1);
-        f.beginPath();
-        f.moveTo(tx + Math.cos(a) * r * 0.2, ty);
-        f.quadraticCurveTo(tx + Math.cos(a) * r, ty - r * 0.25, ex, ey);
-        f.stroke();
-      }
+      eucalypt(f, w * px, ground, h * tall, h * lean, h);
     }
   }
 
@@ -466,11 +467,123 @@ class Bush implements Scene {
   }
 }
 
+// ---- Australian rain: streaks falling past eucalypts, ripples on the ground ----------------
+// The high band (the hiss of drops) sets how heavy the rain looks, the low band lifts the mist.
+class Rain implements Scene {
+  private sky = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private mist = sprite([120, 160, 175], 128);
+  private drops: { x: number; y: number; z: number; len: number }[] = [];
+  private mists: { x: number; y: number; s: number; ph: number }[] = [];
+  private ripples: { x: number; y: number; age: number; life: number; max: number }[] = [];
+  private heavy = 0;
+  private ground = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.sky, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    const g = this.sky.getContext('2d')!;
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#04080e');
+    grad.addColorStop(0.5, '#0d1a26');
+    grad.addColorStop(0.9, '#1a2c33');
+    grad.addColorStop(1, '#070d10');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+    const glow = g.createRadialGradient(w * 0.5, h * 0.62, 0, w * 0.5, h * 0.62, h * 0.55);
+    glow.addColorStop(0, 'rgba(120,165,180,0.14)');
+    glow.addColorStop(1, 'rgba(120,165,180,0)');
+    g.fillStyle = glow;
+    g.fillRect(0, 0, w, h);
+
+    this.ground = h * 0.945;
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    f.fillStyle = '#04080b';
+    f.beginPath();
+    f.moveTo(0, h);
+    for (let x = 0; x <= w; x += w / 20) f.lineTo(x, this.ground + Math.sin((x / w) * 5.3) * h * 0.012);
+    f.lineTo(w, h);
+    f.fill();
+    for (const [px, tall, lean] of [[0.04, 0.46, 0.02], [0.15, 0.28, -0.015], [0.96, 0.52, -0.025], [0.86, 0.3, 0.02]] as const) {
+      eucalypt(f, w * px, this.ground, h * tall, h * lean, h, '#04080b');
+    }
+
+    const n = Math.min(170, Math.max(80, Math.round((w * h) / 4500)));
+    this.drops = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, z: rand(0.3, 1), len: rand(0.5, 1) }));
+    this.mists = Array.from({ length: 6 }, () => ({ x: Math.random() * w, y: rand(h * 0.45, h * 0.92), s: rand(0.6, 1) * w, ph: rand(0, 6.28) }));
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.heavy += (lv[2] - this.heavy) * Math.min(1, dt * 3);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.sky, 0, 0);
+
+    ctx.globalCompositeOperation = 'lighter';
+    for (const m of this.mists) {
+      const dx = motion ? Math.sin(t * 0.06 + m.ph) * 50 : 0;
+      ctx.globalAlpha = alpha * (0.06 + lv[0] * 0.16 + this.heavy * 0.05);
+      ctx.drawImage(this.mist, m.x + dx - m.s / 2, m.y - m.s / 2, m.s, m.s);
+    }
+
+    // streaks: nearer drops are longer, faster and brighter; the high band thickens the rain
+    const density = 0.55 + this.heavy * 0.55;
+    ctx.lineCap = 'round';
+    for (const d of this.drops) {
+      const speed = (520 + d.z * 720) * unit;
+      if (motion) {
+        d.y += speed * dt;
+        d.x += speed * 0.16 * dt;
+        if (d.y > this.ground + h * 0.02) {
+          d.y = -h * 0.05;
+          d.x = Math.random() * w;
+        }
+        if (d.x > w + 20) d.x -= w + 40;
+      }
+      if (d.z > density) continue;
+      const len = (14 + d.z * 38) * d.len * unit;
+      ctx.lineWidth = (0.9 + d.z * 1.5) * unit * 1.4;
+      ctx.strokeStyle = `rgba(190,220,235,${(0.22 + d.z * 0.5) * alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - len * 0.16, d.y - len);
+      ctx.stroke();
+    }
+
+    // ripples where drops land; a call or a clap of thunder sends out a big one
+    const spawn = motion ? dt * (6 + this.heavy * 26) : 0;
+    for (let n = spawn + Math.random(); n >= 1 && this.ripples.length < 40; n -= 1) {
+      this.ripples.push({ x: rand(w * 0.05, w * 0.95), y: rand(this.ground + h * 0.004, h * 0.985), age: 0, life: rand(0.7, 1.3), max: rand(w * 0.015, w * 0.05) });
+    }
+    if (onset && motion && this.ripples.length < 40) {
+      this.ripples.push({ x: rand(w * 0.3, w * 0.7), y: rand(this.ground + h * 0.01, h * 0.97), age: 0, life: 3, max: w * 0.22 });
+    }
+    this.ripples = this.ripples.filter((r) => (r.age += dt) < r.life);
+    ctx.lineWidth = Math.max(1, 1.1 * unit);
+    for (const r of this.ripples) {
+      const k = r.age / r.life;
+      ctx.strokeStyle = `rgba(175,210,225,${(1 - k) * 0.4 * alpha})`;
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y, r.max * k, r.max * k * 0.25, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
+
 const SCENES: Record<ThemeId, () => Scene> = {
   mediterranean: () => new Mediterranean(),
   rainforest: () => new Rainforest(),
   night: () => new Night(),
   bush: () => new Bush(),
+  rain: () => new Rain(),
 };
 
 export interface VisualizerOptions {

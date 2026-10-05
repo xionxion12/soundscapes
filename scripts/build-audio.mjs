@@ -141,9 +141,16 @@ async function buildItem(cfg, item) {
     '-map', '[out]', '-c:a', 'pcm_f32le', raw,
   ]);
 
-  // 2. loudness
+  // 2. loudness. A source whose loud transients (bird calls, clicks) sit far above its steady sound can set
+  // `prelimit` (dBFS): a limiter at that level runs first, so normalising does not leave the loop too quiet.
+  let toNormalise = raw;
+  if (item.prelimit != null) {
+    toNormalise = path.join(t, 'loop-limited.wav');
+    const lin = Math.pow(10, item.prelimit / 20);
+    await ff(['-i', raw, '-af', `alimiter=limit=${lin.toFixed(4)}:attack=5:release=120:level=disabled`, '-c:a', 'pcm_f32le', toNormalise]);
+  }
   const norm = path.join(t, 'loop-norm.wav');
-  const nres = await normalise(raw, norm, cfg.loudness.target, cfg.loudness.truePeak);
+  const nres = await normalise(toNormalise, norm, cfg.loudness.target, cfg.loudness.truePeak);
   console.log(`  loudness: ${nres.inputI.toFixed(1)} LUFS → ${cfg.loudness.target} (${nres.mode})`);
 
   // 3. encode the loop
@@ -192,7 +199,7 @@ async function buildItem(cfg, item) {
   }
 
   const licenseName = LICENSE_NAMES[rec.license] ?? rec.license;
-  const processing = `Trimmed to ${fmtTime(D + X)} of the original recording (from ${fmtTime(item.start)}), joined end-to-start with a ${X} s equal-power crossfade into a seamless ${fmtTime(D)} loop, high-passed at 40 Hz, loudness-normalised to ${cfg.loudness.target} LUFS and re-encoded as AAC. Shared under the same license (${licenseName}).`;
+  const processing = `Trimmed to ${fmtTime(D + X)} of the original recording (from ${fmtTime(item.start)}), joined end-to-start with a ${X} s equal-power crossfade into a seamless ${fmtTime(D)} loop, high-passed at 40 Hz,${item.prelimit != null ? ' with loud peaks (bird calls, clicks) limited,' : ''} loudness-normalised to ${cfg.loudness.target} LUFS and re-encoded as AAC. Shared under the same license (${licenseName}).`;
   const species = item.species ?? (rec.en === 'Soundscape' ? 'Soundscape' : rec.en);
   return {
     ok,
@@ -268,7 +275,7 @@ async function main() {
     '# Credits',
     '',
     'All sounds are recordings from [xeno-canto](https://xeno-canto.org), made by the recordists named below and shared by them under Creative Commons licenses.',
-    'The audio here has been **modified**: trimmed, joined into a seamless loop with a crossfade, high-passed at 40 Hz, loudness-normalised and re-encoded as AAC.',
+    'The audio here has been **modified**: trimmed, joined into a seamless loop with a crossfade, high-passed at 40 Hz, loudness-normalised and re-encoded as AAC (for some, loud peaks were limited first).',
     'Because the licenses include ShareAlike (or NonCommercial), the processed audio in this folder is shared under the same license as each original, see the table.',
     '',
     creditsMarkdown(entries),
