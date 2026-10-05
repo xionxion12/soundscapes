@@ -7,7 +7,7 @@ stop it or an optional sleep timer runs out and fades the sound away.
 Built for an iPhone 14 Pro used with **AirPlay** (works as a Home Screen app or in Safari), true-black
 OLED styling, no frameworks, no tracking, no network needed after the first play.
 
-Live site: **https://xionxion12.github.io/soundcapes/**
+Live site: **https://xionxion12.github.io/soundscapes/**
 
 ## What's in it
 
@@ -41,11 +41,11 @@ Live site: **https://xionxion12.github.io/soundcapes/**
 
 ```bash
 npm ci
-npm run dev            # http://localhost:5173/soundcapes/
+npm run dev            # http://localhost:5173/soundscapes/
 npm run typecheck
 npm test               # unit tests (Vitest)
 npm run test:e2e       # Playwright, iPhone 14 Pro viewport (builds + serves the site itself)
-npm run build && npm run preview   # production build under /soundcapes/
+npm run build && npm run preview   # production build under /soundscapes/
 ```
 
 End-to-end tests run on Chromium, which can't decode AAC, so audio requests are rerouted to a small Opus

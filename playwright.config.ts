@@ -34,7 +34,7 @@ export default defineConfig({
   },
   webServer: {
     command: 'npm run build && npx vite preview --port 4173 --strictPort',
-    url: 'http://localhost:4173/soundcapes/',
+    url: 'http://localhost:4173/soundscapes/',
     reuseExistingServer: true,
     timeout: 180_000,
   },

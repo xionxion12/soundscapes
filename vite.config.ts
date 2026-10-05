@@ -43,7 +43,7 @@ function swInject(): Plugin {
 }
 
 export default defineConfig({
-  base: '/soundcapes/',
+  base: '/soundscapes/',
   build: { target: 'es2022', sourcemap: false },
   plugins: [swInject()],
   test: { include: ['tests/unit/**/*.test.ts'] },

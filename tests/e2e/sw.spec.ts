@@ -4,12 +4,12 @@ import { items } from './helpers';
 test.use({ serviceWorkers: 'allow' });
 
 test('service worker caches audio and serves Range requests offline', async ({ page, context }) => {
-  await page.goto('/soundcapes/');
+  await page.goto('/soundscapes/');
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload();
   await expect.poll(() => page.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
 
-  const url = `/soundcapes/${items[0]!.file}`;
+  const url = `/soundscapes/${items[0]!.file}`;
   const range = (u: string, r: string) =>
     page.evaluate(
       async ([u, r]) => {

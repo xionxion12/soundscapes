@@ -35,7 +35,7 @@ export async function open(page: Page, opts: OpenOptions = {}) {
     });
   }
   if (opts.time) await page.clock.install({ time: opts.time });
-  await page.goto('/soundcapes/');
+  await page.goto('/soundscapes/');
   await expect(page.locator('#title')).toHaveText(items[0]!.name);
 }
 
