@@ -51,6 +51,49 @@
       "crossfade": 9,
       "place": "Faulconbridge, Blue Mountains, New South Wales",
       "prelimit": -20
+    },
+    {
+      "id": "dandenong-lyrebird",
+      "xcId": 1173949,
+      "name": "Lyrebird in the Dandenongs",
+      "subtitle": "A superb lyrebird sings among the tree ferns · Dandenong Ranges, Victoria",
+      "theme": "bush",
+      "species": "Superb lyrebird",
+      "scientific": "Menura novaehollandiae",
+      "place": "Dandenong Ranges National Park (Ferntree Gully area, near Tremont), Victoria",
+      "start": 55,
+      "loop": 420,
+      "crossfade": 9
+    },
+    {
+      "id": "blue-mountains-dawn",
+      "xcId": 442478,
+      "name": "Blue Mountains Dawn",
+      "subtitle": "Spinebills, king parrots and a lyrebird in the first light · Faulconbridge, New South Wales",
+      "theme": "bush",
+      "species": "Dawn chorus, with a superb lyrebird",
+      "start": 360,
+      "loop": 420,
+      "crossfade": 9,
+      "place": "Faulconbridge, Blue Mountains, New South Wales",
+      "highpass": 150,
+      "pregain": 12,
+      "prelimit": -10,
+      "highpassPasses": 3
+    },
+    {
+      "id": "queensland-dawn",
+      "xcId": 505753,
+      "name": "Queensland Dawn",
+      "subtitle": "A soft Sunday sunrise chorus · Dayboro, Queensland",
+      "theme": "rainforest",
+      "species": "Dawn chorus",
+      "start": 580,
+      "loop": 420,
+      "crossfade": 9,
+      "place": "Dayboro, Moreton Bay Region, Queensland",
+      "pregain": 12,
+      "prelimit": -20
     }
   ]
 }

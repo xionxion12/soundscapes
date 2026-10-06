@@ -22,6 +22,9 @@ followed by `npm run audio:build -- --only <id>`.
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
 | `australian-rain` | [XC442992](https://xeno-canto.org/442992), rain soundscape, James Ray | Faulconbridge, Blue Mountains, New South Wales · 15 Nov 2018, 13:34 | **C** · CC BY-NC-SA | 4:40 → 11:49 of 67:54 |
+| `dandenong-lyrebird` | [XC1173949](https://xeno-canto.org/1173949), superb lyrebird, Romuald Mikusek | Dandenong Ranges NP (Ferntree Gully area, near Tremont), **Victoria** · 22 Jan 2024, 07:30 | A · CC BY-NC-SA | 0:55 → 8:04 of 9:05 |
+| `blue-mountains-dawn` | [XC442478](https://xeno-canto.org/442478), dawn chorus, James Ray | Faulconbridge, Blue Mountains, New South Wales · 8 Oct 2018, 07:21 | A · CC BY-NC-SA | 6:00 → 13:09 of 17:54 |
+| `queensland-dawn` | [XC505753](https://xeno-canto.org/505753), sunrise soundscape, Tom Tarrant | Dayboro, Moreton Bay, Queensland · 3 Nov 2019, 07:00 | A · CC BY-NC-SA | 9:40 → 16:49 of 33:02 |
 
 Why these:
 
@@ -42,6 +45,17 @@ Why these:
   quiet (−40 LUFS), so the loop gets +16 dB; loud transients are limited first (`prelimit: -20`), otherwise the
   gain is capped at +4 dB and the loop ends up 10 LU too quiet. The rain is steady apart from a swell about 2½ minutes
   into the loop. **Please listen to this one first**; if it is not good enough, say so and I will keep looking.
+- **Lyrebird in the Dandenongs** (Victoria, about 40 km east of Melbourne CBD, well inside an hour's drive): the
+  only recording in the Melbourne area that is long enough (9 min), quality A, ≥ 44.1 kHz and licensed for a loop. It is
+  **the liveliest loop in the app**: a male superb lyrebird running through its mimicry of other birds almost without a
+  pause, so it is a dense, bright forest wall (mostly 1–6 kHz), not a lull. It has no rumble or hiss (nothing below 800 Hz
+  to lift). **Listen to this one first** and tell me if it is too busy for sleep.
+- **Blue Mountains Dawn**: a rich but continuous dawn chorus (eastern spinebill, king parrots, wonga pigeon, a lyrebird in the
+  distance). The source carries a strong 50/100 Hz hum (and sets off the limiter), so the loop is high-passed at 150 Hz three
+  times over (`highpass: 150`, `highpassPasses: 3`; sub-150 Hz ends up 10 dB under the other bands) and the peaks are limited
+  first (`pregain: 12`, `prelimit: -10`), otherwise it ends up 10 LU too quiet. The recordist trimmed the source slightly.
+- **Queensland Dawn**: a soft subtropical sunrise chorus, stereo, a calm window with few transients. Peaks are limited first
+  (`pregain: 12`, `prelimit: -20`) or the loop would be 6 LU too quiet.
 - **Rainforest Canopy**: tagged "dawn chorus", but acoustically a diffuse insect wall with no prominent
   calls. The window is taken after the loud 9–11 kHz cicada burst earlier in the recording.
 
@@ -49,7 +63,7 @@ Why these:
 
 | id | Recording | Why removed |
 |---|---|---|
-| `amazon-night` | [XC1177487](https://xeno-canto.org/1177487), Acre frog and insect chorus, Fernanda Fernandex, CC BY-NC-SA | Dropped from the line-up; the app is meant to have three soundscapes. Replaced by a Victorian bush night (below). |
+| `amazon-night` | [XC1177487](https://xeno-canto.org/1177487), Acre frog and insect chorus, Fernanda Fernandex, CC BY-NC-SA | Dropped from the line-up to make room for the Australian recordings (below). |
 | `wetland-night` | [XC832830](https://xeno-canto.org/832830), wetland soundscape, Volyn, Ukraine, Cedric Mroczko, CC BY-NC-SA | Dropped from the line-up. |
 
 Their config entries are in git history if you want them back (the audio is rebuilt from xeno-canto by `npm run audio:build`).
@@ -63,21 +77,37 @@ XC442992 (the pick). The others are single bird recordings "in the rain" of unde
 which are also ND), or soundscapes where rain starts partway through (XC443114 at 16:10, XC442755 at 33:50).
 A better rain recording is likely to exist on the Australian Acoustic Observatory or Freesound (blocked here, see below).
 
-## Victorian (Australia) bush night: search result
+## Victoria, near Melbourne: search result
 
-I scanned all ~3,000 xeno-canto recordings in a box around Victoria. Nothing is good enough for sleep:
-the best is [XC641430](https://xeno-canto.org/641430) (southern boobook, 24 kHz mono MP3, −44 LUFS, so the
-noise floor would be lifted a lot), and the south-east Australian alternative is only 8 kHz. The app's
-minimum is 44.1 kHz.
+The first search missed most of Victoria because the xeno-canto results parser (`scripts/lib/xc.mjs`) only read rows
+of the form `<tr >` and skipped `<tr class='new-species'>`, i.e. the *first recording of every species* on each results
+page. With the parser fixed, `box:-38.6,144.0,-37.0,145.9` (Melbourne, the Dandenongs, Yarra Valley, Mornington Peninsula,
+Western Port) holds only 11 recordings of 2 minutes or more, and none a night soundscape:
 
-Better sources exist outside xeno-canto: the [Australian Acoustic Observatory](https://acousticobservatory.org)
-(CC BY 4.0, continuous recordings from Victorian sites) and Freesound. Those hosts are **blocked by the build
-environment's network policy**, so the soundscape is not built yet. To finish it: allow `acousticobservatory.org`,
-`data.acousticobservatory.org` and `api.acousticobservatory.org` (and optionally `freesound.org`,
-`cdn.freesound.org`), or provide a recording. The build script then needs a generic `source` entry
-(archive, id, page URL, download URL, recordist, license, place, date) next to `xcId`, and the data field
-`xc` becomes `source`. The `bush` scene (southern sky, Southern Cross, eucalypts) and its artwork are already
-in the app, waiting for it. If no other source turns up, XC641430 stays the xeno-canto fallback.
+| Recording | What it is | Verdict |
+|---|---|---|
+| [XC1173949](https://xeno-canto.org/1173949) | Superb lyrebird, Dandenong Ranges, 9:05, A, CC BY-NC-SA | **Picked.** Busy (see above). |
+| [XC1062797](https://xeno-canto.org/1062797) | Soundscape, French Island (Western Port), 9:09, A, CC BY-NC-SA | Brush bronzewing's call over scrub by the sea, many transients (133 spikes/min), and a ferry from the mainland. |
+| [XC974554](https://xeno-canto.org/974554), [XC1019696](https://xeno-canto.org/1019696) | Superb lyrebird, Kallista / Sherbrooke, 6:12 / 4:28 | Shorter than the 7-minute loop. |
+| [XC1074788](https://xeno-canto.org/1074788) | Superb lyrebird, Sherbrooke, 7:03, A | ND (no loops). |
+| [XC641433](https://xeno-canto.org/641433) / [XC641430](https://xeno-canto.org/641430) | Black Range dawn chorus (quality C) / southern boobook at 03:00, Murrindindi | About 1½ hours from Melbourne; the boobook is 24 kHz mono. |
+
+Still open: a quiet Victorian *night* (boobook, frogs, crickets). The [Australian Acoustic
+Observatory](https://acousticobservatory.org) (CC BY 4.0) is the likely source, but `api.acousticobservatory.org` and
+`data.acousticobservatory.org` are **blocked by the build environment's network policy** (only the main site answers).
+The `bush` scene is used by the Victorian and Blue Mountains loops for now.
+
+## Other Australian recordings I looked at
+
+All of these are on xeno-canto, which has only about 80 recordings of 8 minutes or more from Australia.
+
+| Recording | Why not |
+|---|---|
+| [XC568248](https://xeno-canto.org/568248), a still winter morning, Faulconbridge, 36 min, A, CC BY-SA | Built and **rejected**: the source is −53 LUFS, so after normalising the 50/100 Hz hum and room noise are as loud as the birds (the "quiet source" trap below). |
+| [XC441594](https://xeno-canto.org/441594), Faulconbridge dawn, 23 min, A | Almost silent between a few single calls: the noise floor would be lifted a lot. |
+| [XC446864](https://xeno-canto.org/446864), Nankeen night herons at 23:30, Faulconbridge, 8 min, A | The only Australian *night* recording ≥ 8 min with a good license, but the file is 8 kHz (< 44.1 kHz). |
+| [XC443120](https://xeno-canto.org/443120), Faulconbridge afternoon, 47 min | Long quiet stretches broken by loud events. |
+| Kakadu dawns ([XC482453](https://xeno-canto.org/482453), [XC482572](https://xeno-canto.org/482572), [XC483007](https://xeno-canto.org/483007)) | Strong low-frequency rumble (≥ 86 % of the energy). |
 
 ## Runners-up (all listed with the reason they lost)
 

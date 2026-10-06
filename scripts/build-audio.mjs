@@ -130,7 +130,7 @@ async function buildItem(cfg, item) {
   // 1. trim (+40 Hz high-pass) into a 48 kHz segment of length D + X …
   const ch = Math.min(2, info.channels);
   const seg = path.join(t, 'segment.wav');
-  await ff(['-ss', String(item.start), '-t', String(D + X), '-i', src, '-af', 'highpass=f=40,aresample=48000', '-ac', String(ch), '-c:a', 'pcm_f32le', seg]);
+  await ff(['-ss', String(item.start), '-t', String(D + X), '-i', src, '-af', `${`highpass=f=${item.highpass ?? 40},`.repeat(item.highpassPasses ?? 1)}aresample=48000`, '-ac', String(ch), '-c:a', 'pcm_f32le', seg]);
   // … then the seamless loop: s[X..D+X] crossfaded into s[0..X]. The result is D long and ends exactly
   // where it begins (at s[X]); the equal-power (quarter-sine) fade keeps the level steady at the join.
   const raw = path.join(t, 'loop-raw.wav');
@@ -147,7 +147,9 @@ async function buildItem(cfg, item) {
   if (item.prelimit != null) {
     toNormalise = path.join(t, 'loop-limited.wav');
     const lin = Math.pow(10, item.prelimit / 20);
-    await ff(['-i', raw, '-af', `alimiter=limit=${lin.toFixed(4)}:attack=5:release=120:level=disabled`, '-c:a', 'pcm_f32le', toNormalise]);
+    // alimiter's lowest ceiling is −24 dBFS: a quieter source is lifted by `pregain` dB first (the ceiling is then relative to the lifted signal)
+    const pre = item.pregain ? `volume=${item.pregain}dB,` : '';
+    await ff(['-i', raw, '-af', `${pre}alimiter=limit=${lin.toFixed(4)}:attack=5:release=120:level=disabled`, '-c:a', 'pcm_f32le', toNormalise]);
   }
   const norm = path.join(t, 'loop-norm.wav');
   const nres = await normalise(toNormalise, norm, cfg.loudness.target, cfg.loudness.truePeak);
@@ -199,7 +201,7 @@ async function buildItem(cfg, item) {
   }
 
   const licenseName = LICENSE_NAMES[rec.license] ?? rec.license;
-  const processing = `Trimmed to ${fmtTime(D + X)} of the original recording (from ${fmtTime(item.start)}), joined end-to-start with a ${X} s equal-power crossfade into a seamless ${fmtTime(D)} loop, high-passed at 40 Hz,${item.prelimit != null ? ' with loud peaks (bird calls, clicks) limited,' : ''} loudness-normalised to ${cfg.loudness.target} LUFS and re-encoded as AAC. Shared under the same license (${licenseName}).`;
+  const processing = `Trimmed to ${fmtTime(D + X)} of the original recording (from ${fmtTime(item.start)}), joined end-to-start with a ${X} s equal-power crossfade into a seamless ${fmtTime(D)} loop, high-passed at ${item.highpass ?? 40} Hz,${item.prelimit != null ? ' with loud peaks (bird calls, clicks) limited,' : ''} loudness-normalised to ${cfg.loudness.target} LUFS and re-encoded as AAC. Shared under the same license (${licenseName}).`;
   const species = item.species ?? (rec.en === 'Soundscape' ? 'Soundscape' : rec.en);
   return {
     ok,
@@ -275,7 +277,7 @@ async function main() {
     '# Credits',
     '',
     'All sounds are recordings from [xeno-canto](https://xeno-canto.org), made by the recordists named below and shared by them under Creative Commons licenses.',
-    'The audio here has been **modified**: trimmed, joined into a seamless loop with a crossfade, high-passed at 40 Hz, loudness-normalised and re-encoded as AAC (for some, loud peaks were limited first).',
+    'The audio here has been **modified**: trimmed, joined into a seamless loop with a crossfade, high-passed (at 40 Hz or higher), loudness-normalised and re-encoded as AAC (for some, loud peaks were limited first).',
     'Because the licenses include ShareAlike (or NonCommercial), the processed audio in this folder is shared under the same license as each original, see the table.',
     '',
     creditsMarkdown(entries),
