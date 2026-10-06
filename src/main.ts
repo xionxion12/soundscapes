@@ -167,6 +167,8 @@ async function select(i: number, dir = 0) {
   void showTitles(sc, dir);
   updateMetadata(sc);
   render();
+  // iOS: if the timer is already fading, the next tick swaps this soundscape to its own outro
+  outroTried = false;
   await engine.load(sc, keepPlaying);
 }
 

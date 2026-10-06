@@ -125,6 +125,32 @@ test.describe('soundscapes', () => {
     expect((await audioState(page)).src).not.toContain('-outro'); // back on the loop for next time
   });
 
+  test('iOS: switching soundscape in the last minute still fades out', async ({ page }) => {
+    await open(page, { time: NIGHT, ios: true });
+    await page.locator('.chip[data-minutes="45"]').click();
+    await page.locator('#orb').click();
+    await expect.poll(async () => (await audioState(page)).paused).toBe(false);
+
+    await page.clock.fastForward(44 * 60_000 + 1_000); // 1 s into the fade
+    await expect.poll(async () => (await audioState(page)).src).toContain(items[0]!.outro.replace('audio/', ''));
+
+    // the screen has dimmed by now, and the touch that wakes it does nothing else
+    await expect(page.locator('body')).toHaveClass(/dim/);
+    await page.mouse.click(196, 426);
+    await expect(page.locator('body')).not.toHaveClass(/dim/);
+
+    // next soundscape, early in the fade (the new outro skips ahead by the time already faded, and
+    // the test outro is only 12 s long)
+    await swipe(page, 'left');
+    await page.clock.fastForward(1_000);
+    await expect.poll(async () => (await audioState(page)).src).toContain(items[1]!.outro.replace('audio/', '')); // its own outro, not the full-volume loop
+    await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Pause');
+
+    await page.clock.fastForward(60_000); // past the end time
+    await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Play');
+    expect((await audioState(page)).paused).toBe(true);
+  });
+
   for (const failure of ['refused', 'missing'] as const) {
     test(`iOS: if the outro is ${failure}, the loop carries on and stops at the end time`, async ({ page }) => {
       await open(page, { time: NIGHT, ios: true });
@@ -142,9 +168,9 @@ test.describe('soundscapes', () => {
       await expect.poll(async () => (await audioState(page)).paused).toBe(false);
 
       await page.clock.fastForward(44 * 60_000 + 5_000); // fade started, outro fails
+      await expect.poll(async () => (await audioState(page)).src).not.toContain('-outro'); // once the failure has come back
       await expect.poll(async () => (await audioState(page)).paused).toBe(false);
       let s = await audioState(page);
-      expect(s.src).not.toContain('-outro');
       expect(s.loop).toBe(true);
       await expect(page.locator('#orb')).toHaveAttribute('aria-label', 'Pause');
 
