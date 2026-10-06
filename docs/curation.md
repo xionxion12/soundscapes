@@ -21,7 +21,6 @@ followed by `npm run audio:build -- --only <id>`.
 | `scops-night` | [XC1008555](https://xeno-canto.org/1008555), Eurasian scops owl, JACOB Hervé | Marans, Charente-Maritime, France · 9 Jun 2025, 01:00 | A · CC BY-SA | 2:00 → 9:09 of 30:43 |
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
-| `australian-rain` | [XC442992](https://xeno-canto.org/442992), rain soundscape, James Ray | Faulconbridge, Blue Mountains, New South Wales · 15 Nov 2018, 13:34 | **C** · CC BY-NC-SA | 4:40 → 11:49 of 67:54 |
 | `dandenong-lyrebird` | [XC1173949](https://xeno-canto.org/1173949), superb lyrebird, Romuald Mikusek | Dandenong Ranges NP (Ferntree Gully area, near Tremont), **Victoria** · 22 Jan 2024, 07:30 | A · CC BY-NC-SA | 0:55 → 8:04 of 9:05 |
 | `blue-mountains-dawn` | [XC442478](https://xeno-canto.org/442478), dawn chorus, James Ray | Faulconbridge, Blue Mountains, New South Wales · 8 Oct 2018, 07:21 | A · CC BY-NC-SA | 6:00 → 13:09 of 17:54 |
 | `queensland-dawn` | [XC505753](https://xeno-canto.org/505753), sunrise soundscape, Tom Tarrant | Dayboro, Moreton Bay, Queensland · 3 Nov 2019, 07:00 | A · CC BY-NC-SA | 9:40 → 16:49 of 33:02 |
@@ -39,12 +38,6 @@ Why these:
   (Scopoli described it from Italy in 1763), but it lives all over southern Europe, Portugal included. XC854102
   really is from the Rio Tua valley near Bragança. The app now shows "Italian tree cricket" with the scientific
   name in italics (the build had stored the Latin name as the common name).
-- **Blue Mountains Rain**: the only long, rain-led Australian recording on xeno-canto (see "Rain from Australia"
-  below), so it is the pick by default and the weakest on quality. **Quality C**, a 37 kbps mono MP3 recorded through a
-  bedroom window, with faint birds (cockatoo, wattlebird) and, per the recordist, some mouse clicks. The source is
-  quiet (−40 LUFS), so the loop gets +16 dB; loud transients are limited first (`prelimit: -20`), otherwise the
-  gain is capped at +4 dB and the loop ends up 10 LU too quiet. The rain is steady apart from a swell about 2½ minutes
-  into the loop. **Please listen to this one first**; if it is not good enough, say so and I will keep looking.
 - **Lyrebird in the Dandenongs** (Victoria, about 40 km east of Melbourne CBD, well inside an hour's drive): the
   only recording in the Melbourne area that is long enough (9 min), quality A, ≥ 44.1 kHz and licensed for a loop. It is
   **the liveliest loop in the app**: a male superb lyrebird running through its mimicry of other birds almost without a
@@ -73,9 +66,10 @@ Their config entries are in git history if you want them back (the audio is rebu
 I paged through all 818 Australian xeno-canto soundscapes plus every Australian recording that mentions rain, and
 filtered on the whole words rain / raining / rainfall / downpour / drizzle / shower / thunder / storm in the remarks. Of
 the ~1,000 recordings that came up, one is long enough (≥ 8 min), mostly rain, and licensed for a loop:
-XC442992 (the pick). The others are single bird recordings "in the rain" of under a minute (e.g. Peter Boesman's,
+XC442992, which was used as "Blue Mountains Rain" and then **removed** because the quality was too low (37 kbps mono
+MP3 recorded through a bedroom window). The others are single bird recordings "in the rain" of under a minute (e.g. Peter Boesman's,
 which are also ND), or soundscapes where rain starts partway through (XC443114 at 16:10, XC442755 at 33:50).
-A better rain recording is likely to exist on the Australian Acoustic Observatory or Freesound (blocked here, see below).
+No rain loop is in the app now. A better rain recording is likely to exist on the Australian Acoustic Observatory or Freesound (blocked here, see below).
 
 ## Victoria, near Melbourne: search result
 
