@@ -103,7 +103,7 @@ async function searchHtml(query, page) {
   const html = await curl(`${BASE}/explore?${qs}`);
   const total = Number(html.match(/([\d,]+) results? from/)?.[1]?.replace(/,/g, '') ?? 0);
   const pages = Number(html.match(/results-pages[\s\S]*?pg=(\d+)[^<]*<\/a>\s*<\/li>\s*<\/ul>/)?.[1] ?? 1);
-  const rows = [...html.matchAll(/<tr >([\s\S]*?)<\/tr>/g)].map((m) => parseRow(m[1])).filter(Boolean);
+  const rows = [...html.matchAll(/<tr(?: [^>]*)?>([\s\S]*?)<\/tr>/g)].map((m) => parseRow(m[1])).filter(Boolean);
   return { total, pages, rows };
 }
 
