@@ -21,6 +21,8 @@ followed by `npm run audio:build -- --only <id>`.
 | `scops-night` | [XC1008555](https://xeno-canto.org/1008555), Eurasian scops owl, JACOB Hervé | Marans, Charente-Maritime, France · 9 Jun 2025, 01:00 | A · CC BY-SA | 2:00 → 9:09 of 30:43 |
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
+| `rain-on-leaves` | [XC732936](https://xeno-canto.org/732936), rainy soundscape, Cedric Mroczko | Darkesh, North Khorasan, Iran (broadleaf forest, 1600 m) · 30 Apr 2022, 13:00 | B · CC BY-NC-SA | 33:00 → 40:09 of 61:02 |
+| `frog-pond` | [XC990325](https://xeno-canto.org/990325), Iberian green frog chorus, Esperanza Poveda | Lagoon by the José Antonio Valverde visitor centre, Doñana marshes (Aznalcázar, Sevilla), Spain · 12 May 2018 | A · CC BY-NC-SA | 13:10 → 20:19 of 20:50 |
 | `dandenong-lyrebird` | [XC1173949](https://xeno-canto.org/1173949), superb lyrebird, Romuald Mikusek | Dandenong Ranges NP (Ferntree Gully area, near Tremont), **Victoria** · 22 Jan 2024, 07:30 | A · CC BY-NC-SA | 0:55 → 8:04 of 9:05 |
 | `blue-mountains-dawn` | [XC442478](https://xeno-canto.org/442478), dawn chorus, James Ray | Faulconbridge, Blue Mountains, New South Wales · 8 Oct 2018, 07:21 | A · CC BY-NC-SA | 6:00 → 13:09 of 17:54 |
 | `queensland-dawn` | [XC505753](https://xeno-canto.org/505753), sunrise soundscape, Tom Tarrant | Dayboro, Moreton Bay, Queensland · 3 Nov 2019, 07:00 | A · CC BY-NC-SA | 9:40 → 16:49 of 33:02 |
@@ -38,6 +40,16 @@ Why these:
   (Scopoli described it from Italy in 1763), but it lives all over southern Europe, Portugal included. XC854102
   really is from the Rio Tua valley near Bragança. The app now shows "Italian tree cricket" with the scientific
   name in italics (the build had stored the Latin name as the common name).
+- **Rain on Leaves**: steady spring rain falling through a broadleaf forest at the eastern end of the Hyrcanian forests, with a
+  few distant birds (blue tit, chaffinch, mistle thrush) under it. Of all the rain recordings I measured it is the most
+  rain-led (spectral flatness ~0.5: broadband patter rather than tonal birdsong) and among the steadiest (level SD 2.3 dB,
+  LRA 7 LU), with the fewest close drop hits on the microphone. Nothing below ~300 Hz (the recordist high-passed it) and not
+  hiss-heavy. The source is quiet (−35 LUFS), so the peaks are limited a little first (`prelimit: -14`, about 5 dB), which
+  keeps the patter crisp. Quality B. **Listen to this one first.**
+- **Frog Pond**: a dense, even chorus of Iberian green frogs on a lagoon in the Doñana marshes. Chosen for being *smooth*:
+  in its calmest 7 minutes the loudest 1 % of moments are only 4.5 dB above the typical level (LRA 2.3 LU), with no single
+  frog close to the microphone. The source is already louder than the target, so no noise floor is lifted. The window
+  starts at 13:10 because a start at 13:00 failed the seam check (a sample jump at the join).
 - **Lyrebird in the Dandenongs** (Victoria, about 40 km east of Melbourne CBD, well inside an hour's drive): the
   only recording in the Melbourne area that is long enough (9 min), quality A, ≥ 44.1 kHz and licensed for a loop. It is
   **the liveliest loop in the app**: a male superb lyrebird running through its mimicry of other birds almost without a
@@ -69,7 +81,42 @@ the ~1,000 recordings that came up, one is long enough (≥ 8 min), mostly rain,
 XC442992, which was used as "Blue Mountains Rain" and then **removed** because the quality was too low (37 kbps mono
 MP3 recorded through a bedroom window). The others are single bird recordings "in the rain" of under a minute (e.g. Peter Boesman's,
 which are also ND), or soundscapes where rain starts partway through (XC443114 at 16:10, XC442755 at 33:50).
-No rain loop is in the app now. A better rain recording is likely to exist on the Australian Acoustic Observatory or Freesound (blocked here, see below).
+No Australian rain loop is in the app; Rain on Leaves (Iran, below) replaced it. The Australian Acoustic Observatory and Freesound would be the places to look for one, but both are still blocked here (see below).
+
+## Rain on leaves, worldwide: search result
+
+I collected every xeno-canto recording of 8 minutes or more whose remarks mention rain (rain, drizzle, lluvia, chuva,
+Regen, pluie, pioggia: 564 recordings; 122 of them quality A/B with a license that allows a loop), downloaded the 15
+that sounded rain-led from their remarks, and scored each 7-minute window by spectral flatness (rain is broadband, birdsong
+tonal), the steadiness of its level, and how many 10 ms bursts and how high the peaks rose over the bed (drops hitting the mic).
+
+| Recording | What it is | Verdict |
+|---|---|---|
+| [XC732936](https://xeno-canto.org/732936) | Rainy soundscape, Darkesh, Iran, 61 min, B | **Picked.** |
+| [XC831375](https://xeno-canto.org/831375) | Rainy dawn in a Carpathian beech forest, Zakarpattia, Ukraine, 99 min, B | **Runner-up** (window ~85:00): heavier, very steady rain, but water hits the mics hard (peaks 42 dB over the bed, ~190 bursts per 7 min), a repeating song-thrush phrase, and a loud downpour swell near 77 min. |
+| [XC237622](https://xeno-canto.org/237622) / [XC237623](https://xeno-canto.org/237623) | Montane forest after a night of rain, Casanare, Colombia, A | 10 min each and mono 128 kbps. |
+| [XC657344](https://xeno-canto.org/657344) | Light rain, Aude, France, 58 min, B | The rain comes and goes; most of it is birds. |
+| [XC728566](https://xeno-canto.org/728566), [XC727557](https://xeno-canto.org/727557) | Rainy morning / rainy soundscape, Iran | Less rain-led than the pick; footsteps at the end of XC727557. |
+| [XC724433](https://xeno-canto.org/724433) | Dawn chorus in the rain, Shanghai, 54 min | 56 kbps, birds over a city. |
+| [XC828083](https://xeno-canto.org/828083), [XC829500](https://xeno-canto.org/829500), [XC829534](https://xeno-canto.org/829534) | Rainy dawn choruses, Volyn, Ukraine | Birds dominate after the first few minutes. |
+| [XC524224](https://xeno-canto.org/524224) | Tawny owls on a rainy night, Poland, A | The rain is barely audible (−43 LUFS). |
+
+## Frog pond: search result
+
+I collected every frog recording of 8 minutes or more (`grp:frogs`), plus every recording whose remarks mention frogs,
+toads or a pond in six languages (686 recordings), and kept 18 quality A/B choruses with a loop license. Each was scored
+for smoothness: how far the loudest 1 % of 100 ms moments rise above the typical level in its calmest 7 minutes, the
+level drift, and the highest peak.
+
+| Recording | What it is | Verdict |
+|---|---|---|
+| [XC990325](https://xeno-canto.org/990325) | Iberian green frogs, lagoon, Doñana, 21 min, A | **Picked.** Loudest 1 % only 4.5 dB over the bed. |
+| [XC1025871](https://xeno-canto.org/1025871) | Common tree frogs, gravel pit, Lake Constance, Germany, 60 min, B | The smoothest of all (2.6 dB), but mono, a narrow 2.4 kHz drone, and as much rumble below 150 Hz as above. |
+| [XC1090892](https://xeno-canto.org/1090892) | Iberian green frogs, a stream near Córdoba, with a scops owl, 37 min, B | Smooth (7 dB) but quiet (−37 LUFS): the noise floor would be lifted 13 dB. |
+| [XC962343](https://xeno-canto.org/962343) and its neighbours | Iberian green frogs, a small lagoon in oak and pine woods, Salamanca, A | Single frogs close to the mic: 9–13 dB spikes. |
+| [XC1164498](https://xeno-canto.org/1164498) | Mediterranean tree frogs + reed crickets, Sevilla (the old runner-up) | 14 dB spikes. |
+| [XC841134](https://xeno-canto.org/841134), [XC840919](https://xeno-canto.org/840919), [XC965617](https://xeno-canto.org/965617), [XC883890](https://xeno-canto.org/883890) | European and eastern tree frog choruses | Loud, pulsing calls close to the mic: 20–28 dB spikes. |
+| [XC883651](https://xeno-canto.org/883651), [XC886821](https://xeno-canto.org/886821) | Bronze (green) frog choruses, New York | Booming single males: 18–31 dB spikes. |
 
 ## Victoria, near Melbourne: search result
 
@@ -89,7 +136,7 @@ Western Port) holds only 11 recordings of 2 minutes or more, and none a night so
 Still open: a quiet Victorian *night* (boobook, frogs, crickets). The [Australian Acoustic
 Observatory](https://acousticobservatory.org) (CC BY 4.0) is the likely source, but `api.acousticobservatory.org` and
 `data.acousticobservatory.org` are **blocked by the build environment's network policy** (only the main site answers).
-The `bush` scene is used by the Victorian and Blue Mountains loops for now.
+Each soundscape has its own scene: the Dandenongs lyrebird has tree ferns in shafts of light, Blue Mountains Dawn the southern sky over eucalypts, and Queensland Dawn a sunrise behind hoop pines.
 
 ## Other Australian recordings I looked at
 

@@ -304,12 +304,15 @@ test.describe('soundscapes', () => {
   });
 
   test('every soundscape renders its own scene', async ({ page }) => {
+    expect(new Set(items.map((it) => it.theme)).size).toBe(items.length);
     await open(page);
     await page.locator('#orb').click();
     for (let i = 0; i < items.length; i++) {
       await page.evaluate((n) => (window as unknown as { __soundscapes: { select(i: number): void } }).__soundscapes.select(n), i);
       await expect(page.locator('#title')).toHaveText(items[i]!.name);
       await page.waitForTimeout(1600);
+      // a touch keeps the sleep dim (15 s) away while we go through them all
+      await page.evaluate(() => dispatchEvent(new PointerEvent('pointerdown')));
       await page.screenshot({ path: `${SHOTS}/10-scape-${i}-${items[i]!.theme}.png` });
     }
     expect(errors).toEqual([]);

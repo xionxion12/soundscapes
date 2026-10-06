@@ -258,7 +258,8 @@ async function main() {
   for (const item of cfg.items) {
     if (only && item.id !== only) {
       const old = prev.find((p) => p.id === item.id);
-      if (old) entries.push(old);
+      // the theme is display-only, so a config change applies without rebuilding the audio
+      if (old) entries.push({ ...old, theme: item.theme });
       continue;
     }
     try {
