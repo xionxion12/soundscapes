@@ -156,16 +156,16 @@ test.describe('soundscapes', () => {
     });
   }
 
-  test('every start fades in over 2 s', async ({ page }) => {
+  test('every start fades in over 4 s', async ({ page }) => {
     await open(page, { time: NIGHT });
     await page.locator('#orb').click();
     await waitPlaying(page);
     expect((await audioState(page)).volume).toBeLessThan(0.1);
-    await page.clock.fastForward(1_000); // halfway: 0.5² = 0.25
+    await page.clock.fastForward(2_000); // halfway: 0.5² = 0.25
     const mid = (await audioState(page)).volume;
     expect(mid).toBeGreaterThan(0.15);
     expect(mid).toBeLessThan(0.35);
-    await page.clock.fastForward(1_500);
+    await page.clock.fastForward(2_500);
     expect((await audioState(page)).volume).toBe(1);
   });
 
@@ -173,7 +173,7 @@ test.describe('soundscapes', () => {
     await open(page, { time: NIGHT });
     await page.locator('#orb').click();
     await waitPlaying(page);
-    await page.clock.fastForward(3_000);
+    await page.clock.fastForward(4_500);
     expect((await audioState(page)).volume).toBe(1);
 
     await page.locator('#orb').click();
@@ -197,7 +197,7 @@ test.describe('soundscapes', () => {
     await open(page, { time: NIGHT });
     await page.locator('#orb').click();
     await waitPlaying(page);
-    await page.clock.fastForward(3_000);
+    await page.clock.fastForward(4_500);
     await page.locator('#orb').click(); // pause
     await page.clock.fastForward(2_500);
     await page.locator('#orb').click(); // play again, at about 0.25
@@ -213,10 +213,10 @@ test.describe('soundscapes', () => {
     await page.locator('#orb').click();
     await expect.poll(async () => (await audioState(page)).paused).toBe(false);
     let s = await audioState(page);
-    expect(s.src).toContain('-fadein'); // the first 2 s come from the fade-in clip
+    expect(s.src).toContain('-fadein'); // the first 4 s come from the fade-in clip
     expect(s.loop).toBe(false);
 
-    await page.clock.fastForward(5_000);
+    await page.clock.fastForward(7_000);
     s = await audioState(page);
     expect(s.src).toContain(items[0]!.file.replace('audio/', '')); // then the loop carries on
     expect(s.src).not.toContain('-fade');

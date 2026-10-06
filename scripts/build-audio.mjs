@@ -167,7 +167,7 @@ async function buildItem(cfg, item) {
     console.log(`  true peak ${loud.truePeak} dBTP after encoding, tightening the limiter`);
   }
 
-  // the clips iOS uses for its fades: start (2 s), pause (5 s) and the end of a timer (60 s outro)
+  // the clips iOS uses for its fades: start (4 s), pause (5 s) and the end of a timer (60 s outro)
   const fades = await buildFades(loopOut, PUB, id, cfg.bitrate);
   const clipInfo = await Promise.all([fades.fadeIn, fades.fadeOut, fades.outro].map((f) => probe(path.join(PUB, f))));
 
@@ -188,7 +188,7 @@ async function buildItem(cfg, item) {
     ['seam: spectral flux', seam.fluxRatio < 1.5, `${seam.fluxSeam.toFixed(3)} vs p99 ${seam.fluxRef.toFixed(3)} (×${seam.fluxRatio.toFixed(2)})`],
     ['loudness ±1 LU', Math.abs(loud.lufs - cfg.loudness.target) <= 1, `${loud.lufs} LUFS`],
     ['true peak ≤ −1 dBTP', loud.truePeak <= -1, `${loud.truePeak} dBTP`],
-    ['fade clips 2 s / 5 s / 60 s', [FADE_IN_SECONDS, FADE_OUT_SECONDS, OUTRO_SECONDS].every((n, i) => Math.abs(clipInfo[i].duration - n) < 0.3), clipInfo.map((f) => `${f.duration.toFixed(2)} s`).join(', ')],
+    ['fade clips 4 s / 5 s / 60 s', [FADE_IN_SECONDS, FADE_OUT_SECONDS, OUTRO_SECONDS].every((n, i) => Math.abs(clipInfo[i].duration - n) < 0.3), clipInfo.map((f) => `${f.duration.toFixed(2)} s`).join(', ')],
     ['file size ≤ 12 MB', bytes <= 12 * 1024 * 1024, `${(bytes / 1048576).toFixed(1)} MB`],
     ['envelope length', Math.abs(env.length - D * 10) <= 3, `${env.length} samples`],
   ];
