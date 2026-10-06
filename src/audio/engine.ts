@@ -14,7 +14,7 @@ interface AudioSessionNav {
 }
 
 /**
- * Every start fades in over 2 s and every pause fades out over 5 s. Where `audio.volume` works
+ * Every start fades in over 4 s and every pause fades out over 5 s. Where `audio.volume` works
  * that is a volume ramp; on iOS the element swaps to a pre-rendered clip instead (see
  * scripts/lib/fades.mjs), which costs one barely audible hiccup at the join.
  *
@@ -201,7 +201,7 @@ export class Engine extends EventTarget {
     else this.set('paused');
   }
 
-  /** Start (or resume) with a 2 s fade-in. */
+  /** Start (or resume) with a 4 s fade-in. */
   async play(): Promise<void> {
     const sc = this.current;
     if (!sc) return;
@@ -232,7 +232,7 @@ export class Engine extends EventTarget {
     }
   }
 
-  /** iOS: the first 2 s come from the fade-in clip, then the loop carries on from 2 s. */
+  /** iOS: the first 4 s come from the fade-in clip, then the loop carries on from 4 s. */
   private async playWithClip(sc: Soundscape): Promise<void> {
     this.ghost = false;
     this.quietPause();
