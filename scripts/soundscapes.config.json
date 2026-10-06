@@ -40,19 +40,6 @@
       "crossfade": 9
     },
     {
-      "id": "australian-rain",
-      "xcId": 442992,
-      "name": "Blue Mountains Rain",
-      "subtitle": "Steady spring rain · Blue Mountains, New South Wales",
-      "theme": "rain",
-      "species": "Steady rain, with distant birds",
-      "start": 280,
-      "loop": 420,
-      "crossfade": 9,
-      "place": "Faulconbridge, Blue Mountains, New South Wales",
-      "prelimit": -20
-    },
-    {
       "id": "dandenong-lyrebird",
       "xcId": 1173949,
       "name": "Lyrebird in the Dandenongs",
