@@ -21,8 +21,11 @@
 }
 [data-theme='rainforest'] { --accent: #35f0b0; --accent-rgb: 53, 240, 176; --accent2-rgb: 42, 212, 255; }
 [data-theme='bush'] { --accent: #f0a17e; --accent-rgb: 240, 161, 126; --accent2-rgb: 150, 120, 255; }
-[data-theme='rain'] { --accent: #8ec5d6; --accent-rgb: 142, 197, 214; --accent2-rgb: 120, 160, 200; }
+[data-theme='rain'] { --accent: #8fd0c2; --accent-rgb: 143, 208, 194; --accent2-rgb: 120, 175, 160; }
 [data-theme='night'] { --accent: #a9c2ff; --accent-rgb: 169, 194, 255; --accent2-rgb: 232, 238, 255; }
+[data-theme='pond'] { --accent: #a8dcb4; --accent-rgb: 168, 220, 180; --accent2-rgb: 215, 235, 200; }
+[data-theme='ferns'] { --accent: #c9d9a8; --accent-rgb: 201, 217, 168; --accent2-rgb: 150, 185, 165; }
+[data-theme='sunrise'] { --accent: #ffb98a; --accent-rgb: 255, 185, 138; --accent2-rgb: 255, 150, 110; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
