@@ -305,6 +305,7 @@ test.describe('soundscapes', () => {
 
   test('every soundscape renders its own scene', async ({ page }) => {
     expect(new Set(items.map((it) => it.theme)).size).toBe(items.length);
+    const orbCentres: number[] = [];
     await open(page);
     await page.locator('#orb').click();
     for (let i = 0; i < items.length; i++) {
@@ -313,8 +314,12 @@ test.describe('soundscapes', () => {
       await page.waitForTimeout(1600);
       // a touch keeps the sleep dim (15 s) away while we go through them all
       await page.evaluate(() => dispatchEvent(new PointerEvent('pointerdown')));
+      // the orb sits at the same height whatever the title and subtitle wrap to (it breathes, so compare centres)
+      const box = (await page.locator('#orb').boundingBox())!;
+      orbCentres.push(box.y + box.height / 2);
       await page.screenshot({ path: `${SHOTS}/10-scape-${i}-${items[i]!.theme}.png` });
     }
+    expect(Math.max(...orbCentres) - Math.min(...orbCentres)).toBeLessThan(1);
     expect(errors).toEqual([]);
   });
 });
