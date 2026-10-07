@@ -81,7 +81,26 @@ the ~1,000 recordings that came up, one is long enough (≥ 8 min), mostly rain,
 XC442992, which was used as "Blue Mountains Rain" and then **removed** because the quality was too low (37 kbps mono
 MP3 recorded through a bedroom window). The others are single bird recordings "in the rain" of under a minute (e.g. Peter Boesman's,
 which are also ND), or soundscapes where rain starts partway through (XC443114 at 16:10, XC442755 at 33:50).
-No Australian rain loop is in the app; Rain on Leaves (Iran, below) replaced it. The Australian Acoustic Observatory and Freesound would be the places to look for one, but both are still blocked here (see below).
+No Australian rain loop is in the app; Rain on Leaves (Iran, below) replaced it. The Australian Acoustic Observatory is reachable now and was searched (next section); Freesound is still blocked here.
+
+## Australian rain from A2O: search result
+
+The [Australian Acoustic Observatory](https://acousticobservatory.org) (A2O) API is open and the recordings are CC BY 4.0.
+Clips are capped at 300 s per request (two overlapping clips splice sample-exactly), and the original files need a login.
+Every recording is mono at 22.05 kHz, so there is nothing above 11 kHz.
+
+Method: the `rain` tag (2,783 clips in 2,319 recordings at 36 sites). I probed 585 one-minute windows around tags at the
+forest sites (Little Llangothlin/Warra, SEQP Samford, Five Rivers, Reedy Creek), then pulled 9.5 minutes around the best
+15 and scored them for flatness, steadiness, drop bursts and kurtosis.
+
+Finding: the steady "rain" spans are Gaussian (kurtosis ≈ 3) at −55 to −58 dBFS. That is mostly the recorder's own hiss,
+which normalising would lift by about 30 dB. The spans with real rain have drops hitting the recorder housing (peaks to
+0 dBFS).
+
+Two candidates were previewed and **rejected by ear**: recording 17817 (Little Llangothlin/Warra, 17 Mar 2020) and
+recording 1869 (SEQP Samford, 17 Jul 2019).
+
+Still open: an Australian rain loop. Untagged wet-forest A2O sites (Victoria, Tasmania) were not searched.
 
 ## Rain on leaves, worldwide: search result
 
@@ -134,8 +153,8 @@ Western Port) holds only 11 recordings of 2 minutes or more, and none a night so
 | [XC641433](https://xeno-canto.org/641433) / [XC641430](https://xeno-canto.org/641430) | Black Range dawn chorus (quality C) / southern boobook at 03:00, Murrindindi | About 1½ hours from Melbourne; the boobook is 24 kHz mono. |
 
 Still open: a quiet Victorian *night* (boobook, frogs, crickets). The [Australian Acoustic
-Observatory](https://acousticobservatory.org) (CC BY 4.0) is the likely source, but `api.acousticobservatory.org` and
-`data.acousticobservatory.org` are **blocked by the build environment's network policy** (only the main site answers).
+Observatory](https://acousticobservatory.org) (CC BY 4.0) is the likely source.
+Its API is reachable now (see "Australian rain from A2O" above), but only rain was searched, not quiet nights.
 Each soundscape has its own scene: the Dandenongs lyrebird has tree ferns in shafts of light, Blue Mountains Dawn the southern sky over eucalypts, and Queensland Dawn a sunrise behind hoop pines.
 
 ## Other Australian recordings I looked at
