@@ -53,6 +53,19 @@
       "prelimit": -14
     },
     {
+      "id": "pyrenean-drizzle",
+      "xcId": 996011,
+      "name": "Pyrenean Drizzle",
+      "subtitle": "Light spring rain, with tits and firecrests · Massif du Pibeste, Hautes-Pyrénées",
+      "theme": "drizzle",
+      "species": "Light rain, with birds",
+      "place": "Massif du Pibeste-Aoulhet nature reserve, Hautes-Pyrénées",
+      "start": 1600,
+      "loop": 420,
+      "crossfade": 9,
+      "prelimit": -18
+    },
+    {
       "id": "frog-pond",
       "xcId": 990325,
       "name": "Frog Pond",
@@ -62,6 +75,44 @@
       "scientific": "Pelophylax perezi",
       "place": "Lagoon by the José Antonio Valverde visitor centre, Aznalcázar, Sevilla",
       "start": 790,
+      "loop": 420,
+      "crossfade": 9
+    },
+    {
+      "id": "tree-frog-pond",
+      "xcId": 1089960,
+      "name": "Tree Frog Pond",
+      "subtitle": "A March evening chorus of Mediterranean tree frogs · Lavalette, near Toulouse",
+      "theme": "marsh",
+      "species": "Mediterranean tree frog",
+      "scientific": "Hyla meridionalis",
+      "place": "Lavalette, Haute-Garonne",
+      "start": 2890,
+      "loop": 420,
+      "crossfade": 9
+    },
+    {
+      "id": "creek-owl",
+      "xcId": 986286,
+      "name": "Creek and Tawny Owl",
+      "subtitle": "A creek at dusk, the last thrushes and a tawny owl · Reichraming, Upper Austria",
+      "theme": "creek",
+      "species": "Creek at dusk, with a tawny owl",
+      "place": "Wilder Graben, Reichraming, Upper Austria",
+      "start": 435,
+      "loop": 420,
+      "crossfade": 9,
+      "prelimit": -10
+    },
+    {
+      "id": "stream-at-sunset",
+      "xcId": 540233,
+      "name": "Stream at Sunset",
+      "subtitle": "A small stream in a quiet valley at sunset · Cordes-sur-Ciel, Tarn",
+      "theme": "valley",
+      "species": "Stream at sunset",
+      "place": "A small valley by a chapel, Cordes-sur-Ciel, Tarn",
+      "start": 1405,
       "loop": 420,
       "crossfade": 9
     },

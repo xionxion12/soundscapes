@@ -10,9 +10,9 @@
 //
 // Output: .cache/previews/<key>.mp3 and <key>-sonogram.webp. Needs ffmpeg + ffprobe.
 // MP3 rather than the app's AAC so the previews play in any browser or web page, Chromium included.
-// Sources: `{ "xc": <id> }` (xeno-canto, the original upload, cached with the build's downloads)
-// or `{ "a2o": <recording id> }` (Australian Acoustic Observatory, CC BY 4.0; mono 22.05 kHz; its
-// media API serves at most 300 s per request, so the preview window is fetched on its own).
+// Sources: `{ "xc": <id> }` (xeno-canto, the original upload, cached with the build's downloads).
+// The Australian Acoustic Observatory is no longer used: its recordings are mono at 22.05 kHz and
+// were rejected by ear in round 2 (docs/curation.md).
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -73,14 +73,6 @@ async function source(item, from, seconds) {
     if (!(await exists(f))) await download(`https://xeno-canto.org/${item.source.xc}/download`, f);
     return { file: f, offset: from };
   }
-  if (item.source.a2o) {
-    const a = Math.floor(from);
-    const b = Math.ceil(from + seconds);
-    if (b - a > 300) throw new Error('A2O serves at most 300 s per request');
-    const f = path.join(SRC_CACHE, `A2O${item.source.a2o}-${a}-${b}.flac`);
-    if (!(await exists(f))) await download(`https://api.acousticobservatory.org/audio_recordings/${item.source.a2o}/media.flac?start_offset=${a}&end_offset=${b}`, f);
-    return { file: f, offset: from - a };
-  }
   throw new Error(`${item.key}: unknown source`);
 }
 
@@ -107,10 +99,9 @@ async function buildPreview(cfg, item) {
     '-c:a', 'libmp3lame', '-b:a', `${cfg.bitrate}k`, '-ar', '48000', out,
   ]);
 
-  // sonogram of the whole loop window (A2O: of the preview, since the window is not downloaded)
+  // sonogram of the whole loop window
   const sono = path.join(OUT, `${item.key}-sonogram.webp`);
-  const whole = item.source.xc ? ['-ss', String(item.start), '-t', String(window), '-i', src.file] : ['-i', tmp];
-  await ff([...whole, '-lavfi', 'aformat=channel_layouts=mono,showspectrumpic=s=1280x184:legend=0:fscale=lin:stop=11000:scale=log:drange=70:gain=1:color=magma', '-frames:v', '1', '-c:v', 'libwebp', '-quality', '80', sono]);
+  await ff(['-ss', String(item.start), '-t', String(window), '-i', src.file, '-lavfi', 'aformat=channel_layouts=mono,showspectrumpic=s=1280x184:legend=0:fscale=lin:stop=11000:scale=log:drange=70:gain=1:color=magma', '-frames:v', '1', '-c:v', 'libwebp', '-quality', '80', sono]);
   await run('rm', ['-f', tmp]);
   const done = await measure(out);
   console.log(`  ✓ ${item.key}: ${m.lufs.toFixed(1)} LUFS → ${done.lufs} LUFS (gain ${gain >= 0 ? '+' : ''}${gain.toFixed(1)} dB), true peak ${done.truePeak} dBTP, ${stereo.label.toLowerCase()}`);

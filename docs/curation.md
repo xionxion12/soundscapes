@@ -1,8 +1,8 @@
 # Curation: how the soundscapes were chosen
 
-**Read this first:** the picks were made from xeno-canto metadata, numeric analysis and *spectrograms*
-(viewed as images), not by listening. Please listen to each recording on its xeno-canto page and tell me
-which to swap. Every runner-up below is a one-line change in `scripts/soundscapes.config.json`
+**Read this first:** the first eight picks were made from xeno-canto metadata, numeric analysis and *spectrograms*
+(viewed as images), not by listening. From round 2 on, candidates are auditioned by ear first (2-minute previews, see
+"Round 2" below) and only the keeps are built. Every runner-up below is a one-line change in `scripts/soundscapes.config.json`
 followed by `npm run audio:build -- --only <id>`.
 
 ## Selection rules
@@ -10,6 +10,8 @@ followed by `npm run audio:build -- --only <id>`.
 - Quality A (B only when nothing better fit), **≥ 8 minutes**, ≥ 44.1 kHz.
 - License **CC BY / BY-SA / BY-NC / BY-NC-SA**. ND is rejected: a loop is a derivative work.
 - Night/season filter by recording time and month where the metadata has them.
+- **No Australian Acoustic Observatory (A2O).** Its recordings are mono at 22.05 kHz (nothing above 11 kHz); all five
+  A2O candidates were rejected by ear in round 2. Prefer **true stereo** (measured, not read from the file header).
 - Calmness score (`scripts/find-candidates.mjs`) from per-second loudness spread, transient spikes,
   clipping and low-frequency rumble, used to find the calmest window; then a visual check of each
   spectrogram, and a band-balance check of the *built* loop (see "What I rejected").
@@ -23,6 +25,10 @@ followed by `npm run audio:build -- --only <id>`.
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
 | `rain-on-leaves` | [XC732936](https://xeno-canto.org/732936), rainy soundscape, Cedric Mroczko | Darkesh, North Khorasan, Iran (broadleaf forest, 1600 m) · 30 Apr 2022, 13:00 | B · CC BY-NC-SA | 33:00 → 40:09 of 61:02 |
 | `frog-pond` | [XC990325](https://xeno-canto.org/990325), Iberian green frog chorus, Esperanza Poveda | Lagoon by the José Antonio Valverde visitor centre, Doñana marshes (Aznalcázar, Sevilla), Spain · 12 May 2018 | A · CC BY-NC-SA | 13:10 → 20:19 of 20:50 |
+| `pyrenean-drizzle` | [XC996011](https://xeno-canto.org/996011), rainy soundscape, Cedric Mroczko | Massif du Pibeste-Aoulhet reserve, Hautes-Pyrénées, France · 2 May 2025, 16:50 | B · CC BY-NC-SA | 26:40 → 33:49 of 87:37 |
+| `tree-frog-pond` | [XC1089960](https://xeno-canto.org/1089960), Mediterranean tree frog chorus, Cedric Mroczko | Lavalette, Haute-Garonne, France · 21 Mar 2026, 20:00 | B · CC BY-NC-SA | 48:10 → 55:19 of 66:27 |
+| `creek-owl` | [XC986286](https://xeno-canto.org/986286), dusk soundscape with a tawny owl, Harald Pfleger | Wilder Graben, Reichraming, Upper Austria · 4 Apr 2025, 20:30 | B · CC BY-NC-SA | 7:10 → 14:19 of 19:47 |
+| `stream-at-sunset` | [XC540233](https://xeno-canto.org/540233), sunset soundscape by a stream, Cedric Mroczko | By a chapel, Cordes-sur-Ciel, Tarn, France · 31 Mar 2020, 20:30 | B · CC BY-NC-SA | 23:25 → 30:34 of 34:40 |
 | `dandenong-lyrebird` | [XC1173949](https://xeno-canto.org/1173949), superb lyrebird, Romuald Mikusek | Dandenong Ranges NP (Ferntree Gully area, near Tremont), **Victoria** · 22 Jan 2024, 07:30 | A · CC BY-NC-SA | 0:55 → 8:04 of 9:05 |
 | `blue-mountains-dawn` | [XC442478](https://xeno-canto.org/442478), dawn chorus, James Ray | Faulconbridge, Blue Mountains, New South Wales · 8 Oct 2018, 07:21 | A · CC BY-NC-SA | 6:00 → 13:09 of 17:54 |
 | `queensland-dawn` | [XC505753](https://xeno-canto.org/505753), sunrise soundscape, Tom Tarrant | Dayboro, Moreton Bay, Queensland · 3 Nov 2019, 07:00 | A · CC BY-NC-SA | 9:40 → 16:49 of 33:02 |
@@ -169,44 +175,52 @@ All of these are on xeno-canto, which has only about 80 recordings of 8 minutes 
 | [XC443120](https://xeno-canto.org/443120), Faulconbridge afternoon, 47 min | Long quiet stretches broken by loud events. |
 | Kakadu dawns ([XC482453](https://xeno-canto.org/482453), [XC482572](https://xeno-canto.org/482572), [XC483007](https://xeno-canto.org/483007)) | Strong low-frequency rumble (≥ 86 % of the energy). |
 
-## Round 2 (October 2026): candidates to audition
+## Round 2 (October 2026): auditioned by ear
 
-This round is a shortlist to **listen to**, not a line-up change. The 17 candidates are in
-[`scripts/shortlist.json`](../scripts/shortlist.json). `npm run audio:previews` cuts a 2-minute preview from the middle of
-each one's loop window, processed the way the loops are (high-pass, loudness-normalised to −24 LUFS), and measures whether
-it is really stereo (from the left/right correlation, since many "stereo" uploads are mono copied to both channels).
-Keeps get a `soundscapes.config.json` entry and `npm run audio:build`. The A2O ones need the build to fetch A2O audio
-first (≤ 300 s per request, spliced).
+Seventeen candidates were picked to match what had stayed in the app (steady beds of rain, insects, frogs and one owl,
+plus Victoria and the two open gaps: an Australian rain loop and a quiet Victorian night). Each was auditioned as a
+2-minute preview from the middle of its loop window, processed the way the loops are (`npm run audio:previews`, from
+[`scripts/shortlist.json`](../scripts/shortlist.json), which also records the verdicts), with a stereo/mono flag measured
+from the left/right correlation.
 
-Aimed at what stayed in the app: steady beds (rain, insects, frogs, one owl), Victoria, and the two gaps left open above
-(an Australian rain loop, a quiet Victorian night).
+**Kept and built:** Pyrenean Drizzle (`pyrenean-drizzle`), Tree Frog Pond (`tree-frog-pond`), Creek and Tawny Owl
+(`creek-owl`) and Stream at Sunset (`stream-at-sunset`), each with its own scene (misty ridges in the drizzle, a dusk spruce
+valley with an owl, a chapel at sunset, a twilight marsh with a heron).
 
-| Group | Candidates |
+**Passed by ear:**
+
+| Recording | What it is |
 |---|---|
-| Australia (A2O, mono 22.05 kHz) | Wombat Forest night ([974630](https://data.acousticobservatory.org/listen/974630)), Wombat Forest rain ([975930](https://data.acousticobservatory.org/listen/975930)), Croajingolong night ([1214218](https://data.acousticobservatory.org/listen/1214218)), two Daintree nights ([492247](https://data.acousticobservatory.org/listen/492247), [488123](https://data.acousticobservatory.org/listen/488123)) |
-| Rain | [XC831375](https://xeno-canto.org/831375) (last round's runner-up), [XC996011](https://xeno-canto.org/996011) Pyrenees, [XC324425](https://xeno-canto.org/324425) thunder in a Bavarian beech wood |
-| Water | [XC770950](https://xeno-canto.org/770950) Pyrenean stream, [XC986286](https://xeno-canto.org/986286) creek with a tawny owl, [XC963674](https://xeno-canto.org/963674) torrent, [XC1047876](https://xeno-canto.org/1047876) calm Arctic sea, [XC540233](https://xeno-canto.org/540233) stream at sunset (quiet source: +27 dB) |
-| Frogs | [XC1089960](https://xeno-canto.org/1089960) Lavalette (Haute-Garonne), [XC883905](https://xeno-canto.org/883905) Tarn, [XC1164498](https://xeno-canto.org/1164498) (last round's favourite runner-up) |
-| Night | [XC660465](https://xeno-canto.org/660465) nightjar (last round's runner-up) |
+| A2O 974630, 975930 | Wombat State Forest, Victoria: a summer night wall of sound, and probable rain |
+| A2O 1214218 | Marshmead, Croajingolong, Victoria: a quiet spring night (+13 dB lift) |
+| A2O 492247, 488123 | Daintree nights, layered insect choruses |
+| [XC831375](https://xeno-canto.org/831375) | Carpathian rain (last round's runner-up) |
+| [XC324425](https://xeno-canto.org/324425) | Thunder in a Bavarian beech wood |
+| [XC770950](https://xeno-canto.org/770950) | Pyrenean mountain stream, a low roar (+16 dB) |
+| [XC963674](https://xeno-canto.org/963674) | Pine-forest torrent, Salamanca (bright hiss; partly out of phase) |
+| [XC1047876](https://xeno-canto.org/1047876) | Calm Arctic sea, Troms |
+| [XC883905](https://xeno-canto.org/883905) | Marsh frogs and tree frogs, Tarn |
+| [XC1164498](https://xeno-canto.org/1164498) | Tree frogs and reed crickets, Sevilla (last round's favourite runner-up; partly out of phase) |
+| [XC660465](https://xeno-canto.org/660465) | Nightjar churring, Aude (last round's runner-up) |
 
-How they were found: the remarks of 4,659 xeno-canto recordings (rain, streams, sea, frogs, crickets, owls, nightjars,
+What the verdicts say about taste: every A2O recording was passed (mono, 22.05 kHz, so A2O is no longer used), and so was
+everything harsh, very bright or dramatic (thunder, torrent hiss, a single-pitch nightjar). All four keeps are gentle,
+stereo, European (three of them French) and evening or rain. A heavily lifted quiet source was fine (Stream at Sunset is
+raised 27 dB), so a low source level alone is no reason to reject.
+
+How the round was found: the remarks of 4,659 xeno-canto recordings (rain, streams, sea, frogs, crickets, owls, nightjars,
 Australia, New Zealand) were read, 26 were downloaded and their calmest 7-minute window measured, and 1,017 one-minute
-night samples from A2O recorders in Wombat State Forest (Victoria, about 1¼ h from Melbourne), Marshmead (Croajingolong)
-and the Daintree were scored for loudness and band balance. Wombat's wet sites are loud and steady on many summer nights
-(−20 to −27 LUFS), unlike the hiss-level A2O rain of the last search. Daintree nights in October–November are dense,
-layered insect choruses at 3–8 kHz.
+night samples from A2O recorders in Wombat State Forest, Marshmead (Croajingolong) and the Daintree were scored for
+loudness and band balance.
 
-Measured and left out: close-calling tawny owls ([XC712686](https://xeno-canto.org/712686), [XC1098991](https://xeno-canto.org/1098991): 55–75 sharp hits a minute), owls in the rain in Bavaria ([XC324428](https://xeno-canto.org/324428), [XC324439](https://xeno-canto.org/324439): 36–39 a minute), a Swedish meltwater stream ([XC782764](https://xeno-canto.org/782764): 71 % of the energy below 150 Hz), a Swedish thunderstorm ([XC814121](https://xeno-canto.org/814121): clips), a Brittany nightjar ([XC1000193](https://xeno-canto.org/1000193): rumble), a second Blue Mountains lyrebird ([XC1163855](https://xeno-canto.org/1163855): busier than the Dandenongs one), a Malaysian katydid night ([XC958773](https://xeno-canto.org/958773): its song is ultrasonic) and the Acre frog twin of the dropped Amazon Night.
-
-Two xeno-canto picks are partly out of phase (left/right correlation about −0.65: the torrent and the Sevilla frogs), so
-they may sound thin when summed to one speaker.
+Measured and left out before the audition: close-calling tawny owls ([XC712686](https://xeno-canto.org/712686), [XC1098991](https://xeno-canto.org/1098991): 55–75 sharp hits a minute), owls in the rain in Bavaria ([XC324428](https://xeno-canto.org/324428), [XC324439](https://xeno-canto.org/324439): 36–39 a minute), a Swedish meltwater stream ([XC782764](https://xeno-canto.org/782764): 71 % of the energy below 150 Hz), a Swedish thunderstorm ([XC814121](https://xeno-canto.org/814121): clips), a Brittany nightjar ([XC1000193](https://xeno-canto.org/1000193): rumble), a second Blue Mountains lyrebird ([XC1163855](https://xeno-canto.org/1163855): busier than the Dandenongs one), a Malaysian katydid night ([XC958773](https://xeno-canto.org/958773): its song is ultrasonic) and the Acre frog twin of the dropped Amazon Night.
 
 ## Runners-up (all listed with the reason they lost)
 
 | Recording | What it is | Why not |
 |---|---|---|
-| [XC1164498](https://xeno-canto.org/1164498) | Mediterranean tree frogs + reed crickets, salt marsh near Sevilla, A, CC BY-NC-SA, 13 min | **My favourite runner-up**; a clean, steady frog wall (it was built and passed every check). Dropped only because I wanted tree crickets and a different night. Swap-in candidate. |
-| [XC660465](https://xeno-canto.org/660465) | European nightjar churring, Axat (Aude), 01:40, A, CC BY-NC-SA, 14 min | A very steady 2.4 kHz drone, strong; a few low thumps near 5–7 min and a mammal at the end. Could be tiring. |
+| [XC1164498](https://xeno-canto.org/1164498) | Mediterranean tree frogs + reed crickets, salt marsh near Sevilla, A, CC BY-NC-SA, 13 min | **My favourite runner-up**; a clean, steady frog wall (it was built and passed every check). Dropped only because I wanted tree crickets and a different night. **Passed by ear in round 2.** |
+| [XC660465](https://xeno-canto.org/660465) | European nightjar churring, Axat (Aude), 01:40, A, CC BY-NC-SA, 14 min | A very steady 2.4 kHz drone, strong; a few low thumps near 5–7 min and a mammal at the end. Could be tiring. **Passed by ear in round 2.** |
 | [XC1177486](https://xeno-canto.org/1177486) | Acre frog chorus, 00:50 | Near-twin of the Amazon pick. |
 | [XC831144](https://xeno-canto.org/831144) / [XC962347](https://xeno-canto.org/962347) | Ukrainian evening chorus with songbirds / Iberian green frog pond with field crickets | Busier / similar to picks already in. |
 | [XC670591](https://xeno-canto.org/670591) | Tawny owl + great green bush-cricket, Tarn, 00:30, B | The "distant owl + katydid" night I wanted, but it is high-passed at 300 Hz and almost all its energy is above 8 kHz: harsh for sleep. |

@@ -1131,6 +1131,610 @@ class Sunrise implements Scene {
   }
 }
 
+// ---- Pyrenean drizzle: ridge after ridge fading into the rain, fine drizzle, a pale break in the cloud ----
+// The high band (the hiss of the rain) sets how thick the drizzle looks, the low band lifts the mist
+// between the ridges, and a call brightens the light behind the cloud for a moment.
+
+/** A fir: a narrow, tiered cone. */
+function fir(f: CanvasRenderingContext2D, x: number, base: number, height: number) {
+  const tiers = 6;
+  f.beginPath();
+  f.moveTo(x, base - height);
+  for (let i = 1; i <= tiers; i++) {
+    const k = i / tiers, y = base - height * (1 - k) - height * 0.04, half = height * 0.2 * k;
+    f.lineTo(x + half, y);
+    f.lineTo(x + half * 0.55, y - height * 0.03);
+  }
+  f.lineTo(x + height * 0.03, base);
+  f.lineTo(x - height * 0.03, base);
+  for (let i = tiers; i >= 1; i--) {
+    const k = i / tiers, y = base - height * (1 - k) - height * 0.04, half = height * 0.2 * k;
+    f.lineTo(x - half * 0.55, y - height * 0.03);
+    f.lineTo(x - half, y);
+  }
+  f.closePath();
+  f.fill();
+}
+
+/** A ridge line across the whole width, filled to the bottom. */
+function ridge(f: CanvasRenderingContext2D, w: number, h: number, y: number, amp: number, seed: number, fill: string) {
+  f.fillStyle = fill;
+  f.beginPath();
+  f.moveTo(0, h);
+  for (let x = 0; x <= w + w / 60; x += w / 60) {
+    const u = x / w;
+    f.lineTo(x, y - amp * (0.55 * Math.sin(u * 3.1 + seed) + 0.3 * Math.sin(u * 7.7 + seed * 2.3) + 0.15 * Math.abs(Math.sin(u * 19 + seed))));
+  }
+  f.lineTo(w, h);
+  f.fill();
+}
+
+class Drizzle implements Scene {
+  private bg = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private mist = sprite([170, 190, 210], 128);
+  private light = sprite([225, 232, 240], 256);
+  private drops: { x: number; y: number; z: number }[] = [];
+  private mists: { x: number; y: number; s: number; ph: number }[] = [];
+  private swells: number[] = [];
+  private fine = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.bg, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    const g = this.bg.getContext('2d')!;
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#0b0f15');
+    grad.addColorStop(0.45, '#1b2430');
+    grad.addColorStop(0.75, '#141b24');
+    grad.addColorStop(1, '#06080b');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+    // ridges: each nearer one darker and less hazy
+    ridge(g, w, h, h * 0.42, h * 0.07, 1.3, '#202a36');
+    ridge(g, w, h, h * 0.52, h * 0.08, 4.1, '#18202a');
+    ridge(g, w, h, h * 0.63, h * 0.07, 2.2, '#10161d');
+
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    ridge(f, w, h, h * 0.8, h * 0.06, 5.4, '#07090c');
+    f.fillStyle = '#07090c';
+    for (const [px, tall] of [[0.06, 0.3], [0.13, 0.22], [0.2, 0.15], [0.78, 0.18], [0.86, 0.27], [0.94, 0.34], [0.5, 0.1], [0.56, 0.08]] as const) {
+      fir(f, w * px, h * (0.83 + Math.sin(px * 9) * 0.01), h * tall);
+    }
+    const n = Math.min(260, Math.max(120, Math.round((w * h) / 3000)));
+    this.drops = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, z: rand(0.2, 1) }));
+    this.mists = Array.from({ length: 7 }, (_, i) => ({ x: Math.random() * w, y: h * (0.42 + (i % 4) * 0.1), s: rand(0.7, 1.2) * w, ph: rand(0, 6.28) }));
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.fine += (lv[2] - this.fine) * Math.min(1, dt * 3);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.bg, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    // a pale break in the cloud, swelling on calls
+    if (onset && motion && this.swells.length < 3) this.swells.push(0);
+    const ls = w * 1.1;
+    ctx.globalAlpha = alpha * (0.1 + lv[1] * 0.12);
+    ctx.drawImage(this.light, w * 0.62 - ls / 2, h * 0.3 - ls * 0.25, ls, ls * 0.5);
+    this.swells = this.swells.map((a) => a + dt).filter((a) => a < SWELL_LIFE);
+    for (const age of this.swells) {
+      const k = age / SWELL_LIFE;
+      ctx.globalAlpha = alpha * Math.sin(Math.PI * Math.min(1, k * 1.5)) * (1 - k) * 0.16;
+      ctx.drawImage(this.light, w * 0.62 - ls / 2, h * 0.3 - ls * 0.25, ls, ls * 0.5);
+    }
+    // mist drifting between the ridges
+    for (const m of this.mists) {
+      const dx = motion ? Math.sin(t * 0.04 + m.ph) * w * 0.08 : 0;
+      ctx.globalAlpha = alpha * (0.07 + lv[0] * 0.14);
+      ctx.drawImage(this.mist, m.x + dx - m.s / 2, m.y - m.s * 0.12, m.s, m.s * 0.24);
+    }
+    // drizzle: short, faint, slanted; the hiss thickens it
+    const density = 0.4 + this.fine * 0.6;
+    ctx.lineCap = 'round';
+    for (const d of this.drops) {
+      const speed = (260 + d.z * 360) * unit;
+      if (motion) {
+        d.y += speed * dt;
+        d.x -= speed * 0.18 * dt;
+        if (d.y > h) {
+          d.y = -10;
+          d.x = Math.random() * w * 1.2;
+        }
+      }
+      if (d.z > density) continue;
+      const len = (6 + d.z * 14) * unit;
+      ctx.lineWidth = (0.6 + d.z * 0.9) * unit * 1.3;
+      ctx.strokeStyle = `rgba(200,215,230,${(0.1 + d.z * 0.25) * alpha})`;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x + len * 0.18, d.y - len);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ---- Creek at dusk: a steep spruce valley, the evening star, the creek glinting below, an owl on a branch ----
+// The low band (the creek's roar) sets how fast and bright the water glints run, the high band makes the
+// stars twinkle, and a call opens the owl's eyes for a moment.
+
+/** A spruce: a narrow, drooping-tiered spire. */
+function spruce(f: CanvasRenderingContext2D, x: number, base: number, height: number) {
+  f.beginPath();
+  f.moveTo(x, base - height);
+  const tiers = 9;
+  for (let i = 1; i <= tiers; i++) {
+    const k = i / tiers, y = base - height * (1 - k) * 0.94, half = height * 0.13 * k;
+    f.lineTo(x + half, y + height * 0.012);
+    f.lineTo(x + half * 0.4, y - height * 0.02);
+  }
+  f.lineTo(x, base);
+  for (let i = tiers; i >= 1; i--) {
+    const k = i / tiers, y = base - height * (1 - k) * 0.94, half = height * 0.13 * k;
+    f.lineTo(x - half * 0.4, y - height * 0.02);
+    f.lineTo(x - half, y + height * 0.012);
+  }
+  f.closePath();
+  f.fill();
+}
+
+class Creek implements Scene {
+  private bg = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private star = sprite([210, 210, 255], 32);
+  private venus = sprite([235, 225, 255], 128);
+  private eye = sprite([255, 200, 110], 32);
+  private stars: { x: number; y: number; ph: number; sp: number; sz: number }[] = [];
+  /** Points along the creek's centre line, from far (k = 0) to near (k = 1). */
+  private path: { x: number; y: number; wd: number }[] = [];
+  private glints: { k: number; off: number; sp: number; len: number }[] = [];
+  private owl = { x: 0, y: 0, s: 0 };
+  private eyes: number[] = [];
+  private flow = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.bg, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    const g = this.bg.getContext('2d')!;
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#060818');
+    grad.addColorStop(0.35, '#151a3c');
+    grad.addColorStop(0.55, '#2b2a52');
+    grad.addColorStop(0.62, '#3a3358');
+    grad.addColorStop(1, '#05060c');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+    this.stars = Array.from({ length: Math.min(90, Math.round((w * h) / 7000)) }, () => ({ x: Math.random() * w, y: Math.random() * h * 0.4, ph: rand(0, 6.28), sp: rand(0.6, 2.2), sz: rand(0.4, 1.1) }));
+
+    // the valley: two steep wooded slopes meeting low in the middle, the far one paler
+    g.fillStyle = '#121430';
+    g.beginPath();
+    g.moveTo(0, h * 0.4);
+    g.lineTo(w * 0.42, h * 0.66);
+    g.lineTo(w * 0.62, h * 0.62);
+    g.lineTo(w, h * 0.34);
+    g.lineTo(w, h);
+    g.lineTo(0, h);
+    g.fill();
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    const ink = '#04050b';
+    f.fillStyle = ink;
+    f.beginPath();
+    f.moveTo(0, h * 0.5);
+    f.quadraticCurveTo(w * 0.25, h * 0.6, w * 0.42, h * 0.74);
+    f.lineTo(w * 0.36, h);
+    f.lineTo(0, h);
+    f.fill();
+    f.beginPath();
+    f.moveTo(w, h * 0.46);
+    f.quadraticCurveTo(w * 0.78, h * 0.6, w * 0.6, h * 0.72);
+    f.lineTo(w * 0.72, h);
+    f.lineTo(w, h);
+    f.fill();
+    for (let i = 0; i < 16; i++) {
+      const left = i % 2 === 0, k = rand(0, 1);
+      const x = left ? w * 0.42 * k : w - (w - w * 0.6) * k;
+      const base = left ? h * 0.5 + (h * 0.24) * k * k : h * 0.46 + h * 0.26 * k * k;
+      spruce(f, x, base + h * 0.02, h * rand(0.12, 0.2) * (1.2 - k * 0.5));
+    }
+    // the creek, winding down out of the valley towards us
+    this.path = Array.from({ length: 24 }, (_, i) => {
+      const k = i / 23;
+      return { x: w * (0.52 + Math.sin(k * 3.4) * 0.08 * (0.3 + k)), y: h * (0.68 + k * 0.34), wd: w * (0.015 + k * k * 0.16) };
+    });
+    f.fillStyle = '#0d1230';
+    f.beginPath();
+    this.path.forEach((p, i) => (i ? f.lineTo(p.x - p.wd, p.y) : f.moveTo(p.x - p.wd, p.y)));
+    for (let i = this.path.length - 1; i >= 0; i--) f.lineTo(this.path[i]!.x + this.path[i]!.wd, this.path[i]!.y);
+    f.fill();
+    this.glints = Array.from({ length: 70 }, () => ({ k: Math.random(), off: rand(-0.8, 0.8), sp: rand(0.05, 0.12), len: rand(0.4, 1) }));
+    // a bare branch in from the right with the owl on it
+    f.strokeStyle = ink;
+    f.lineCap = 'round';
+    f.lineWidth = h * 0.012;
+    f.beginPath();
+    f.moveTo(w * 1.02, h * 0.3);
+    f.quadraticCurveTo(w * 0.86, h * 0.33, w * 0.7, h * 0.315);
+    f.stroke();
+    f.lineWidth = h * 0.005;
+    for (const [x0, y0, x1, y1] of [[0.8, 0.322, 0.74, 0.27], [0.9, 0.315, 0.86, 0.36], [0.74, 0.318, 0.68, 0.34]] as const) {
+      f.beginPath();
+      f.moveTo(w * x0, h * y0);
+      f.lineTo(w * x1, h * y1);
+      f.stroke();
+    }
+    const s = h * 0.034;
+    this.owl = { x: w * 0.79, y: h * 0.318 - s * 1.05, s };
+    f.fillStyle = ink;
+    f.beginPath();
+    f.ellipse(this.owl.x, this.owl.y, s * 0.62, s, 0, 0, Math.PI * 2);
+    f.fill();
+    f.beginPath();
+    f.ellipse(this.owl.x, this.owl.y - s * 0.95, s * 0.55, s * 0.48, 0, 0, Math.PI * 2);
+    f.fill();
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.flow += (lv[0] - this.flow) * Math.min(1, dt * 2);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.bg, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of this.stars) {
+      const tw = motion ? 0.5 + 0.5 * Math.sin(t * s.sp + s.ph) : 0.7;
+      const sz = (4 + s.sz * 6) * unit * 1.4;
+      ctx.globalAlpha = Math.min(1, (0.12 + tw * 0.3) * (0.7 + lv[2] * 1.2)) * alpha;
+      ctx.drawImage(this.star, s.x - sz / 2, s.y - sz / 2, sz, sz);
+    }
+    // the evening star over the valley
+    const vs = 70 * unit * (1 + lv[1] * 0.3);
+    ctx.globalAlpha = alpha * 0.8;
+    ctx.drawImage(this.venus, w * 0.3 - vs / 2, h * 0.2 - vs / 2, vs, vs);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+
+    // the creek's glints run towards us; the roar of the water speeds them up
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = '#c8d2ff';
+    for (const g of this.glints) {
+      if (motion) {
+        g.k += g.sp * (0.5 + this.flow * 1.6) * dt;
+        if (g.k > 1) {
+          g.k -= 1;
+          g.off = rand(-0.8, 0.8);
+        }
+      }
+      const i = Math.min(this.path.length - 2, Math.floor(g.k * (this.path.length - 1)));
+      const a = this.path[i]!, b = this.path[i + 1]!, u = g.k * (this.path.length - 1) - i;
+      const x = a.x + (b.x - a.x) * u, y = a.y + (b.y - a.y) * u, wd = a.wd + (b.wd - a.wd) * u;
+      const len = wd * 0.5 * g.len;
+      ctx.globalAlpha = alpha * (0.12 + g.k * 0.3) * (0.6 + this.flow * 0.8);
+      ctx.fillRect(x + g.off * wd - len / 2, y, len, Math.max(1, (0.8 + g.k * 2) * unit));
+    }
+    // a call: the owl's eyes open, glow, and close again
+    if (onset && motion && this.eyes.length < 2) this.eyes.push(0);
+    this.eyes = this.eyes.map((a) => a + dt).filter((a) => a < 2.6);
+    for (const age of this.eyes) {
+      const o = Math.sin(Math.PI * Math.min(1, age / 2.6));
+      const es = this.owl.s * 0.7;
+      ctx.globalAlpha = alpha * o * 0.9;
+      for (const dx of [-0.2, 0.2]) ctx.drawImage(this.eye, this.owl.x + dx * this.owl.s - es / 2, this.owl.y - this.owl.s * 0.98 - es / 2, es, es);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ---- Stream at sunset: a hilltop chapel against a rose sky, a small stream catching the last light ----
+// The low band lets the sun's glow breathe, the high band (the stream's hiss) makes the water sparkle, and a
+// call warms the chapel window for a moment.
+class Valley implements Scene {
+  private bg = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private sun = sprite([255, 170, 140], 256);
+  private spark = sprite([255, 215, 190], 32);
+  private lamp = sprite([255, 190, 110], 64);
+  private stream: { x: number; y: number; wd: number }[] = [];
+  private sparks: { k: number; off: number; ph: number; sp: number }[] = [];
+  private win = { x: 0, y: 0 };
+  private glows: number[] = [];
+  private horizon = 0;
+  private hiss = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.bg, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    this.horizon = h * 0.62;
+    const g = this.bg.getContext('2d')!;
+    const grad = g.createLinearGradient(0, 0, 0, this.horizon);
+    grad.addColorStop(0, '#120a22');
+    grad.addColorStop(0.45, '#3a1f3e');
+    grad.addColorStop(0.8, '#8a4552');
+    grad.addColorStop(1, '#c07060');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+    // thin lit cloud streaks
+    for (let i = 0; i < 5; i++) {
+      const y = h * (0.3 + i * 0.05), cw = w * rand(0.35, 0.7), cx = rand(0, w);
+      const lg = g.createLinearGradient(cx - cw / 2, 0, cx + cw / 2, 0);
+      lg.addColorStop(0, 'rgba(255,190,170,0)');
+      lg.addColorStop(0.5, `rgba(255,190,170,${rand(0.08, 0.16)})`);
+      lg.addColorStop(1, 'rgba(255,190,170,0)');
+      g.fillStyle = lg;
+      g.fillRect(cx - cw / 2, y, cw, h * rand(0.004, 0.009));
+    }
+    // the far hill with the chapel on its shoulder
+    g.fillStyle = '#2a1424';
+    g.beginPath();
+    g.moveTo(0, h);
+    for (let x = 0; x <= w; x += w / 40) g.lineTo(x, this.horizon - h * 0.11 * Math.exp(-Math.pow((x / w - 0.68) / 0.22, 2)) - h * 0.02 * Math.sin((x / w) * 6));
+    g.lineTo(w, h);
+    g.fill();
+    const cx = w * 0.68, cy = this.horizon - h * 0.11, u = h * 0.022;
+    g.fillStyle = '#1a0c17';
+    g.fillRect(cx - u * 1.6, cy - u * 1.6, u * 3.2, u * 1.7); // nave
+    g.beginPath();
+    g.moveTo(cx - u * 1.8, cy - u * 1.55);
+    g.lineTo(cx, cy - u * 2.5);
+    g.lineTo(cx + u * 1.8, cy - u * 1.55);
+    g.fill();
+    g.fillRect(cx - u * 2.3, cy - u * 3.6, u * 0.8, u * 3.7); // bell gable
+    g.beginPath();
+    g.moveTo(cx - u * 2.45, cy - u * 3.55);
+    g.lineTo(cx - u * 1.9, cy - u * 4.2);
+    g.lineTo(cx - u * 1.35, cy - u * 3.55);
+    g.fill();
+    g.fillStyle = '#2a1424';
+    g.fillRect(cx - u * 2.05, cy - u * 3.3, u * 0.3, u * 0.5); // the bell's opening
+    this.win = { x: cx + u * 0.5, y: cy - u * 0.9 };
+    g.fillStyle = 'rgba(255,170,90,0.35)';
+    g.fillRect(this.win.x - u * 0.15, this.win.y - u * 0.3, u * 0.3, u * 0.55);
+    // cypresses and an oak beside it
+    g.fillStyle = '#1a0c17';
+    for (const [px, k] of [[0.6, 1], [0.63, 0.7], [0.79, 0.85]] as const) {
+      const x = w * px, base = this.horizon - h * 0.11 * Math.exp(-Math.pow((px - 0.68) / 0.22, 2)), ht = h * 0.07 * k;
+      g.beginPath();
+      g.moveTo(x, base - ht);
+      g.quadraticCurveTo(x + ht * 0.16, base - ht * 0.5, x + ht * 0.06, base);
+      g.lineTo(x - ht * 0.06, base);
+      g.quadraticCurveTo(x - ht * 0.16, base - ht * 0.5, x, base - ht);
+      g.fill();
+    }
+
+    // the near valley floor and the stream winding through it
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    f.fillStyle = '#0b0610';
+    f.beginPath();
+    f.moveTo(0, h);
+    for (let x = 0; x <= w; x += w / 30) f.lineTo(x, this.horizon + h * 0.05 + Math.sin((x / w) * 4.4) * h * 0.015);
+    f.lineTo(w, h);
+    f.fill();
+    this.stream = Array.from({ length: 22 }, (_, i) => {
+      const k = i / 21;
+      return { x: w * (0.4 + Math.sin(k * 4.2 + 0.5) * 0.14 * (0.4 + k)), y: this.horizon + h * 0.06 + k * (h * 0.4), wd: w * (0.008 + k * k * 0.07) };
+    });
+    const sg = f.createLinearGradient(0, this.horizon, 0, h);
+    sg.addColorStop(0, '#7a3c48');
+    sg.addColorStop(1, '#2a1424');
+    f.fillStyle = sg;
+    f.beginPath();
+    this.stream.forEach((p, i) => (i ? f.lineTo(p.x - p.wd, p.y) : f.moveTo(p.x - p.wd, p.y)));
+    for (let i = this.stream.length - 1; i >= 0; i--) f.lineTo(this.stream[i]!.x + this.stream[i]!.wd, this.stream[i]!.y);
+    f.fill();
+    // grasses along the near bank
+    f.strokeStyle = '#0b0610';
+    f.lineCap = 'round';
+    for (let i = 0; i < 70; i++) {
+      const x = rand(0, w), base = h * rand(0.93, 1.01), ht = h * rand(0.03, 0.09), bend = rand(-1, 1) * ht * 0.3;
+      f.lineWidth = h * rand(0.0015, 0.003);
+      f.beginPath();
+      f.moveTo(x, base);
+      f.quadraticCurveTo(x + bend * 0.3, base - ht * 0.6, x + bend, base - ht);
+      f.stroke();
+    }
+    this.sparks = Array.from({ length: 50 }, () => ({ k: Math.random(), off: rand(-0.9, 0.9), ph: rand(0, 6.28), sp: rand(2, 6) }));
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.hiss += (lv[2] - this.hiss) * Math.min(1, dt * 5);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.bg, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    // the sun just set behind the hill: its glow breathes with the low band
+    const gs = w * 1.4;
+    ctx.globalAlpha = alpha * (0.3 + lv[0] * 0.3);
+    ctx.drawImage(this.sun, w * 0.38 - gs / 2, this.horizon - gs * 0.3, gs, gs * 0.6);
+    // a call warms the chapel window
+    if (onset && motion && this.glows.length < 2) this.glows.push(0);
+    this.glows = this.glows.map((a) => a + dt).filter((a) => a < 3);
+    const ws = h * 0.05;
+    let warm = 0.25;
+    for (const age of this.glows) warm += Math.sin(Math.PI * Math.min(1, age / 3)) * 0.6;
+    ctx.globalAlpha = alpha * Math.min(1, warm);
+    ctx.drawImage(this.lamp, this.win.x - ws / 2, this.win.y - ws / 2, ws, ws);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    // the stream sparkles with its own hiss
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of this.sparks) {
+      if (motion) {
+        s.k += dt * 0.03;
+        if (s.k > 1) s.k -= 1;
+      }
+      const i = Math.min(this.stream.length - 2, Math.floor(s.k * (this.stream.length - 1)));
+      const a = this.stream[i]!, b = this.stream[i + 1]!, u = s.k * (this.stream.length - 1) - i;
+      const x = a.x + (b.x - a.x) * u + s.off * (a.wd + (b.wd - a.wd) * u), y = a.y + (b.y - a.y) * u;
+      const on = motion ? Math.max(0, Math.sin(t * s.sp + s.ph)) : 0.5;
+      const sz = (6 + s.k * 14) * unit * (0.6 + on);
+      ctx.globalAlpha = alpha * on * (0.2 + this.hiss * 0.7) * (0.4 + s.k * 0.6);
+      ctx.drawImage(this.spark, x - sz / 2, y - sz / 2, sz, sz);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ---- Tree-frog marsh: a March twilight pond, reeds and a heron, the chorus as lights along the waterline ----
+// The mid band (the chorus, ~2 kHz) sets how many frogs light up and how bright, each light doubled in the
+// water; the low band lifts the mist, and a call sends a ring out across the pond.
+class Marsh implements Scene {
+  private bg = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private frog = sprite([215, 235, 140], 32);
+  private mist = sprite([160, 190, 150], 128);
+  private star = sprite([220, 225, 255], 32);
+  private frogs: { x: number; y: number; ph: number; sp: number; on: number }[] = [];
+  private stars: { x: number; y: number; ph: number }[] = [];
+  private rings: { x: number; y: number; age: number }[] = [];
+  private horizon = 0;
+  private chorus = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.bg, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    this.horizon = h * 0.58;
+    const g = this.bg.getContext('2d')!;
+    const sky = g.createLinearGradient(0, 0, 0, this.horizon);
+    sky.addColorStop(0, '#0a0c1e');
+    sky.addColorStop(0.6, '#262c3e');
+    sky.addColorStop(1, '#4a5040');
+    g.fillStyle = sky;
+    g.fillRect(0, 0, w, this.horizon);
+    // the water mirrors the sky, darker
+    const water = g.createLinearGradient(0, this.horizon, 0, h);
+    water.addColorStop(0, '#3a4034');
+    water.addColorStop(0.35, '#1a1e22');
+    water.addColorStop(1, '#06070a');
+    g.fillStyle = water;
+    g.fillRect(0, this.horizon, w, h - this.horizon);
+    // far bank: a low line of willows and poplars
+    g.fillStyle = '#0a0c0c';
+    g.beginPath();
+    g.moveTo(0, this.horizon + h * 0.006);
+    for (let x = 0; x <= w; x += w / 50) {
+      const u = x / w;
+      const tree = Math.max(0, Math.sin(u * 23)) * 0.02 + (Math.abs(u - 0.3) < 0.015 || Math.abs(u - 0.72) < 0.012 ? 0.07 : 0);
+      g.lineTo(x, this.horizon - h * (0.012 + tree + Math.abs(Math.sin(u * 61)) * 0.006));
+    }
+    g.lineTo(w, this.horizon + h * 0.006);
+    g.fill();
+    this.stars = Array.from({ length: 28 }, () => ({ x: Math.random() * w, y: Math.random() * this.horizon * 0.45, ph: rand(0, 6.28) }));
+    // frogs: along the far waterline and in the reed beds either side
+    this.frogs = Array.from({ length: 70 }, (_, i) => {
+      const edge = i < 40;
+      const x = edge ? rand(0, w) : i % 2 ? rand(0, w * 0.25) : rand(w * 0.75, w);
+      const y = edge ? this.horizon + h * rand(0.004, 0.02) : rand(this.horizon + h * 0.08, h * 0.9);
+      return { x, y, ph: rand(0, 6.28), sp: rand(6, 14), on: Math.random() };
+    });
+
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    const ink = '#040506';
+    f.strokeStyle = ink;
+    f.fillStyle = ink;
+    f.lineCap = 'round';
+    // reeds and rushes at both sides
+    for (let i = 0; i < 46; i++) {
+      const left = i % 2 === 0;
+      const x = left ? rand(-w * 0.02, w * 0.28) : rand(w * 0.72, w * 1.02);
+      const top = rand(h * 0.5, h * 0.78), bend = rand(-0.06, 0.06) * w;
+      f.lineWidth = rand(0.0025, 0.005) * h;
+      f.beginPath();
+      f.moveTo(x, h);
+      f.quadraticCurveTo(x + bend * 0.3, (h + top) / 2, x + bend, top);
+      f.stroke();
+    }
+    // a grey heron standing in the shallows on the left
+    const hx = w * 0.3, hy = h * 0.76, u = h * 0.07;
+    f.lineWidth = u * 0.03;
+    f.beginPath();
+    f.moveTo(hx, hy);
+    f.lineTo(hx + u * 0.05, hy - u * 0.75);
+    f.stroke();
+    f.beginPath();
+    f.ellipse(hx + u * 0.05, hy - u * 0.95, u * 0.32, u * 0.18, -0.35, 0, Math.PI * 2);
+    f.fill();
+    f.lineWidth = u * 0.06;
+    f.beginPath();
+    f.moveTo(hx + u * 0.3, hy - u * 1.05);
+    f.quadraticCurveTo(hx + u * 0.45, hy - u * 1.3, hx + u * 0.32, hy - u * 1.5);
+    f.stroke();
+    f.beginPath();
+    f.ellipse(hx + u * 0.34, hy - u * 1.55, u * 0.08, u * 0.06, 0, 0, Math.PI * 2);
+    f.fill();
+    f.lineWidth = u * 0.025;
+    f.beginPath();
+    f.moveTo(hx + u * 0.4, hy - u * 1.55);
+    f.lineTo(hx + u * 0.62, hy - u * 1.5);
+    f.stroke();
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.chorus += (lv[1] - this.chorus) * Math.min(1, dt * 4);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.bg, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of this.stars) {
+      const sz = 9 * unit;
+      ctx.globalAlpha = alpha * (0.2 + (motion ? 0.15 * Math.sin(t + s.ph) : 0));
+      ctx.drawImage(this.star, s.x - sz / 2, s.y - sz / 2, sz, sz);
+    }
+    // mist low over the water
+    const ms = w * 1.4;
+    ctx.globalAlpha = alpha * (0.06 + lv[0] * 0.12);
+    ctx.drawImage(this.mist, w * 0.5 - ms / 2 + (motion ? Math.sin(t * 0.05) * w * 0.04 : 0), this.horizon - ms * 0.12, ms, ms * 0.3);
+    // the chorus: each frog a pulsing point, doubled in the water; louder chorus, more of them lit
+    const lit = 0.35 + this.chorus * 0.65;
+    for (const fr of this.frogs) {
+      if (fr.on > lit) continue;
+      const pulse = motion ? Math.pow(Math.max(0, Math.sin(t * fr.sp + fr.ph)), 4) : 0.5;
+      const sz = (8 + pulse * 10) * unit * (fr.y > this.horizon + h * 0.05 ? 1.3 : 0.8);
+      const a = alpha * (0.15 + pulse * 0.55) * (0.5 + this.chorus * 0.8);
+      ctx.globalAlpha = Math.min(1, a);
+      ctx.drawImage(this.frog, fr.x - sz / 2, fr.y - sz / 2, sz, sz);
+      if (fr.y < this.horizon + h * 0.03) {
+        ctx.globalAlpha = Math.min(1, a * 0.35);
+        ctx.drawImage(this.frog, fr.x - sz / 2, fr.y + h * 0.02 - sz / 2, sz, sz * 1.6);
+      }
+    }
+    // a call sends a ring across the pond
+    if (onset && motion && this.rings.length < 4) this.rings.push({ x: rand(w * 0.35, w * 0.7), y: rand(this.horizon + h * 0.08, h * 0.85), age: 0 });
+    this.rings = this.rings.filter((r) => (r.age += dt) < 3.5);
+    ctx.lineWidth = Math.max(1, 1.2 * unit);
+    for (const r of this.rings) {
+      const k = r.age / 3.5, rr = w * 0.25 * k;
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = `rgba(210,224,140,${(1 - k) * 0.3})`;
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y, rr, rr * 0.22, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
+
 const SCENES: Record<ThemeId, () => Scene> = {
   mediterranean: () => new Mediterranean(),
   rainforest: () => new Rainforest(),
@@ -1140,6 +1744,10 @@ const SCENES: Record<ThemeId, () => Scene> = {
   pond: () => new Pond(),
   ferns: () => new Ferns(),
   sunrise: () => new Sunrise(),
+  drizzle: () => new Drizzle(),
+  creek: () => new Creek(),
+  valley: () => new Valley(),
+  marsh: () => new Marsh(),
 };
 
 export interface VisualizerOptions {
