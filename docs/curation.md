@@ -206,7 +206,7 @@ valley with an owl, a chapel at sunset, a twilight marsh with a heron).
 What the verdicts say about taste: every A2O recording was passed (mono, 22.05 kHz, so A2O is no longer used), and so was
 everything harsh, very bright or dramatic (thunder, torrent hiss, a single-pitch nightjar). All four keeps are gentle,
 stereo, European (three of them French) and evening or rain. A heavily lifted quiet source was fine (Stream at Sunset is
-raised 27 dB), so a low source level alone is no reason to reject.
+raised about 24 dB), so a low source level alone is no reason to reject.
 
 How the round was found: the remarks of 4,659 xeno-canto recordings (rain, streams, sea, frogs, crickets, owls, nightjars,
 Australia, New Zealand) were read, 26 were downloaded and their calmest 7-minute window measured, and 1,017 one-minute
