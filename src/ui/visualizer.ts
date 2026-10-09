@@ -1363,18 +1363,18 @@ class Creek implements Scene {
     f.lineCap = 'round';
     f.lineWidth = h * 0.012;
     f.beginPath();
-    f.moveTo(w * 1.02, h * 0.3);
-    f.quadraticCurveTo(w * 0.86, h * 0.33, w * 0.7, h * 0.315);
+    f.moveTo(w * 1.02, h * 0.235);
+    f.quadraticCurveTo(w * 0.86, h * 0.265, w * 0.7, h * 0.25);
     f.stroke();
     f.lineWidth = h * 0.005;
-    for (const [x0, y0, x1, y1] of [[0.8, 0.322, 0.74, 0.27], [0.9, 0.315, 0.86, 0.36], [0.74, 0.318, 0.68, 0.34]] as const) {
+    for (const [x0, y0, x1, y1] of [[0.8, 0.257, 0.74, 0.205], [0.9, 0.25, 0.86, 0.29], [0.74, 0.253, 0.68, 0.275]] as const) {
       f.beginPath();
       f.moveTo(w * x0, h * y0);
       f.lineTo(w * x1, h * y1);
       f.stroke();
     }
     const s = h * 0.034;
-    this.owl = { x: w * 0.79, y: h * 0.318 - s * 1.05, s };
+    this.owl = { x: w * 0.79, y: h * 0.253 - s * 1.05, s };
     f.fillStyle = ink;
     f.beginPath();
     f.ellipse(this.owl.x, this.owl.y, s * 0.62, s, 0, 0, Math.PI * 2);
@@ -1480,10 +1480,10 @@ class Valley implements Scene {
     g.fillStyle = '#2a1424';
     g.beginPath();
     g.moveTo(0, h);
-    for (let x = 0; x <= w; x += w / 40) g.lineTo(x, this.horizon - h * 0.11 * Math.exp(-Math.pow((x / w - 0.68) / 0.22, 2)) - h * 0.02 * Math.sin((x / w) * 6));
+    for (let x = 0; x <= w; x += w / 40) g.lineTo(x, this.horizon - h * 0.11 * Math.exp(-Math.pow((x / w - 0.88) / 0.2, 2)) - h * 0.02 * Math.sin((x / w) * 6));
     g.lineTo(w, h);
     g.fill();
-    const cx = w * 0.68, cy = this.horizon - h * 0.11, u = h * 0.022;
+    const cx = w * 0.88, cy = this.horizon - h * 0.11, u = h * 0.022;
     g.fillStyle = '#1a0c17';
     g.fillRect(cx - u * 1.6, cy - u * 1.6, u * 3.2, u * 1.7); // nave
     g.beginPath();
@@ -1504,8 +1504,8 @@ class Valley implements Scene {
     g.fillRect(this.win.x - u * 0.15, this.win.y - u * 0.3, u * 0.3, u * 0.55);
     // cypresses and an oak beside it
     g.fillStyle = '#1a0c17';
-    for (const [px, k] of [[0.6, 1], [0.63, 0.7], [0.79, 0.85]] as const) {
-      const x = w * px, base = this.horizon - h * 0.11 * Math.exp(-Math.pow((px - 0.68) / 0.22, 2)), ht = h * 0.07 * k;
+    for (const [px, k] of [[0.78, 1], [0.81, 0.7], [0.97, 0.85]] as const) {
+      const x = w * px, base = this.horizon - h * 0.11 * Math.exp(-Math.pow((px - 0.88) / 0.2, 2)), ht = h * 0.07 * k;
       g.beginPath();
       g.moveTo(x, base - ht);
       g.quadraticCurveTo(x + ht * 0.16, base - ht * 0.5, x + ht * 0.06, base);
@@ -1662,8 +1662,8 @@ class Marsh implements Scene {
       f.quadraticCurveTo(x + bend * 0.3, (h + top) / 2, x + bend, top);
       f.stroke();
     }
-    // a grey heron standing in the shallows on the left
-    const hx = w * 0.3, hy = h * 0.76, u = h * 0.07;
+    // a grey heron standing in the open shallows, below the controls
+    const hx = w * 0.6, hy = h * 0.92, u = h * 0.075;
     f.lineWidth = u * 0.03;
     f.beginPath();
     f.moveTo(hx, hy);
@@ -1708,7 +1708,7 @@ class Marsh implements Scene {
       if (fr.on > lit) continue;
       const pulse = motion ? Math.pow(Math.max(0, Math.sin(t * fr.sp + fr.ph)), 4) : 0.5;
       const sz = (8 + pulse * 10) * unit * (fr.y > this.horizon + h * 0.05 ? 1.3 : 0.8);
-      const a = alpha * (0.15 + pulse * 0.55) * (0.5 + this.chorus * 0.8);
+      const a = alpha * (0.3 + pulse * 0.7) * (0.6 + this.chorus * 0.8);
       ctx.globalAlpha = Math.min(1, a);
       ctx.drawImage(this.frog, fr.x - sz / 2, fr.y - sz / 2, sz, sz);
       if (fr.y < this.horizon + h * 0.03) {
