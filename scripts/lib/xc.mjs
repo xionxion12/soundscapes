@@ -102,7 +102,9 @@ async function searchHtml(query, page) {
   const qs = new URLSearchParams({ query, pg: String(page), order: 'xc', dir: '1' });
   const html = await curl(`${BASE}/explore?${qs}`);
   const total = Number(html.match(/([\d,]+) results? from/)?.[1]?.replace(/,/g, '') ?? 0);
-  const pages = Number(html.match(/results-pages[\s\S]*?pg=(\d+)[^<]*<\/a>\s*<\/li>\s*<\/ul>/)?.[1] ?? 1);
+  // the pager lists the first pages, a gap and the last one; the highest pg= in it is the page count
+  const pager = html.match(/<nav class="results-pages">([\s\S]*?)<\/nav>/)?.[1] ?? '';
+  const pages = Math.max(1, ...[...pager.matchAll(/[?&]pg=(\d+)/g)].map((m) => Number(m[1])));
   const rows = [...html.matchAll(/<tr(?: [^>]*)?>([\s\S]*?)<\/tr>/g)].map((m) => parseRow(m[1])).filter(Boolean);
   return { total, pages, rows };
 }
