@@ -8,7 +8,8 @@
 //   node scripts/build-previews.mjs                 # every candidate
 //   node scripts/build-previews.mjs --only <key>
 //
-// Output: .cache/previews/<key>.m4a and <key>-sonogram.webp. Needs ffmpeg + ffprobe.
+// Output: .cache/previews/<key>.mp3 and <key>-sonogram.webp. Needs ffmpeg + ffprobe.
+// MP3 rather than the app's AAC so the previews play in any browser or web page, Chromium included.
 // Sources: `{ "xc": <id> }` (xeno-canto, the original upload, cached with the build's downloads)
 // or `{ "a2o": <recording id> }` (Australian Acoustic Observatory, CC BY 4.0; mono 22.05 kHz; its
 // media API serves at most 300 s per request, so the preview window is fetched on its own).
@@ -88,7 +89,7 @@ async function buildPreview(cfg, item) {
   const window = (item.loop ?? 420) + (item.crossfade ?? 9);
   const from = item.start + Math.max(0, (window - P) / 2);
   const tmp = path.join(OUT, `${item.key}.tmp.wav`);
-  const out = path.join(OUT, `${item.key}.m4a`);
+  const out = path.join(OUT, `${item.key}.mp3`);
 
   const src = await source(item, from, P);
   const stereo = await stereoImage(src.file, src.offset, P, await channelCount(src.file));
@@ -103,7 +104,7 @@ async function buildPreview(cfg, item) {
   await ff([
     '-i', tmp,
     '-af', `volume=${gain.toFixed(2)}dB,alimiter=limit=0.708:attack=0.1:release=50:level=disabled,afade=t=in:d=2:curve=hsin,afade=t=out:st=${P - 3}:d=3:curve=hsin`,
-    '-c:a', 'aac', '-b:a', `${cfg.bitrate}k`, '-ar', '48000', '-movflags', '+faststart', out,
+    '-c:a', 'libmp3lame', '-b:a', `${cfg.bitrate}k`, '-ar', '48000', out,
   ]);
 
   // sonogram of the whole loop window (A2O: of the preview, since the window is not downloaded)

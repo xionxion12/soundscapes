@@ -2,7 +2,7 @@
   "round": 2,
   "date": "2026-10-09",
   "previewSeconds": 120,
-  "bitrate": 160,
+  "bitrate": 192,
   "loudness": { "target": -24 },
   "groups": [
     { "name": "Australia", "hue": "#f0a17e", "note": "From the Australian Acoustic Observatory: unattended recorders that run day and night, CC BY 4.0. Every A2O recording is mono at 22.05 kHz, so nothing above 11 kHz. Below the app's usual 44.1 kHz bar, but nothing on xeno-canto fills these gaps." },
