@@ -67,6 +67,7 @@ npm run audio:build                        # download, loop, normalise, encode, 
 npm run audio:build -- --only tree-crickets # one soundscape
 npm run art                                # re-render lock-screen artwork only
 npm run audio:fades                        # re-render the fade clips from the committed loops (no download)
+npm run audio:previews                     # 2-minute listening previews of the candidates in scripts/shortlist.json
 ```
 
 Needs `ffmpeg` and `ffprobe`. With `XC_API_KEY` set the scripts use the xeno-canto API v3; without it they

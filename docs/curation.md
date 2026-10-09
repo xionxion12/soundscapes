@@ -169,6 +169,38 @@ All of these are on xeno-canto, which has only about 80 recordings of 8 minutes 
 | [XC443120](https://xeno-canto.org/443120), Faulconbridge afternoon, 47 min | Long quiet stretches broken by loud events. |
 | Kakadu dawns ([XC482453](https://xeno-canto.org/482453), [XC482572](https://xeno-canto.org/482572), [XC483007](https://xeno-canto.org/483007)) | Strong low-frequency rumble (≥ 86 % of the energy). |
 
+## Round 2 (October 2026): candidates to audition
+
+This round is a shortlist to **listen to**, not a line-up change. The 17 candidates are in
+[`scripts/shortlist.json`](../scripts/shortlist.json). `npm run audio:previews` cuts a 2-minute preview from the middle of
+each one's loop window, processed the way the loops are (high-pass, loudness-normalised to −24 LUFS), and measures whether
+it is really stereo (from the left/right correlation, since many "stereo" uploads are mono copied to both channels).
+Keeps get a `soundscapes.config.json` entry and `npm run audio:build`. The A2O ones need the build to fetch A2O audio
+first (≤ 300 s per request, spliced).
+
+Aimed at what stayed in the app: steady beds (rain, insects, frogs, one owl), Victoria, and the two gaps left open above
+(an Australian rain loop, a quiet Victorian night).
+
+| Group | Candidates |
+|---|---|
+| Australia (A2O, mono 22.05 kHz) | Wombat Forest night ([974630](https://data.acousticobservatory.org/listen/974630)), Wombat Forest rain ([975930](https://data.acousticobservatory.org/listen/975930)), Croajingolong night ([1214218](https://data.acousticobservatory.org/listen/1214218)), two Daintree nights ([492247](https://data.acousticobservatory.org/listen/492247), [488123](https://data.acousticobservatory.org/listen/488123)) |
+| Rain | [XC831375](https://xeno-canto.org/831375) (last round's runner-up), [XC996011](https://xeno-canto.org/996011) Pyrenees, [XC324425](https://xeno-canto.org/324425) thunder in a Bavarian beech wood |
+| Water | [XC770950](https://xeno-canto.org/770950) Pyrenean stream, [XC986286](https://xeno-canto.org/986286) creek with a tawny owl, [XC963674](https://xeno-canto.org/963674) torrent, [XC1047876](https://xeno-canto.org/1047876) calm Arctic sea, [XC540233](https://xeno-canto.org/540233) stream at sunset (quiet source: +27 dB) |
+| Frogs | [XC1089960](https://xeno-canto.org/1089960) Lavalette (Haute-Garonne), [XC883905](https://xeno-canto.org/883905) Tarn, [XC1164498](https://xeno-canto.org/1164498) (last round's favourite runner-up) |
+| Night | [XC660465](https://xeno-canto.org/660465) nightjar (last round's runner-up) |
+
+How they were found: the remarks of 4,659 xeno-canto recordings (rain, streams, sea, frogs, crickets, owls, nightjars,
+Australia, New Zealand) were read, 26 were downloaded and their calmest 7-minute window measured, and 1,017 one-minute
+night samples from A2O recorders in Wombat State Forest (Victoria, about 1¼ h from Melbourne), Marshmead (Croajingolong)
+and the Daintree were scored for loudness and band balance. Wombat's wet sites are loud and steady on many summer nights
+(−20 to −27 LUFS), unlike the hiss-level A2O rain of the last search. Daintree nights in October–November are dense,
+layered insect choruses at 3–8 kHz.
+
+Measured and left out: close-calling tawny owls ([XC712686](https://xeno-canto.org/712686), [XC1098991](https://xeno-canto.org/1098991): 55–75 sharp hits a minute), owls in the rain in Bavaria ([XC324428](https://xeno-canto.org/324428), [XC324439](https://xeno-canto.org/324439): 36–39 a minute), a Swedish meltwater stream ([XC782764](https://xeno-canto.org/782764): 71 % of the energy below 150 Hz), a Swedish thunderstorm ([XC814121](https://xeno-canto.org/814121): clips), a Brittany nightjar ([XC1000193](https://xeno-canto.org/1000193): rumble), a second Blue Mountains lyrebird ([XC1163855](https://xeno-canto.org/1163855): busier than the Dandenongs one), a Malaysian katydid night ([XC958773](https://xeno-canto.org/958773): its song is ultrasonic) and the Acre frog twin of the dropped Amazon Night.
+
+Two xeno-canto picks are partly out of phase (left/right correlation about −0.65: the torrent and the Sevilla frogs), so
+they may sound thin when summed to one speaker.
+
 ## Runners-up (all listed with the reason they lost)
 
 | Recording | What it is | Why not |

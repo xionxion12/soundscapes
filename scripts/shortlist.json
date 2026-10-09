@@ -1,0 +1,135 @@
+{
+  "round": 2,
+  "date": "2026-10-09",
+  "previewSeconds": 120,
+  "bitrate": 160,
+  "loudness": { "target": -24 },
+  "groups": [
+    { "name": "Australia", "hue": "#f0a17e", "note": "From the Australian Acoustic Observatory: unattended recorders that run day and night, CC BY 4.0. Every A2O recording is mono at 22.05 kHz, so nothing above 11 kHz. Below the app's usual 44.1 kHz bar, but nothing on xeno-canto fills these gaps." },
+    { "name": "Rain", "hue": "#8fd0c2", "note": "Rain-led recordings from xeno-canto, in the direction of Rain on Leaves." },
+    { "name": "Water", "hue": "#8ab8e6", "note": "Streams, a torrent and a calm sea: steady beds of moving water, new to the app." },
+    { "name": "Frogs", "hue": "#a8dcb4", "note": "Dense, even choruses like Frog Pond, two of them from the south of France." },
+    { "name": "Night", "hue": "#a9c2ff", "note": "A single steady night voice, like the scops owl." }
+  ],
+  "items": [
+    {
+      "key": "wombat-night", "group": "Australia", "source": { "a2o": 974630 }, "start": 2850,
+      "name": "Wombat Forest Night",
+      "place": "Wombat State Forest, Central Highlands, Victoria · about 1¼ hours from Melbourne",
+      "why": "A summer midnight at the wetter of the two Wombat Forest recorder sites. It is loud and dead steady (the loudest 1 % of moments only 3 dB over the bed), a warm wall of sound mostly between 150 and 800 Hz. That is what the open “quiet Victorian night” in the notes asked for, and it needs no lift.",
+      "listen": "whether it is a frog chorus or the creek itself. The sonogram can't tell, your ears can."
+    },
+    {
+      "key": "wombat-rain", "group": "Australia", "source": { "a2o": 975930 }, "start": 2850,
+      "name": "Wombat Forest Rain",
+      "place": "Wombat State Forest, Central Highlands, Victoria",
+      "why": "A December evening when both Wombat recorders picked up the same broadband hiss, with drop-like streaks in the sonogram, which points to rain over the forest. Steady (LRA 1.8 LU) and loud, so it avoids the recorder hiss that sank the A2O rain clips last time.",
+      "listen": "drops hitting the recorder housing, and whether it is rain or a wall of insects."
+    },
+    {
+      "key": "croajingolong-night", "group": "Australia", "source": { "a2o": 1214218 }, "start": 2850,
+      "name": "Croajingolong Night",
+      "place": "Marshmead, near Mallacoota, East Gippsland, Victoria",
+      "why": "A spring night in the coastal forest of Croajingolong: a soft low drone with faint, scattered insect ticks above it. The quietest recording here and the closest thing to a hushed bush night.",
+      "listen": "hiss. The source is quiet (about −37 LUFS), so the preview lifts it 13 dB."
+    },
+    {
+      "key": "daintree-night", "group": "Australia", "source": { "a2o": 492247 }, "start": 2850,
+      "name": "Daintree Night",
+      "place": "Daintree Rainforest Observatory, Cape Tribulation, Queensland",
+      "why": "An October night in the Daintree: a layered insect chorus with a steady 5.5 kHz drone, a slow pulse around 3 kHz and chirps above. An Australian counterpart to Rainforest Canopy, and very steady.",
+      "listen": "whether the high drone is soothing or tiring after a few minutes."
+    },
+    {
+      "key": "daintree-night-low", "group": "Australia", "source": { "a2o": 488123 }, "start": 2850,
+      "name": "Daintree Night, Lower",
+      "place": "Daintree Rainforest Observatory, Cape Tribulation, Queensland",
+      "why": "Another Daintree night with a different mix: the insect layers are thinner and there is a low band under them (frogs or water), so it sits warmer than the first.",
+      "listen": "which of the two Daintree nights you prefer, if either."
+    },
+    {
+      "key": "carpathian-rain", "group": "Rain", "source": { "xc": 831375 }, "start": 4970,
+      "name": "Carpathian Rain",
+      "place": "Beech forest, Il'nytsya, Zakarpattia, Ukraine",
+      "why": "Last round's runner-up to Rain on Leaves: heavier, very steady rain in an old beech forest at dawn, the most rain-led of the long recordings. You haven't heard it yet.",
+      "listen": "water hitting the microphones, and a song thrush repeating a phrase."
+    },
+    {
+      "key": "pyrenees-rain", "group": "Rain", "source": { "xc": 996011 }, "start": 1600,
+      "name": "Pyrenean Drizzle",
+      "place": "Massif du Pibeste, Hautes-Pyrénées, France",
+      "why": "Light rain on a spring afternoon in a Pyrenean reserve, with blue tits, firecrests and a wood pigeon softly underneath. Gentler and brighter than Rain on Leaves.",
+      "listen": "how much is rain and how much is birds."
+    },
+    {
+      "key": "bavarian-thunder", "group": "Rain", "source": { "xc": 324425 }, "start": 760,
+      "name": "Thunder in the Beeches",
+      "place": "Beech wood near Fischach, Swabia, Bavaria, Germany",
+      "why": "An early-summer evening storm: rain falling through a beech wood with thunder rolling around it. The only storm in the list; its energy sits low and warm (150–800 Hz).",
+      "listen": "the thunder. It makes the level swing more than anything else here (LRA 12 LU), which can wake you."
+    },
+    {
+      "key": "luchon-stream", "group": "Water", "source": { "xc": 770950 }, "start": 660,
+      "name": "Mountain Stream",
+      "place": "Above Bagnères-de-Luchon, Haute-Garonne, France",
+      "why": "A winter dawn in the Pyrenees with the low roar of a stream downhill and a few tits and thrushes. The steadiest recording found in this round (level SD 0.6 dB), like a soft brown noise.",
+      "listen": "rumble. A quarter of the energy is below 150 Hz, and the source is quiet (−40 LUFS), so the preview lifts it 16 dB."
+    },
+    {
+      "key": "creek-owl", "group": "Water", "source": { "xc": 986286 }, "start": 430,
+      "name": "Creek and Tawny Owl",
+      "place": "Wilder Graben, Reichraming, Upper Austria",
+      "why": "Dusk in an Austrian valley: a creek running to one side, the last song thrushes, blackbirds and robins, and a tawny owl. The owl-and-water night that the notes call “still open”.",
+      "listen": "the birds at the start. Dusk choruses fade, so the loop would hold them all night."
+    },
+    {
+      "key": "quilamas-torrent", "group": "Water", "source": { "xc": 963674 }, "start": 395,
+      "name": "Pine Forest Torrent",
+      "place": "Sierra de Francia y Quilamas, Salamanca, Spain",
+      "why": "A Scots pine forest in June with a torrent and waterfall further off: a bright, hissy water bed (mostly 3–8 kHz) with chaffinches and a blackcap over it.",
+      "listen": "whether the water hiss reads as calm or harsh."
+    },
+    {
+      "key": "arctic-sea", "group": "Water", "source": { "xc": 1047876 }, "start": 105,
+      "name": "Calm Arctic Sea",
+      "place": "Stuvika, Karlsøy, Troms, Norway (70° N)",
+      "why": "A calm September morning a few metres from the shore, with small waves lapping and two black guillemot calls far out. The only sea in the list. Uncompressed source.",
+      "listen": "the guillemots, and the length: the recording (8:59) is only just long enough for one loop."
+    },
+    {
+      "key": "cordes-stream", "group": "Water", "source": { "xc": 540233 }, "start": 1405,
+      "name": "Stream at Sunset",
+      "place": "Small valley by a chapel, Cordes-sur-Ciel, Tarn, France",
+      "why": "A quiet valley at sunset with a small stream, a firecrest, a song thrush and a roe deer. Very French and very still.",
+      "listen": "hiss first. The source is very quiet (−47 LUFS), so the preview lifts it 27 dB. This is the trap that sank the Somme marsh last round."
+    },
+    {
+      "key": "lavalette-frogs", "group": "Frogs", "source": { "xc": 1089960 }, "start": 2890,
+      "name": "Tree Frog Pond",
+      "place": "Lavalette, Haute-Garonne, France",
+      "why": "A March evening pond near Toulouse full of Mediterranean tree frogs, with coots and a heron. The steadiest chorus found (level SD 0.6 dB, loudest 1 % only 2.4 dB over the bed) and loud, so nothing is lifted.",
+      "listen": "whether one pitch for seven minutes is lulling or wearing."
+    },
+    {
+      "key": "tarn-frogs", "group": "Frogs", "source": { "xc": 883905 }, "start": 875,
+      "name": "Marsh Frogs in the Tarn",
+      "place": "Saint-Marcel-Campes, Tarn, France",
+      "why": "A March night at a pond in the Tarn: marsh frogs and Mediterranean tree frogs together, with more movement than the Lavalette pond but still even.",
+      "listen": "the marsh frogs' laugh-like calls, which are livelier than the rest."
+    },
+    {
+      "key": "sevilla-reed-frogs", "group": "Frogs", "source": { "xc": 1164498 }, "start": 395,
+      "name": "Tree Frogs and Reed Crickets",
+      "place": "El Condado salt marsh, near Sevilla, Spain",
+      "why": "Last round's favourite runner-up: a clean, steady wall of Mediterranean tree frogs over reed crickets in a tamarisk-lined marsh. It passed every check when it was built.",
+      "listen": "how close it sounds to Frog Pond, which is from the same marshes."
+    },
+    {
+      "key": "axat-nightjar", "group": "Night", "source": { "xc": 660465 }, "start": 65,
+      "name": "Nightjar at Midnight",
+      "place": "Axat, Aude, Occitanie, France",
+      "why": "A European nightjar churring through a May night in the Aude, with a woodlark and a distant tawny owl. Almost all of it is one soft 2 kHz drone, as steady as anything here.",
+      "listen": "whether the churr is hypnotic or tiring. That was the doubt last round."
+    }
+  ]
+}
