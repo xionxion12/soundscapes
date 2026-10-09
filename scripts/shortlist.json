@@ -1,0 +1,194 @@
+{
+  "round": 2,
+  "date": "2026-10-09",
+  "previewSeconds": 120,
+  "bitrate": 192,
+  "loudness": {
+    "target": -24
+  },
+  "groups": [
+    {
+      "name": "Rain",
+      "hue": "#8fd0c2",
+      "note": "Rain-led recordings from xeno-canto, in the direction of Rain on Leaves."
+    },
+    {
+      "name": "Water",
+      "hue": "#8ab8e6",
+      "note": "Streams, a torrent and a calm sea: steady beds of moving water, new to the app."
+    },
+    {
+      "name": "Frogs",
+      "hue": "#a8dcb4",
+      "note": "Dense, even choruses like Frog Pond, two of them from the south of France."
+    },
+    {
+      "name": "Night",
+      "hue": "#a9c2ff",
+      "note": "A single steady night voice, like the scops owl."
+    }
+  ],
+  "items": [
+    {
+      "key": "carpathian-rain",
+      "group": "Rain",
+      "source": {
+        "xc": 831375
+      },
+      "start": 4970,
+      "name": "Carpathian Rain",
+      "place": "Beech forest, Il'nytsya, Zakarpattia, Ukraine",
+      "why": "Last round's runner-up to Rain on Leaves: heavier, very steady rain in an old beech forest at dawn, the most rain-led of the long recordings. You haven't heard it yet.",
+      "listen": "water hitting the microphones, and a song thrush repeating a phrase.",
+      "verdict": "pass"
+    },
+    {
+      "key": "pyrenees-rain",
+      "group": "Rain",
+      "source": {
+        "xc": 996011
+      },
+      "start": 1600,
+      "name": "Pyrenean Drizzle",
+      "place": "Massif du Pibeste, Hautes-Pyrénées, France",
+      "why": "Light rain on a spring afternoon in a Pyrenean reserve, with blue tits, firecrests and a wood pigeon softly underneath. Gentler and brighter than Rain on Leaves.",
+      "listen": "how much is rain and how much is birds.",
+      "verdict": "keep",
+      "builtAs": "pyrenean-drizzle"
+    },
+    {
+      "key": "bavarian-thunder",
+      "group": "Rain",
+      "source": {
+        "xc": 324425
+      },
+      "start": 760,
+      "name": "Thunder in the Beeches",
+      "place": "Beech wood near Fischach, Swabia, Bavaria, Germany",
+      "why": "An early-summer evening storm: rain falling through a beech wood with thunder rolling around it. The only storm in the list; its energy sits low and warm (150–800 Hz).",
+      "listen": "the thunder. It makes the level swing more than anything else here (LRA 12 LU), which can wake you.",
+      "verdict": "pass"
+    },
+    {
+      "key": "luchon-stream",
+      "group": "Water",
+      "source": {
+        "xc": 770950
+      },
+      "start": 660,
+      "name": "Mountain Stream",
+      "place": "Above Bagnères-de-Luchon, Haute-Garonne, France",
+      "why": "A winter dawn in the Pyrenees with the low roar of a stream downhill and a few tits and thrushes. The steadiest recording found in this round (level SD 0.6 dB), like a soft brown noise.",
+      "listen": "rumble. A quarter of the energy is below 150 Hz, and the source is quiet (−40 LUFS), so the preview lifts it 16 dB.",
+      "verdict": "pass"
+    },
+    {
+      "key": "creek-owl",
+      "group": "Water",
+      "source": {
+        "xc": 986286
+      },
+      "start": 430,
+      "name": "Creek and Tawny Owl",
+      "place": "Wilder Graben, Reichraming, Upper Austria",
+      "why": "Dusk in an Austrian valley: a creek running to one side, the last song thrushes, blackbirds and robins, and a tawny owl. The owl-and-water night that the notes call “still open”.",
+      "listen": "the birds at the start. Dusk choruses fade, so the loop would hold them all night.",
+      "verdict": "keep",
+      "builtAs": "creek-owl"
+    },
+    {
+      "key": "quilamas-torrent",
+      "group": "Water",
+      "source": {
+        "xc": 963674
+      },
+      "start": 395,
+      "name": "Pine Forest Torrent",
+      "place": "Sierra de Francia y Quilamas, Salamanca, Spain",
+      "why": "A Scots pine forest in June with a torrent and waterfall further off: a bright, hissy water bed (mostly 3–8 kHz) with chaffinches and a blackcap over it.",
+      "listen": "whether the water hiss reads as calm or harsh.",
+      "verdict": "pass"
+    },
+    {
+      "key": "arctic-sea",
+      "group": "Water",
+      "source": {
+        "xc": 1047876
+      },
+      "start": 105,
+      "name": "Calm Arctic Sea",
+      "place": "Stuvika, Karlsøy, Troms, Norway (70° N)",
+      "why": "A calm September morning a few metres from the shore, with small waves lapping and two black guillemot calls far out. The only sea in the list. Uncompressed source.",
+      "listen": "the guillemots, and the length: the recording (8:59) is only just long enough for one loop.",
+      "verdict": "pass"
+    },
+    {
+      "key": "cordes-stream",
+      "group": "Water",
+      "source": {
+        "xc": 540233
+      },
+      "start": 1405,
+      "name": "Stream at Sunset",
+      "place": "Small valley by a chapel, Cordes-sur-Ciel, Tarn, France",
+      "why": "A quiet valley at sunset with a small stream, a firecrest, a song thrush and a roe deer. Very French and very still.",
+      "listen": "hiss first. The source is very quiet (−47 LUFS), so the preview lifts it 27 dB. This is the trap that sank the Somme marsh last round.",
+      "verdict": "keep",
+      "builtAs": "stream-at-sunset"
+    },
+    {
+      "key": "lavalette-frogs",
+      "group": "Frogs",
+      "source": {
+        "xc": 1089960
+      },
+      "start": 2890,
+      "name": "Tree Frog Pond",
+      "place": "Lavalette, Haute-Garonne, France",
+      "why": "A March evening pond near Toulouse full of Mediterranean tree frogs, with coots and a heron. The steadiest chorus found (level SD 0.6 dB, loudest 1 % only 2.4 dB over the bed) and loud, so nothing is lifted.",
+      "listen": "whether one pitch for seven minutes is lulling or wearing.",
+      "verdict": "keep",
+      "builtAs": "tree-frog-pond"
+    },
+    {
+      "key": "tarn-frogs",
+      "group": "Frogs",
+      "source": {
+        "xc": 883905
+      },
+      "start": 875,
+      "name": "Marsh Frogs in the Tarn",
+      "place": "Saint-Marcel-Campes, Tarn, France",
+      "why": "A March night at a pond in the Tarn: marsh frogs and Mediterranean tree frogs together, with more movement than the Lavalette pond but still even.",
+      "listen": "the marsh frogs' laugh-like calls, which are livelier than the rest.",
+      "verdict": "pass"
+    },
+    {
+      "key": "sevilla-reed-frogs",
+      "group": "Frogs",
+      "source": {
+        "xc": 1164498
+      },
+      "start": 395,
+      "name": "Tree Frogs and Reed Crickets",
+      "place": "El Condado salt marsh, near Sevilla, Spain",
+      "why": "Last round's favourite runner-up: a clean, steady wall of Mediterranean tree frogs over reed crickets in a tamarisk-lined marsh. It passed every check when it was built.",
+      "listen": "how close it sounds to Frog Pond, which is from the same marshes.",
+      "verdict": "pass"
+    },
+    {
+      "key": "axat-nightjar",
+      "group": "Night",
+      "source": {
+        "xc": 660465
+      },
+      "start": 65,
+      "name": "Nightjar at Midnight",
+      "place": "Axat, Aude, Occitanie, France",
+      "why": "A European nightjar churring through a May night in the Aude, with a woodlark and a distant tawny owl. Almost all of it is one soft 2 kHz drone, as steady as anything here.",
+      "listen": "whether the churr is hypnotic or tiring. That was the doubt last round.",
+      "verdict": "pass"
+    }
+  ],
+  "note": "Round 2 verdicts, by ear. Keeps were built into the app (builtAs = their id in soundscapes.config.json). The five A2O candidates were also passed and are only listed in docs/curation.md, since A2O is no longer used."
+}

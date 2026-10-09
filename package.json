@@ -15,6 +15,7 @@
     "audio:build": "node scripts/build-audio.mjs",
     "art": "node scripts/build-artwork.mjs",
     "audio:fades": "node scripts/build-fades.mjs",
+    "audio:previews": "node scripts/build-previews.mjs",
     "icons": "node scripts/build-icons.mjs"
   },
   "devDependencies": {
