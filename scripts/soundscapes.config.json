@@ -29,6 +29,19 @@
       "scientific": "Oecanthus pellucens"
     },
     {
+      "id": "cretan-tree-cricket",
+      "xcId": 854211,
+      "name": "Cretan Tree Cricket",
+      "subtitle": "One tree cricket trilling through a June night · Akrotiri, Crete",
+      "theme": "aegean",
+      "species": "Tree cricket",
+      "scientific": "Oecanthus dulcisonans",
+      "place": "Stavros, Akrotiri peninsula, Chania, Crete",
+      "start": 1240,
+      "loop": 420,
+      "crossfade": 9
+    },
+    {
       "id": "taman-negara",
       "xcId": 574855,
       "name": "Rainforest Canopy",

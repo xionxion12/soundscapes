@@ -230,6 +230,20 @@ export function artSvg(theme, seed = theme) {
     // the heron in the shallows
     const hx = 160, hy = 400, u = 40;
     body += `<path d="M${hx} ${hy}L${hx + u * 0.05} ${hy - u * 0.75}" stroke="${fill}" stroke-width="${u * 0.04}"/><ellipse cx="${hx + u * 0.05}" cy="${hy - u * 0.95}" rx="${u * 0.32}" ry="${u * 0.18}" transform="rotate(-20 ${hx + u * 0.05} ${hy - u * 0.95})" fill="${fill}"/><path d="M${hx + u * 0.3} ${hy - u * 1.05}Q${hx + u * 0.45} ${hy - u * 1.3} ${hx + u * 0.32} ${hy - u * 1.5}" fill="none" stroke="${fill}" stroke-width="${u * 0.07}" stroke-linecap="round"/><ellipse cx="${hx + u * 0.34}" cy="${hy - u * 1.55}" rx="${u * 0.08}" ry="${u * 0.06}" fill="${fill}"/><path d="M${hx + u * 0.4} ${hy - u * 1.55}L${hx + u * 0.62} ${hy - u * 1.5}" stroke="${fill}" stroke-width="${u * 0.03}" stroke-linecap="round"/>`;
+  } else if (theme === 'aegean') {
+    defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030616"/><stop offset=".45" stop-color="#0b1838"/><stop offset=".6" stop-color="#1c2c52"/><stop offset=".601" stop-color="#0a1630"/><stop offset="1" stop-color="#03060f"/></linearGradient>${glow('mo', '200,215,255')}${glow('st', '210,220,255')}${glow('gl', '225,232,255')}`;
+    body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><circle cx="356" cy="128" r="120" fill="url(#mo)" opacity=".5"/><circle cx="356" cy="128" r="24" fill="#eef2ff"/>`;
+    for (let i = 0; i < 70; i++) body += `<circle cx="${r() * S}" cy="${r() * 280}" r="${0.6 + r() * 1.6}" fill="#e6ecff" opacity="${0.2 + r() * 0.5}"/>`;
+    // the moon's path on the sea, widening towards us
+    for (let i = 0; i < 70; i++) { const k = r(), y = 310 + k * 200, x = 356 + (r() - 0.5) * (20 + k * 200); body += `<ellipse cx="${x}" cy="${y}" rx="${2 + k * 9}" ry="${0.6 + k * 1.6}" fill="url(#gl)" opacity="${0.25 + r() * 0.6}"/>`; }
+    // a rocky headland of the Akrotiri peninsula, with a carob tree and low scrub
+    const ink = '#02040a';
+    let d = 'M0 512L0 250';
+    for (let x = 0; x <= 230; x += 10) d += `L${x} ${250 + Math.pow(x / 230, 1.6) * 62 + Math.sin(x * 0.21) * 3}`;
+    body += `<path d="${d}L252 330L268 372L284 430L296 512Z" fill="${ink}"/>`;
+    body += `<path d="M68 252L70 212" stroke="${ink}" stroke-width="5" stroke-linecap="round"/>`;
+    for (const [x, y, rx, ry] of [[70, 202, 34, 16], [50, 210, 20, 11], [92, 208, 22, 12], [70, 190, 22, 11]]) body += `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${ink}"/>`;
+    for (let i = 0; i < 14; i++) { const x = 110 + r() * 120; body += `<ellipse cx="${x}" cy="${250 + Math.pow(x / 230, 1.6) * 62 - 3}" rx="${5 + r() * 9}" ry="${3 + r() * 4}" fill="${ink}"/>`; }
   } else {
     defs = `<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#01030a"/><stop offset=".6" stop-color="#0a1332"/><stop offset=".92" stop-color="#101a3a"/><stop offset="1" stop-color="#02040a"/></linearGradient>${glow('mo', '170,195,255')}${glow('st', '200,215,255')}`;
     body = `<rect width="${S}" height="${S}" fill="url(#bg)"/><circle cx="378" cy="118" r="130" fill="url(#mo)" opacity=".55"/><circle cx="378" cy="118" r="30" fill="#dfe8ff"/>`;

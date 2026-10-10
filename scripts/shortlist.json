@@ -34,7 +34,9 @@
       "name": "Cretan Tree Cricket",
       "place": "Stavros, Akrotiri peninsula, Crete, Greece",
       "why": "A June night on Crete: one <i>Oecanthus dulcisonans</i>, the eastern cousin of the Italian tree cricket already in the app, trilling without a break. The steadiest recording found in any round (level SD 0.2 dB): a single soft tone near 4.5 kHz over a faint hiss.",
-      "listen": "whether one unbroken tone lulls or nags. It is one insect close to the microphone, not a chorus."
+      "listen": "whether one unbroken tone lulls or nags. It is one insect close to the microphone, not a chorus.",
+      "verdict": "keep",
+      "builtAs": "cretan-tree-cricket"
     },
     {
       "key": "condado-marsh-crickets",
@@ -46,7 +48,8 @@
       "name": "Marsh Crickets",
       "place": "El Condado salt marsh, near Sevilla, Spain",
       "why": "May in the tamarisk-lined marshes of the Guadalquivir: Heyden's marsh crickets and reed crickets in a dense, even wall (level SD 1.3 dB), with a little grebe and the odd Iberian green frog. The time isn't recorded; the species and the sonogram point to night.",
-      "listen": "the fast pulse of the reed crickets on top. It comes from the same marshes as the tree frogs and reed crickets you passed in round 2, but without the frogs."
+      "listen": "the fast pulse of the reed crickets on top. It comes from the same marshes as the tree frogs and reed crickets you passed in round 2, but without the frogs.",
+      "verdict": "pass"
     },
     {
       "key": "condado-canal",
@@ -58,7 +61,8 @@
       "name": "Canal in the Marshes",
       "place": "El Condado, near Sevilla, Spain",
       "why": "A reed-fringed canal in the same marshes on a mild December evening: large coneheads buzzing in the reeds, coots and a swamphen, a night heron and an Iberian parsley frog now and then. Very calm (level SD 1.1 dB, LRA 1.8 LU) and loud enough that nothing needs lifting.",
-      "listen": "the coneheads' buzz. It sits in two steady bands around 2.5 and 6 kHz."
+      "listen": "the coneheads' buzz. It sits in two steady bands around 2.5 and 6 kHz.",
+      "verdict": "pass"
     },
     {
       "key": "corbieres-bush-crickets",
@@ -70,7 +74,8 @@
       "name": "Corbières Bush-crickets",
       "place": "Embres-et-Castelmaure, Aude, France",
       "why": "Half past eleven on an August night in the Corbières hills, by Cedric Mroczko (who recorded three of your round-2 keeps): rough saddle bush-crickets ticking in the scrub. The classic Mediterranean summer night, and very steady (level SD 1.2 dB).",
-      "listen": "brightness. Almost half its energy is above 8 kHz, the kind of hiss you passed last round. It's here because it is the truest southern cricket night found."
+      "listen": "brightness. Almost half its energy is above 8 kHz, the kind of hiss you passed last round. It's here because it is the truest southern cricket night found.",
+      "verdict": "pass"
     },
     {
       "key": "medoc-night",
@@ -82,7 +87,8 @@
       "name": "Night in the Médoc",
       "place": "Hourtin, Gironde, France",
       "why": "A June night in the pines by Lake Hourtin, also by Cedric Mroczko: field crickets and great green bush-crickets, a nightjar churring, Iberian green frogs and a wild boar moving about. The sparsest bed here, with space between the voices.",
-      "listen": "the boar and the nightjar. The source is quiet, so it is lifted about 23 dB; listen for hiss."
+      "listen": "the boar and the nightjar. The source is quiet, so it is lifted about 23 dB; listen for hiss.",
+      "verdict": "pass"
     },
     {
       "key": "sentina-pond",
@@ -94,7 +100,8 @@
       "name": "Adriatic Pond Before Dawn",
       "place": "Sentina reserve, San Benedetto del Tronto, Marche, Italy",
       "why": "An unattended recorder at the edge of a coastal pond, at 5 am in early April, still dark: a low, steady chorus (most of the energy between 150 and 800 Hz), with redshanks, greenshanks and coots calling over it now and then. As steady as anything here (level SD 0.9 dB), and warm rather than bright.",
-      "listen": "what the low chorus is (frogs or toads, the sonogram can't say), and hiss: the source is quiet and is lifted 22 dB."
+      "listen": "what the low chorus is (frogs or toads, the sonogram can't say), and hiss: the source is quiet and is lifted 22 dB.",
+      "verdict": "pass"
     },
     {
       "key": "valliguieres-frogs",
@@ -106,7 +113,8 @@
       "name": "Valliguières Pond",
       "place": "Mare de Valliguières, Gard, France",
       "why": "An April evening at a pond in the garrigue between Nîmes and Avignon: Mediterranean tree frogs with marsh frogs joining in, under a strong south-west wind. Quality A, loud and even (level SD 1.3 dB).",
-      "listen": "the wind, and how close it is to Tree Frog Pond, which you kept."
+      "listen": "the wind, and how close it is to Tree Frog Pond, which you kept.",
+      "verdict": "pass"
     },
     {
       "key": "embid-midwife-toads",
@@ -118,8 +126,9 @@
       "name": "Midwife Toads in a Gorge",
       "place": "Tierra de Molina, near Embid, Guadalajara, Spain",
       "why": "A rocky gorge with a seasonal stream in May. Iberian midwife toads give their soft, bell-like piping, one note at a time, all through the recording. A blackbird, a woodlark, a wren and a blue rock thrush sing as well.",
-      "listen": "the birds: they suggest dusk rather than deep night. The time isn't recorded."
+      "listen": "the birds: they suggest dusk rather than deep night. The time isn't recorded.",
+      "verdict": "pass"
     }
   ],
-  "note": "Round 3: night soundscapes, with crickets from southern Europe. Round 2's candidates and verdicts are in git history and docs/curation.md."
+  "note": "Round 3 verdicts, by ear. The keep was built into the app (builtAs = its id in soundscapes.config.json). Round 2's candidates and verdicts are in git history (commit dfad5bd) and docs/curation.md."
 }

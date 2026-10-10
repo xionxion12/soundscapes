@@ -8,6 +8,7 @@ Because the licenses include ShareAlike (or NonCommercial), the processed audio 
 |---|---|---|---|---|---|
 | Scops Owl at Midnight | [XC1008555](https://xeno-canto.org/1008555) | JACOB Hervé | Marans, Charente-Maritime, Nouvelle-Aquitaine, France | 2025-06-09 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | Italian Tree Crickets | [XC854102](https://xeno-canto.org/854102) | Baudewijn Odé | ca. 1.5 km E of Abreiro, along the Rio Tua, Bragança, Portugal | 2015-07-11 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| Cretan Tree Cricket | [XC854211](https://xeno-canto.org/854211) | Baudewijn Odé | Stavros, Akrotiri peninsula, Chania, Crete, Greece | 2019-06-24 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
 | Rainforest Canopy | [XC574855](https://xeno-canto.org/574855) | Okamoto Keita Sin | Kumbang Hide, Taman Negara, Pahang, Malaysia | 2019-04-22 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | Rain on Leaves | [XC732936](https://xeno-canto.org/732936) | Cedric Mroczko | Darkesh, Maneh va Samalqan, North Khorasan, Iran | 2022-04-30 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | Pyrenean Drizzle | [XC996011](https://xeno-canto.org/996011) | Cedric Mroczko | Massif du Pibeste-Aoulhet nature reserve, Hautes-Pyrénées, France | 2025-05-02 | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |

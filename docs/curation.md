@@ -22,6 +22,7 @@ followed by `npm run audio:build -- --only <id>`.
 |---|---|---|---|---|
 | `scops-night` | [XC1008555](https://xeno-canto.org/1008555), Eurasian scops owl, JACOB Hervé | Marans, Charente-Maritime, France · 9 Jun 2025, 01:00 | A · CC BY-SA | 2:00 → 9:09 of 30:43 |
 | `tree-crickets` | [XC854102](https://xeno-canto.org/854102), *Oecanthus pellucens* chorus, Baudewijn Odé | Abreiro, Bragança, Portugal · 11 Jul 2015, 22:58 | B · CC BY-SA | 2:30 → 9:39 of 34:14 |
+| `cretan-tree-cricket` | [XC854211](https://xeno-canto.org/854211), *Oecanthus dulcisonans*, Baudewijn Odé | Stavros, Akrotiri peninsula, Crete, Greece · 24 Jun 2019, 21:38 | B · CC BY-SA | 20:40 → 27:49 of 29:22 |
 | `taman-negara` | [XC574855](https://xeno-canto.org/574855), soundscape, Okamoto Keita Sin | Kumbang Hide, Taman Negara, Malaysia · 22 Apr 2019, 06:38 | A · CC BY-NC-SA | 27:30 → 34:39 of 48:26 |
 | `rain-on-leaves` | [XC732936](https://xeno-canto.org/732936), rainy soundscape, Cedric Mroczko | Darkesh, North Khorasan, Iran (broadleaf forest, 1600 m) · 30 Apr 2022, 13:00 | B · CC BY-NC-SA | 33:00 → 40:09 of 61:02 |
 | `frog-pond` | [XC990325](https://xeno-canto.org/990325), Iberian green frog chorus, Esperanza Poveda | Lagoon by the José Antonio Valverde visitor centre, Doñana marshes (Aznalcázar, Sevilla), Spain · 12 May 2018 | A · CC BY-NC-SA | 13:10 → 20:19 of 20:50 |
@@ -245,6 +246,14 @@ their calmest 7-minute window measured; the best were checked by sonogram.
 | `embid-midwife-toads` | [XC1044348](https://xeno-canto.org/1044348), Iberian midwife toads in a gorge, Guadalajara, B | The bell-like piping of midwife toads; birds too, so probably dusk. |
 
 Three of them (both El Condado recordings and the midwife toads) are partly out of phase, as XC1164498 was in round 2.
+
+**Verdicts, by ear:** one keep, **Cretan Tree Cricket** (built as `cretan-tree-cricket`, with its own scene: the moon over
+the Aegean from a headland, its path on the sea glittering with the trill). The other seven were passed: both El Condado
+marsh recordings, the Corbières bush-crickets, Night in the Médoc, the Sentina pond, Valliguières Pond and the midwife toads.
+
+What it adds to what the verdicts say about taste: a single clean, steady voice wins over a busier scene, even a dense
+and even one (the marsh crickets). Crickets yes, but as one pure tone like the Italian tree crickets, not a wall or the
+ticking of bush-crickets; and frog ponds are covered by the two already in the app.
 
 Measured and left out: Esperanza Poveda's and José Carlos Sires's many untimed Spanish soundscapes that are daytime birdsong,
 German and Polish "night" soundscapes that are 04:00–05:00 dawn choruses, a Rhodes field cricket
