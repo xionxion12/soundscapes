@@ -180,7 +180,7 @@ All of these are on xeno-canto, which has only about 80 recordings of 8 minutes 
 Seventeen candidates were picked to match what had stayed in the app (steady beds of rain, insects, frogs and one owl,
 plus Victoria and the two open gaps: an Australian rain loop and a quiet Victorian night). Each was auditioned as a
 2-minute preview from the middle of its loop window, processed the way the loops are (`npm run audio:previews`, from
-[`scripts/shortlist.json`](../scripts/shortlist.json), which also records the verdicts), with a stereo/mono flag measured
+`scripts/shortlist.json` as it was at commit dfad5bd, which also records the verdicts), with a stereo/mono flag measured
 from the left/right correlation.
 
 **Kept and built:** Pyrenean Drizzle (`pyrenean-drizzle`), Tree Frog Pond (`tree-frog-pond`), Creek and Tawny Owl
@@ -214,6 +214,48 @@ night samples from A2O recorders in Wombat State Forest, Marshmead (Croajingolon
 loudness and band balance.
 
 Measured and left out before the audition: close-calling tawny owls ([XC712686](https://xeno-canto.org/712686), [XC1098991](https://xeno-canto.org/1098991): 55–75 sharp hits a minute), owls in the rain in Bavaria ([XC324428](https://xeno-canto.org/324428), [XC324439](https://xeno-canto.org/324439): 36–39 a minute), a Swedish meltwater stream ([XC782764](https://xeno-canto.org/782764): 71 % of the energy below 150 Hz), a Swedish thunderstorm ([XC814121](https://xeno-canto.org/814121): clips), a Brittany nightjar ([XC1000193](https://xeno-canto.org/1000193): rumble), a second Blue Mountains lyrebird ([XC1163855](https://xeno-canto.org/1163855): busier than the Dandenongs one), a Malaysian katydid night ([XC958773](https://xeno-canto.org/958773): its song is ultrasonic) and the Acre frog twin of the dropped Amazon Night.
+
+## Round 3 (October 2026): night, with southern crickets
+
+The ask: more night soundscapes, including crickets in southern Europe. Eight candidates are in
+[`scripts/shortlist.json`](../scripts/shortlist.json) (round 2's file, with its verdicts, is in git history), auditioned
+the same way as round 2.
+
+**A search bug, fixed first.** The xeno-canto results parser (`scripts/lib/xc.mjs`) read the page count from a pattern that
+never matched the pager, so every search reported one page and only its first 30 results were ever read, in this round and
+all earlier ones. It now takes the highest page number in the pager.
+
+How the round was found: every page of 57 searches, all ≥ 8 minutes: Orthoptera (`grp:grasshoppers`) and 27 night species
+(*Oecanthus*, *Gryllus*, *Eugryllodes*, *Gryllotalpa*, *Tettigonia*, *Ruspolia*, *Tylopsis*, *Uromenus*, scops owl, midwife
+toads, tree frogs, red-necked nightjar, owls, stone-curlew…) as the main species or in the background, in a box from Iberia to
+Greece and Cyprus (`box:34,-10,46.5,36`), plus every soundscape there (3,106) and in northern and central Europe (1,518).
+That is 5,433 recordings; 1,098 were quality A/B, loop-licensed and either recorded between 19:30 and 05:00 or untimed with
+night words in their remarks. 283 of those (crickets, night species, and night or cricket soundscapes) were downloaded and
+their calmest 7-minute window measured; the best were checked by sonogram.
+
+| Candidate | Recording | Why it's in |
+|---|---|---|
+| `crete-tree-cricket` | [XC854211](https://xeno-canto.org/854211), *Oecanthus dulcisonans*, Crete, 21:38, B, CC BY-SA | The steadiest recording in any round (level SD 0.2 dB): one tree cricket, one tone near 4.5 kHz. 96 kHz WAV. |
+| `condado-marsh-crickets` | [XC1164232](https://xeno-canto.org/1164232), Heyden's marsh crickets + reed crickets, El Condado, Sevilla, B | A dense, even insect wall (SD 1.3 dB). Untimed; the species and sonogram say night. |
+| `condado-canal` | [XC926874](https://xeno-canto.org/926874), canal soundscape with large coneheads, El Condado, December, B | Very calm (SD 1.1 dB, LRA 1.8 LU), no lift needed. |
+| `corbieres-bush-crickets` | [XC741626](https://xeno-canto.org/741626), rough saddle bush-crickets, Aude, 23:25, B | The truest Mediterranean cricket night found, but 46 % of its energy is above 8 kHz. |
+| `medoc-night` | [XC1150358](https://xeno-canto.org/1150358), field crickets, great green bush-crickets, nightjar, frogs, wild boar, Hourtin (Gironde), 23:15, B | A whole night with space in it; lifted ~23 dB. |
+| `sentina-pond` | [XC1162742](https://xeno-canto.org/1162742), pond-edge recorder, Sentina reserve (Marche, Italy), 05:00 in April, B | A low, warm, steady chorus (SD 0.9 dB, mostly 150–800 Hz); lifted ~22 dB. |
+| `valliguieres-frogs` | [XC991908](https://xeno-canto.org/991908), Mediterranean tree frogs + marsh frogs, Gard, 20:51, A | Loud and even, but windy; close to Tree Frog Pond. |
+| `embid-midwife-toads` | [XC1044348](https://xeno-canto.org/1044348), Iberian midwife toads in a gorge, Guadalajara, B | The bell-like piping of midwife toads; birds too, so probably dusk. |
+
+Three of them (both El Condado recordings and the midwife toads) are partly out of phase, as XC1164498 was in round 2.
+
+Measured and left out: Esperanza Poveda's and José Carlos Sires's many untimed Spanish soundscapes that are daytime birdsong,
+German and Polish "night" soundscapes that are 04:00–05:00 dawn choruses, a Rhodes field cricket
+([XC853525](https://xeno-canto.org/853525): mostly silence between chirps), a Portuguese tree cricket
+([XC853968](https://xeno-canto.org/853968): mono), single bush-crickets recorded close up (sharp, mostly above 8 kHz),
+Italian bush-crickets with a tawny owl ([XC1169268](https://xeno-canto.org/1169268): 95 % above 8 kHz), a Tarn cicada chorus at
+dusk ([XC736142](https://xeno-canto.org/736142): evening, bright), every long scops-owl recording (close, 12–150 sharp hits a
+minute), busier takes from the El Condado marsh ([XC1164596](https://xeno-canto.org/1164596),
+[XC1164680](https://xeno-canto.org/1164680)), the field- and mole-cricket marshes of the Somme by Tristan Guillebot de Nerville
+(mono, lifted 27–30 dB), and a Burgundy night of rutting red deer with a tawny owl ([XC1178511](https://xeno-canto.org/1178511):
+dramatic).
 
 ## Runners-up (all listed with the reason they lost)
 
