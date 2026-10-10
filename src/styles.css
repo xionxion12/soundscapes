@@ -30,6 +30,7 @@
 [data-theme='creek'] { --accent: #c3b4f0; --accent-rgb: 195, 180, 240; --accent2-rgb: 255, 200, 110; }
 [data-theme='valley'] { --accent: #f4a8b8; --accent-rgb: 244, 168, 184; --accent2-rgb: 255, 190, 140; }
 [data-theme='marsh'] { --accent: #d2e08c; --accent-rgb: 210, 224, 140; --accent2-rgb: 170, 210, 190; }
+[data-theme='aegean'] { --accent: #c4d2ff; --accent-rgb: 196, 210, 255; --accent2-rgb: 150, 180, 235; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 

@@ -1,6 +1,6 @@
 {
-  "round": 2,
-  "date": "2026-10-09",
+  "round": 3,
+  "date": "2026-10-10",
   "previewSeconds": 120,
   "bitrate": 192,
   "loudness": {
@@ -8,187 +8,127 @@
   },
   "groups": [
     {
-      "name": "Rain",
-      "hue": "#8fd0c2",
-      "note": "Rain-led recordings from xeno-canto, in the direction of Rain on Leaves."
-    },
-    {
-      "name": "Water",
-      "hue": "#8ab8e6",
-      "note": "Streams, a torrent and a calm sea: steady beds of moving water, new to the app."
-    },
-    {
-      "name": "Frogs",
-      "hue": "#a8dcb4",
-      "note": "Dense, even choruses like Frog Pond, two of them from the south of France."
+      "name": "Crickets",
+      "hue": "#e8c27a",
+      "note": "Southern European crickets and bush-crickets at night, from Crete, the Guadalquivir marshes and the Corbières, to go with Italian Tree Crickets."
     },
     {
       "name": "Night",
       "hue": "#a9c2ff",
-      "note": "A single steady night voice, like the scops owl."
+      "note": "A whole night rather than one voice: crickets, a nightjar and frogs in a pine forest on the Atlantic coast."
+    },
+    {
+      "name": "Frogs and toads",
+      "hue": "#a8dcb4",
+      "note": "Ponds after dark in Italy, Provence and Castile, including the soft piping of midwife toads."
     }
   ],
   "items": [
     {
-      "key": "carpathian-rain",
-      "group": "Rain",
+      "key": "crete-tree-cricket",
+      "group": "Crickets",
       "source": {
-        "xc": 831375
+        "xc": 854211
       },
-      "start": 4970,
-      "name": "Carpathian Rain",
-      "place": "Beech forest, Il'nytsya, Zakarpattia, Ukraine",
-      "why": "Last round's runner-up to Rain on Leaves: heavier, very steady rain in an old beech forest at dawn, the most rain-led of the long recordings. You haven't heard it yet.",
-      "listen": "water hitting the microphones, and a song thrush repeating a phrase.",
-      "verdict": "pass"
-    },
-    {
-      "key": "pyrenees-rain",
-      "group": "Rain",
-      "source": {
-        "xc": 996011
-      },
-      "start": 1600,
-      "name": "Pyrenean Drizzle",
-      "place": "Massif du Pibeste, Hautes-Pyrénées, France",
-      "why": "Light rain on a spring afternoon in a Pyrenean reserve, with blue tits, firecrests and a wood pigeon softly underneath. Gentler and brighter than Rain on Leaves.",
-      "listen": "how much is rain and how much is birds.",
+      "start": 1240,
+      "name": "Cretan Tree Cricket",
+      "place": "Stavros, Akrotiri peninsula, Crete, Greece",
+      "why": "A June night on Crete: one <i>Oecanthus dulcisonans</i>, the eastern cousin of the Italian tree cricket already in the app, trilling without a break. The steadiest recording found in any round (level SD 0.2 dB): a single soft tone near 4.5 kHz over a faint hiss.",
+      "listen": "whether one unbroken tone lulls or nags. It is one insect close to the microphone, not a chorus.",
       "verdict": "keep",
-      "builtAs": "pyrenean-drizzle"
+      "builtAs": "cretan-tree-cricket"
     },
     {
-      "key": "bavarian-thunder",
-      "group": "Rain",
+      "key": "condado-marsh-crickets",
+      "group": "Crickets",
       "source": {
-        "xc": 324425
+        "xc": 1164232
       },
-      "start": 760,
-      "name": "Thunder in the Beeches",
-      "place": "Beech wood near Fischach, Swabia, Bavaria, Germany",
-      "why": "An early-summer evening storm: rain falling through a beech wood with thunder rolling around it. The only storm in the list; its energy sits low and warm (150–800 Hz).",
-      "listen": "the thunder. It makes the level swing more than anything else here (LRA 12 LU), which can wake you.",
-      "verdict": "pass"
-    },
-    {
-      "key": "luchon-stream",
-      "group": "Water",
-      "source": {
-        "xc": 770950
-      },
-      "start": 660,
-      "name": "Mountain Stream",
-      "place": "Above Bagnères-de-Luchon, Haute-Garonne, France",
-      "why": "A winter dawn in the Pyrenees with the low roar of a stream downhill and a few tits and thrushes. The steadiest recording found in this round (level SD 0.6 dB), like a soft brown noise.",
-      "listen": "rumble. A quarter of the energy is below 150 Hz, and the source is quiet (−40 LUFS), so the preview lifts it 16 dB.",
-      "verdict": "pass"
-    },
-    {
-      "key": "creek-owl",
-      "group": "Water",
-      "source": {
-        "xc": 986286
-      },
-      "start": 430,
-      "name": "Creek and Tawny Owl",
-      "place": "Wilder Graben, Reichraming, Upper Austria",
-      "why": "Dusk in an Austrian valley: a creek running to one side, the last song thrushes, blackbirds and robins, and a tawny owl. The owl-and-water night that the notes call “still open”.",
-      "listen": "the birds at the start. Dusk choruses fade, so the loop would hold them all night.",
-      "verdict": "keep",
-      "builtAs": "creek-owl"
-    },
-    {
-      "key": "quilamas-torrent",
-      "group": "Water",
-      "source": {
-        "xc": 963674
-      },
-      "start": 395,
-      "name": "Pine Forest Torrent",
-      "place": "Sierra de Francia y Quilamas, Salamanca, Spain",
-      "why": "A Scots pine forest in June with a torrent and waterfall further off: a bright, hissy water bed (mostly 3–8 kHz) with chaffinches and a blackcap over it.",
-      "listen": "whether the water hiss reads as calm or harsh.",
-      "verdict": "pass"
-    },
-    {
-      "key": "arctic-sea",
-      "group": "Water",
-      "source": {
-        "xc": 1047876
-      },
-      "start": 105,
-      "name": "Calm Arctic Sea",
-      "place": "Stuvika, Karlsøy, Troms, Norway (70° N)",
-      "why": "A calm September morning a few metres from the shore, with small waves lapping and two black guillemot calls far out. The only sea in the list. Uncompressed source.",
-      "listen": "the guillemots, and the length: the recording (8:59) is only just long enough for one loop.",
-      "verdict": "pass"
-    },
-    {
-      "key": "cordes-stream",
-      "group": "Water",
-      "source": {
-        "xc": 540233
-      },
-      "start": 1405,
-      "name": "Stream at Sunset",
-      "place": "Small valley by a chapel, Cordes-sur-Ciel, Tarn, France",
-      "why": "A quiet valley at sunset with a small stream, a firecrest, a song thrush and a roe deer. Very French and very still.",
-      "listen": "hiss first. The source is very quiet (−47 LUFS), so the preview lifts it 27 dB. This is the trap that sank the Somme marsh last round.",
-      "verdict": "keep",
-      "builtAs": "stream-at-sunset"
-    },
-    {
-      "key": "lavalette-frogs",
-      "group": "Frogs",
-      "source": {
-        "xc": 1089960
-      },
-      "start": 2890,
-      "name": "Tree Frog Pond",
-      "place": "Lavalette, Haute-Garonne, France",
-      "why": "A March evening pond near Toulouse full of Mediterranean tree frogs, with coots and a heron. The steadiest chorus found (level SD 0.6 dB, loudest 1 % only 2.4 dB over the bed) and loud, so nothing is lifted.",
-      "listen": "whether one pitch for seven minutes is lulling or wearing.",
-      "verdict": "keep",
-      "builtAs": "tree-frog-pond"
-    },
-    {
-      "key": "tarn-frogs",
-      "group": "Frogs",
-      "source": {
-        "xc": 883905
-      },
-      "start": 875,
-      "name": "Marsh Frogs in the Tarn",
-      "place": "Saint-Marcel-Campes, Tarn, France",
-      "why": "A March night at a pond in the Tarn: marsh frogs and Mediterranean tree frogs together, with more movement than the Lavalette pond but still even.",
-      "listen": "the marsh frogs' laugh-like calls, which are livelier than the rest.",
-      "verdict": "pass"
-    },
-    {
-      "key": "sevilla-reed-frogs",
-      "group": "Frogs",
-      "source": {
-        "xc": 1164498
-      },
-      "start": 395,
-      "name": "Tree Frogs and Reed Crickets",
+      "start": 160,
+      "name": "Marsh Crickets",
       "place": "El Condado salt marsh, near Sevilla, Spain",
-      "why": "Last round's favourite runner-up: a clean, steady wall of Mediterranean tree frogs over reed crickets in a tamarisk-lined marsh. It passed every check when it was built.",
-      "listen": "how close it sounds to Frog Pond, which is from the same marshes.",
+      "why": "May in the tamarisk-lined marshes of the Guadalquivir: Heyden's marsh crickets and reed crickets in a dense, even wall (level SD 1.3 dB), with a little grebe and the odd Iberian green frog. The time isn't recorded; the species and the sonogram point to night.",
+      "listen": "the fast pulse of the reed crickets on top. It comes from the same marshes as the tree frogs and reed crickets you passed in round 2, but without the frogs.",
       "verdict": "pass"
     },
     {
-      "key": "axat-nightjar",
+      "key": "condado-canal",
+      "group": "Crickets",
+      "source": {
+        "xc": 926874
+      },
+      "start": 200,
+      "name": "Canal in the Marshes",
+      "place": "El Condado, near Sevilla, Spain",
+      "why": "A reed-fringed canal in the same marshes on a mild December evening: large coneheads buzzing in the reeds, coots and a swamphen, a night heron and an Iberian parsley frog now and then. Very calm (level SD 1.1 dB, LRA 1.8 LU) and loud enough that nothing needs lifting.",
+      "listen": "the coneheads' buzz. It sits in two steady bands around 2.5 and 6 kHz.",
+      "verdict": "pass"
+    },
+    {
+      "key": "corbieres-bush-crickets",
+      "group": "Crickets",
+      "source": {
+        "xc": 741626
+      },
+      "start": 615,
+      "name": "Corbières Bush-crickets",
+      "place": "Embres-et-Castelmaure, Aude, France",
+      "why": "Half past eleven on an August night in the Corbières hills, by Cedric Mroczko (who recorded three of your round-2 keeps): rough saddle bush-crickets ticking in the scrub. The classic Mediterranean summer night, and very steady (level SD 1.2 dB).",
+      "listen": "brightness. Almost half its energy is above 8 kHz, the kind of hiss you passed last round. It's here because it is the truest southern cricket night found.",
+      "verdict": "pass"
+    },
+    {
+      "key": "medoc-night",
       "group": "Night",
       "source": {
-        "xc": 660465
+        "xc": 1150358
       },
-      "start": 65,
-      "name": "Nightjar at Midnight",
-      "place": "Axat, Aude, Occitanie, France",
-      "why": "A European nightjar churring through a May night in the Aude, with a woodlark and a distant tawny owl. Almost all of it is one soft 2 kHz drone, as steady as anything here.",
-      "listen": "whether the churr is hypnotic or tiring. That was the doubt last round.",
+      "start": 105,
+      "name": "Night in the Médoc",
+      "place": "Hourtin, Gironde, France",
+      "why": "A June night in the pines by Lake Hourtin, also by Cedric Mroczko: field crickets and great green bush-crickets, a nightjar churring, Iberian green frogs and a wild boar moving about. The sparsest bed here, with space between the voices.",
+      "listen": "the boar and the nightjar. The source is quiet, so it is lifted about 23 dB; listen for hiss.",
+      "verdict": "pass"
+    },
+    {
+      "key": "sentina-pond",
+      "group": "Frogs and toads",
+      "source": {
+        "xc": 1162742
+      },
+      "start": 1520,
+      "name": "Adriatic Pond Before Dawn",
+      "place": "Sentina reserve, San Benedetto del Tronto, Marche, Italy",
+      "why": "An unattended recorder at the edge of a coastal pond, at 5 am in early April, still dark: a low, steady chorus (most of the energy between 150 and 800 Hz), with redshanks, greenshanks and coots calling over it now and then. As steady as anything here (level SD 0.9 dB), and warm rather than bright.",
+      "listen": "what the low chorus is (frogs or toads, the sonogram can't say), and hiss: the source is quiet and is lifted 22 dB.",
+      "verdict": "pass"
+    },
+    {
+      "key": "valliguieres-frogs",
+      "group": "Frogs and toads",
+      "source": {
+        "xc": 991908
+      },
+      "start": 15,
+      "name": "Valliguières Pond",
+      "place": "Mare de Valliguières, Gard, France",
+      "why": "An April evening at a pond in the garrigue between Nîmes and Avignon: Mediterranean tree frogs with marsh frogs joining in, under a strong south-west wind. Quality A, loud and even (level SD 1.3 dB).",
+      "listen": "the wind, and how close it is to Tree Frog Pond, which you kept.",
+      "verdict": "pass"
+    },
+    {
+      "key": "embid-midwife-toads",
+      "group": "Frogs and toads",
+      "source": {
+        "xc": 1044348
+      },
+      "start": 215,
+      "name": "Midwife Toads in a Gorge",
+      "place": "Tierra de Molina, near Embid, Guadalajara, Spain",
+      "why": "A rocky gorge with a seasonal stream in May. Iberian midwife toads give their soft, bell-like piping, one note at a time, all through the recording. A blackbird, a woodlark, a wren and a blue rock thrush sing as well.",
+      "listen": "the birds: they suggest dusk rather than deep night. The time isn't recorded.",
       "verdict": "pass"
     }
   ],
-  "note": "Round 2 verdicts, by ear. Keeps were built into the app (builtAs = their id in soundscapes.config.json). The five A2O candidates were also passed and are only listed in docs/curation.md, since A2O is no longer used."
+  "note": "Round 3 verdicts, by ear. The keep was built into the app (builtAs = its id in soundscapes.config.json). Round 2's candidates and verdicts are in git history (commit dfad5bd) and docs/curation.md."
 }

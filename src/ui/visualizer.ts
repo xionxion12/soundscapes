@@ -1735,6 +1735,127 @@ class Marsh implements Scene {
   }
 }
 
+// ---- Cretan night: the moon over the Aegean from a rocky headland, a carob tree on the cliff ----
+// The high band (the tree cricket's trill, ~4.5 kHz) makes the moon's path glitter on the sea, the low band
+// lets the moon's halo breathe, and a call swells it for a moment.
+class Aegean implements Scene {
+  private bg = document.createElement('canvas');
+  private fg = document.createElement('canvas');
+  private halo = sprite([200, 215, 255], 256);
+  private glint = sprite([225, 232, 255], 32);
+  private star = sprite([210, 220, 255], 16);
+  private stars: { x: number; y: number; s: number; ph: number; sp: number }[] = [];
+  private glints: { k: number; off: number; ph: number; sp: number }[] = [];
+  private swells: number[] = [];
+  private moon = { x: 0, y: 0, r: 0 };
+  private horizon = 0;
+  private trill = 0;
+
+  resize(w: number, h: number) {
+    for (const c of [this.bg, this.fg]) {
+      c.width = w;
+      c.height = h;
+    }
+    this.horizon = h * 0.6;
+    this.moon = { x: w * 0.86, y: h * 0.24, r: Math.min(w, h) * 0.04 };
+    const g = this.bg.getContext('2d')!;
+    const sky = g.createLinearGradient(0, 0, 0, this.horizon);
+    sky.addColorStop(0, '#030616');
+    sky.addColorStop(0.75, '#0b1838');
+    sky.addColorStop(1, '#1c2c52');
+    g.fillStyle = sky;
+    g.fillRect(0, 0, w, this.horizon);
+    const sea = g.createLinearGradient(0, this.horizon, 0, h);
+    sea.addColorStop(0, '#0a1630');
+    sea.addColorStop(1, '#03060f');
+    g.fillStyle = sea;
+    g.fillRect(0, this.horizon, w, h - this.horizon);
+    g.fillStyle = '#eef2ff';
+    g.beginPath();
+    g.arc(this.moon.x, this.moon.y, this.moon.r, 0, Math.PI * 2);
+    g.fill();
+
+    // the headland on the left, sloping down into the sea, with a carob tree and low scrub on top
+    const f = this.fg.getContext('2d')!;
+    f.clearRect(0, 0, w, h);
+    const ink = '#02040a';
+    const top = (x: number) => h * 0.49 + Math.pow(x / (w * 0.45), 1.6) * h * 0.12 + Math.sin(x * 0.04) * h * 0.005;
+    f.fillStyle = ink;
+    f.beginPath();
+    f.moveTo(0, h);
+    for (let x = 0; x <= w * 0.45; x += w / 60) f.lineTo(x, top(x));
+    f.lineTo(w * 0.49, h * 0.645);
+    f.lineTo(w * 0.52, h * 0.73);
+    f.lineTo(w * 0.555, h * 0.84);
+    f.lineTo(w * 0.58, h);
+    f.fill();
+    const tx = w * 0.14, ty = top(tx);
+    f.strokeStyle = ink;
+    f.lineWidth = w * 0.01;
+    f.lineCap = 'round';
+    f.beginPath();
+    f.moveTo(tx, ty + h * 0.004);
+    f.lineTo(tx + w * 0.004, ty - h * 0.045);
+    f.stroke();
+    for (const [dx, dy, rx, ry] of [[0, -0.058, 0.066, 0.019], [-0.04, -0.05, 0.04, 0.013], [0.043, -0.052, 0.043, 0.014], [0, -0.072, 0.043, 0.013]] as const) {
+      f.beginPath();
+      f.ellipse(tx + w * dx, ty + h * dy, w * rx, h * ry, 0, 0, Math.PI * 2);
+      f.fill();
+    }
+    for (let i = 0; i < 14; i++) {
+      const x = rand(w * 0.2, w * 0.45);
+      f.beginPath();
+      f.ellipse(x, top(x) - h * 0.003, w * rand(0.01, 0.028), h * rand(0.004, 0.008), 0, 0, Math.PI * 2);
+      f.fill();
+    }
+
+    this.stars = Array.from({ length: Math.round(60 + (w * h) / 40000) }, () => ({
+      x: Math.random() * w, y: Math.random() * this.horizon * 0.92, s: rand(0.5, 1.6), ph: rand(0, 6.28), sp: rand(0.3, 1.2),
+    }));
+    this.glints = Array.from({ length: 90 }, () => ({ k: Math.random(), off: rand(-1, 1), ph: rand(0, 6.28), sp: rand(1.5, 5) }));
+  }
+
+  draw({ ctx, w, h, dt, t, lv, onset, motion }: Frame, alpha: number) {
+    this.trill += (lv[2] - this.trill) * Math.min(1, dt * 4);
+    const unit = h / 852;
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.bg, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of this.stars) {
+      const tw = motion ? 0.55 + 0.45 * Math.sin(t * s.sp + s.ph) : 0.75;
+      const sz = 9 * s.s * unit;
+      ctx.globalAlpha = alpha * tw * 0.7;
+      ctx.drawImage(this.star, s.x - sz / 2, s.y - sz / 2, sz, sz);
+    }
+    // the moon's halo breathes with the low band, and a call swells it
+    if (onset && motion && this.swells.length < 2) this.swells.push(0);
+    this.swells = this.swells.map((a) => a + dt).filter((a) => a < SWELL_LIFE);
+    let glow = 0.4 + lv[0] * 0.25;
+    for (const age of this.swells) glow += Math.sin(Math.PI * (age / SWELL_LIFE)) * 0.3;
+    const hs = this.moon.r * 9;
+    ctx.globalAlpha = alpha * Math.min(1, glow);
+    ctx.drawImage(this.halo, this.moon.x - hs / 2, this.moon.y - hs / 2, hs, hs);
+    // the moon's path on the sea glitters with the cricket's trill
+    const depth = h - this.horizon;
+    for (const g of this.glints) {
+      if (motion) {
+        g.k += dt * 0.02;
+        if (g.k > 1) g.k -= 1;
+      }
+      const y = this.horizon + h * 0.008 + g.k * depth;
+      const x = this.moon.x + g.off * w * (0.02 + g.k * 0.2);
+      const on = motion ? Math.max(0, Math.sin(t * g.sp + g.ph)) : 0.5;
+      const sx = (6 + g.k * 26) * unit * (0.6 + on * 0.6), sy = sx * 0.22;
+      ctx.globalAlpha = alpha * on * (0.25 + this.trill * 0.75) * (1 - Math.abs(g.off) * 0.5);
+      ctx.drawImage(this.glint, x - sx / 2, y - sy / 2, sx, sy);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(this.fg, 0, 0);
+    ctx.globalAlpha = 1;
+  }
+}
+
 const SCENES: Record<ThemeId, () => Scene> = {
   mediterranean: () => new Mediterranean(),
   rainforest: () => new Rainforest(),
@@ -1748,6 +1869,7 @@ const SCENES: Record<ThemeId, () => Scene> = {
   creek: () => new Creek(),
   valley: () => new Valley(),
   marsh: () => new Marsh(),
+  aegean: () => new Aegean(),
 };
 
 export interface VisualizerOptions {

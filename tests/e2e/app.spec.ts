@@ -304,6 +304,8 @@ test.describe('soundscapes', () => {
   });
 
   test('every soundscape renders its own scene', async ({ page }) => {
+    // about 2.5 s per soundscape (a 1.6 s settle plus the screenshot), so the budget grows with the line-up
+    test.setTimeout(15_000 + items.length * 3_000);
     expect(new Set(items.map((it) => it.theme)).size).toBe(items.length);
     const orbCentres: number[] = [];
     await open(page);
